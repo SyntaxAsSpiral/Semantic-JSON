@@ -15,10 +15,10 @@ By default, Obsidian "scrambles" `.canvas` file entries on every save. This plug
 
 ## Features
 
-- **Hierarchical ordering**: Groups appear before their contained nodes, depth-first traversal
-- **Topology-based edge sorting**: Edges ordered by spatial information flow (fromNode → toNode position)
 - **Enhanced readability**: Linear JSON output preserves spatial semantics for both human review and AI processing
 - **Auto-compile**: Optionally reorder on save for seamless workflows
+- **Hierarchical ordering**: Groups appear before their contained nodes, depth-first traversal
+- **Topology-based edge sorting**: Edges ordered by spatial information flow (fromNode → toNode position)
 - **Universal ingestion**: Canvas as agnostic schema for heterogeneous data sources
 
 ## Installation
