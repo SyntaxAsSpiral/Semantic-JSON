@@ -39,14 +39,6 @@ function normalizedId(value: unknown): string {
   return '';
 }
 
-function normalizeUrl(url: string): string {
-  // Remove protocol (http://, https://, etc.)
-  let normalized = url.replace(/^[a-z]+:\/\//i, '');
-  // Remove www. prefix
-  normalized = normalized.replace(/^www\./i, '');
-  return normalized.toLowerCase().trim();
-}
-
 function getNodeSortKey(node: CanvasNode): string {
   const type = node?.type;
 
@@ -60,9 +52,9 @@ function getNodeSortKey(node: CanvasNode): string {
     return node.file.toLowerCase().trim();
   }
 
-  // Link nodes: sort by normalized URL (without protocol/www)
+  // Link nodes: sort by raw URL (keeps protocol, clusters by http/https)
   if (type === 'link' && typeof node.url === 'string') {
-    return normalizeUrl(node.url);
+    return node.url.toLowerCase().trim();
   }
 
   // Group nodes: sort by label

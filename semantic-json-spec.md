@@ -126,7 +126,7 @@ Nodes are reordered **hierarchically** based on spatial containment:
 **Content-based sorting**: Nodes at the same spatial position are sorted by their semantic content:
 - **Text nodes**: sorted by text content
 - **File nodes**: sorted by file path
-- **Link nodes**: sorted by normalized URL (protocol and `www.` removed)
+- **Link nodes**: sorted by raw URL (preserves protocol, naturally clusters by http/https)
 - **Group nodes**: sorted by label
 - Falls back to node ID if no content available
 
