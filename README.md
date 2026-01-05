@@ -8,7 +8,7 @@
 
 ## Why This Plugin?
 
-By default, Obsidian scrambles `.canvas` file entries on every save (arbitrary z-index ordering). This plugin unscrambles them into stable, semantically meaningful structure without affecting:
+By default, Obsidian scrambles `.canvas` file entries on every save (arbitrary z-index ordering). This plugin encodes them into stable, semantically meaningful structure without affecting:
 - **Git diffs**: Produces clean, predictable diffs (no noise from reordering)
 - **Hashing**: Deterministic output ensures stable content signatures
 - **Obsidian visibility**: Canvas displays identically—only the underlying JSON changes
