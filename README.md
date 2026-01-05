@@ -41,7 +41,7 @@ By default, Obsidian "scrambles" `.canvas` file entries on every save. This plug
 
 ### Commands (via Command Palette)
 
-- **"Compile active canvas"**: Reorders the `.canvas` file in-place (seamless, no extra files)
+- **"Compile active canvas"**: Reorders the `.canvas` file in-place (no visual changes, no extra files)
 - **"Export canvas to .json"**: Creates a separate `.json` file alongside the `.canvas`
 
 ### Settings
