@@ -20,7 +20,10 @@ export class SemanticJsonSettingTab extends PluginSettingTab {
   display(): void {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl('h2', { text: 'Semantic JSON Settings' });
+
+    new Setting(containerEl)
+      .setName('Semantic JSON settings')
+      .setHeading();
 
     new Setting(containerEl)
       .setName('Auto-compile on save')

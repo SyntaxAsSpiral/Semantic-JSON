@@ -3,14 +3,16 @@ interface CanvasNode {
   type: string;
   x?: number;
   y?: number;
-  [key: string]: any;
+  width?: number;
+  height?: number;
+  [key: string]: unknown;
 }
 
 interface CanvasEdge {
   id: string;
   fromNode: string;
   toNode: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface CanvasData {
@@ -23,11 +25,11 @@ interface NodePosition {
   y?: number;
 }
 
-function isFiniteNumber(value: any): value is number {
+function isFiniteNumber(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value);
 }
 
-function normalizedId(value: any): string {
+function normalizedId(value: unknown): string {
   return String(value ?? '').trim();
 }
 

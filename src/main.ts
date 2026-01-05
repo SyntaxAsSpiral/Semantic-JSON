@@ -97,7 +97,7 @@ export default class SemanticJsonPlugin extends Plugin {
 
       if (serialized === raw) {
         if (showNotice) {
-          new Notice('Canvas already compiled.');
+          new Notice('Canvas already compiled');
         }
         return;
       }
@@ -105,7 +105,7 @@ export default class SemanticJsonPlugin extends Plugin {
       await this.app.vault.modify(file, serialized);
 
       if (showNotice) {
-        new Notice('Canvas compiled.');
+        new Notice('Canvas compiled');
       }
     } catch (error) {
       console.error(error);
