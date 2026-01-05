@@ -3,7 +3,7 @@
     {
       "id": "ef5328c24dd1ef37",
       "type": "text",
-      "text": "This node should be first.",
+      "text": "This node should be first. This .canvas has been ordered semnatically. If you drop it in a standard Obsidian Vault and make any changes, these entries will be scrambled.",
       "x": -300,
       "y": -440,
       "width": 250,
