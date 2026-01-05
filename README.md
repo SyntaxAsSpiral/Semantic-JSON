@@ -17,7 +17,6 @@ By default, Obsidian scrambles `.canvas` file entries on every save (arbitrary z
 
 - **Hierarchical ordering**: Groups appear before their contained nodes, depth-first traversal
 - **Topology-based edge sorting**: Edges ordered by spatial information flow (fromNode → toNode position)
-- **Stable diffs**: Deterministic ordering enables clean version control
 - **Enhanced readability**: Linear JSON output preserves spatial semantics for both human review and AI processing
 - **Auto-compile**: Optionally reorder on save for seamless workflows
 - **Universal ingestion**: Canvas as agnostic schema for heterogeneous data sources
