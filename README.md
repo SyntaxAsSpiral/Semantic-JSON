@@ -101,7 +101,7 @@ MIT
 
 ## Author
 
-Zach Battin ([@zkbattin](https://github.com/zkbattin))
+Zach Battin ([@zkbattin](https://github.com/SyntaxAsSpiral))
 
 ---
 
