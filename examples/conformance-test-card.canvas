@@ -3,7 +3,7 @@
     {
       "id": "ef5328c24dd1ef37",
       "type": "text",
-      "text": "This node should be first.",
+      "text": "This node should be first if the .canvas has been ordered semantically. Making any changes within a standard vault will scramble these entries.",
       "x": -300,
       "y": -440,
       "width": 250,
