@@ -35,7 +35,7 @@ Infinite canvas tools organize information spatially like a digital whiteboard.
 
 ### Manual Installation
 
-1. Download the latest release from [GitHub Releases](https://github.com/zkbattin/obsidian-semantic-json/releases)
+1. Download the latest release from [GitHub Releases](https://github.com/SyntaxAsSpiral/semantic-json/releases)
 2. Extract to `<vault>/.obsidian/plugins/semantic-json/`
 3. Reload Obsidian
 4. Enable "Semantic JSON" in Community Plugins settings
@@ -98,6 +98,11 @@ Issues and PRs welcome! Please follow existing code style and include tests for 
 ## License
 
 MIT
+
+## Author
+
+Zach Battin ([@SyntaxAsSpiral](https://github.com/SyntaxAsSpiral))
+Contact: syntaxasspiral@gmail.com
 
 ---
 
