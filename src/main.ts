@@ -22,7 +22,7 @@ export default class SemanticJsonPlugin extends Plugin {
 
     this.addCommand({
       id: 'export-canvas-to-json',
-      name: 'Export canvas to .json',
+      name: 'Export canvas to JSON',
       callback: () => void this.exportToJson(),
     });
 

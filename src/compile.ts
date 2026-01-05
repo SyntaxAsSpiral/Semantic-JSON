@@ -30,7 +30,13 @@ function isFiniteNumber(value: unknown): value is number {
 }
 
 function normalizedId(value: unknown): string {
-  return String(value ?? '').trim();
+  if (typeof value === 'string') {
+    return value.trim();
+  }
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+  return '';
 }
 
 function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {

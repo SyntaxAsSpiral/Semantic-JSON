@@ -22,7 +22,7 @@ export class SemanticJsonSettingTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName('Semantic JSON settings')
+      .setName('Compilation')
       .setHeading();
 
     new Setting(containerEl)
