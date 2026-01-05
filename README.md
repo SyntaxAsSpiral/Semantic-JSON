@@ -1,6 +1,6 @@
 # Semantic JSON
 
-**Obsidian plugin that compiles Canvas files to semantic JSON for universal ingestion, LLM processing, and stable version control.**
+**Obsidian plugin that compiles Canvas files to semantic JSON for enhanced human and AI readability, universal ingestion, and stable version control.**
 
 ## Why This Plugin?
 
@@ -20,7 +20,7 @@ Infinite canvas tools organize information spatially like a digital whiteboard.
 - **Hierarchical ordering**: Groups appear before their contained nodes, depth-first traversal
 - **Topology-based edge sorting**: Edges ordered by spatial information flow (fromNode → toNode position)
 - **Stable diffs**: Deterministic ordering enables clean version control
-- **LLM-optimized**: Linear JSON output preserves spatial semantics for AI ingestion
+- **Enhanced readability**: Linear JSON output preserves spatial semantics for both human review and AI processing
 - **Auto-compile**: Optionally reorder on save for seamless workflows
 - **Universal ingestion**: Canvas as agnostic schema for heterogeneous data sources
 
@@ -106,4 +106,4 @@ Contact: syntaxasspiral@gmail.com
 
 ---
 
-**Ideal for bridging visual authoring with machine-readable semantic structures.**
+**Bridges visual authoring with readable semantic structures for humans and machines alike.**
