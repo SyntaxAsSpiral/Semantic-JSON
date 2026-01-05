@@ -99,10 +99,6 @@ Issues and PRs welcome! Please follow existing code style and include tests for 
 
 MIT
 
-## Author
-
-Zach Battin ([@zkbattin](https://github.com/SyntaxAsSpiral))
-
 ---
 
 **Ideal for bridging visual authoring with machine-readable semantic structures.**
