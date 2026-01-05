@@ -1,0 +1,9 @@
+{
+  "id": "semantic-json",
+  "name": "Semantic JSON",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Unscrambles Canvas entries into stable semantic JSON without affecting git diffs or visibility.",
+  "author": "Zach Battin",
+  "isDesktopOnly": true
+}
