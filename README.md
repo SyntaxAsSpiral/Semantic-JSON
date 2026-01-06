@@ -1,6 +1,6 @@
 # ◈ Semantic JSON
 
-Semantic JSON exists because spatial structure already carries meaning — hierarchy, flow, grouping, and emphasis are authored visually, but lost during serialization. This plugin preserves that intent without changing how canvases render or introducing new schema.
+Semantic JSON is a deterministic compiler that preserves the visual semantics of JSON Canvas files as stable, machine-legible structure.
 
 ## What is JSON Canvas?
 
