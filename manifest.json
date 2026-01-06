@@ -3,7 +3,7 @@
   "name": "Semantic JSON",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
-  "description": "Compiles Canvas files to semantic JSON via visuospatial encoding—reading position, containment, color, and flow as visual language for stable diffs and AI ingestion.",
+  "description": "Recompiles Canvas files to semantic JSON via visuospatial encoding—reading position, containment, color, and flow as visual language for stable diffs and AI ingestion.",
   "author": "Zach Battin",
   "isDesktopOnly": true
 }
