@@ -1,6 +1,6 @@
 # Semantic JSON
 
-**Obsidian plugin that recompiles Canvas files to semantic JSON through visuospatial encoding—arranging visual field semantics (position, containment, color, directionality) into stable, readable linear order for humans and AI.**
+Visual-semantic grammar for Canvas—4 visuospatial primitives create shared language between human spatial authoring and AI semantic generation. Compiles to deterministic JSON readable and writable by both.
 
 ## What is JSON Canvas?
 
@@ -8,7 +8,7 @@
 
 ## Why This Plugin?
 
-By default, Obsidian "scrambles" the z-index array on every save, losing the spatial and structural meaning that Canvas format is designed to capture. This plugin recompiles the canvas, encoding its visual semantics into stable, deterministic JSON across four dimensions:
+Canvas is a visual authoring tool for structured data—spatial arrangement encodes meaning. By default, Obsidian "scrambles" the z-index array on every save, losing that encoded meaning. This plugin recompiles the canvas, preserving its visual semantics as stable, deterministic JSON across four dimensions:
 
 - **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - **Containment** (bounding boxes) → Hierarchical structure (groups + children)
@@ -16,10 +16,10 @@ By default, Obsidian "scrambles" the z-index array on every save, losing the spa
 - **Directionality** (arrow endpoints) → Information flow topology (source → sink)
 
 **Benefits:**
-- **Git diffs**: Clean, predictable diffs—only meaningful changes show up
-- **LLM ingestion**: Semantically ordered for AI comprehension without spatial reconstruction
-- **Human readability**: Logical flow instead of random noise
-- **Canvas rendering**: Displays identically—only the underlying JSON order changes
+
+  - **Shared generative grammar**: Humans compose spatially, AI composes semantically, canvas renders identically
+  - **Bidirectional authoring**: Template anything in canvas, AI generates semantically valid JSON, structures render instantly, inventing novel compositions using the same visual grammar
+  - **Clean diffs + stable semantics**: Git tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback
 
 ## Features
 
@@ -63,10 +63,20 @@ By default, Obsidian "scrambles" the z-index array on every save, losing the spa
 - **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
 
 ## Standalone CLI Tool
-See [`cli/canvas-compile.mjs`](./cli/canvas-compile.mjs) for usage details.
+
+Full feature parity with the plugin—enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
 
 ```bash
-node cli/canvas-compile.mjs --in <path-to-.canvas> [--out <path-to-.json>]
+# Basic usage (creates .json alongside .canvas)
+node cli/canvas-compile.mjs --in <path-to-.canvas>
+
+# In-place compilation
+node cli/canvas-compile.mjs --in file.canvas --out file.canvas
+
+# Options
+--color-nodes / --no-color-nodes  # Color sorting (default: true)
+--color-edges / --no-color-edges  # Edge color sorting (default: true)
+--flow-sort / --no-flow-sort      # Flow topology sorting (default: false)
 ```
 
 ## Specification
