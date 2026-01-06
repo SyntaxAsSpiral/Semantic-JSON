@@ -8,7 +8,7 @@ JSON Canvas adds 4 visuospatial primitives to the JSON format. This plugin makes
 
 ## 🎯 Why This Plugin?
 
-By default, Obsidian "scrambles" the JSON array in Canvas files on every save, discarding its implicit meaning and forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its visual semantics as stable, deterministic JSON across four dimensions:
+By default, Obsidian "scrambles" the JSON array in Canvas files on every save, discarding its implicit meaning and forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as stable, deterministic JSON across four dimensions:
 
 - 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - 📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
