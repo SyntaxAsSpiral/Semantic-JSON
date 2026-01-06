@@ -3,7 +3,7 @@
   "name": "Semantic JSON",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
-  "description": "Semantic JSON is a deterministic compiler that preserves the spatial and visual meaning of JSON Canvas files as stable, machine-legible structure.",
+  "description": "Semantic JSON is a deterministic compiler that preserves the spatial and visual meaning of JSON Canvas files as stable, machine-legible artifacts.",
   "author": "Zach Battin",
   "isDesktopOnly": true
 }
