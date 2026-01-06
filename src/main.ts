@@ -1,5 +1,5 @@
 import { Notice, Plugin, TFile } from 'obsidian';
-import { compileCanvasAll } from './compile';
+import { compileCanvasAll, stripCanvasMetadata } from './compile';
 import {
   DEFAULT_SETTINGS,
   SemanticJsonSettingTab,
@@ -21,9 +21,9 @@ export default class SemanticJsonPlugin extends Plugin {
     });
 
     this.addCommand({
-      id: 'export-canvas-to-json',
-      name: 'Export canvas to JSON',
-      callback: () => void this.exportToJson(),
+      id: 'export-as-pure-json',
+      name: 'Export as pure JSON',
+      callback: () => void this.exportAsPureJson(),
     });
 
     this.registerEvent(
@@ -52,7 +52,7 @@ export default class SemanticJsonPlugin extends Plugin {
     await this.compileFile(file, true);
   }
 
-  async exportToJson() {
+  async exportAsPureJson() {
     const file = this.app.workspace.getActiveFile();
     if (!file || file.extension !== 'canvas') {
       new Notice('No active canvas file');
@@ -62,7 +62,9 @@ export default class SemanticJsonPlugin extends Plugin {
     try {
       const raw = await this.app.vault.read(file);
       const parsed = JSON.parse(raw);
-      const output = compileCanvasAll({
+
+      // Compile first to get semantic ordering
+      const compiled = compileCanvasAll({
         input: parsed,
         settings: {
           colorSortNodes: this.settings.colorSortNodes,
@@ -70,10 +72,13 @@ export default class SemanticJsonPlugin extends Plugin {
           flowSortNodes: this.settings.flowSortNodes,
         },
       });
-      const serialized = JSON.stringify(output, null, 2) + '\n';
 
-      // Create .json filename (replace .canvas with .json)
-      const jsonPath = file.path.replace(/\.canvas$/, '.json');
+      // Strip Canvas metadata
+      const stripped = stripCanvasMetadata(compiled);
+      const serialized = JSON.stringify(stripped, null, 2) + '\n';
+
+      // Create .pure.json filename
+      const jsonPath = file.path.replace(/\.canvas$/, '.pure.json');
 
       // Check if file exists
       const existingFile = this.app.vault.getAbstractFileByPath(jsonPath);

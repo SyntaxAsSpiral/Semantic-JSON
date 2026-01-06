@@ -530,6 +530,42 @@ export function compileCanvasAll({ input, settings }: { input: CanvasData; setti
   return { nodes: outNodes, edges: outEdges };
 }
 
+/**
+ * Strip Canvas metadata from compiled structure to produce pure data artifact.
+ * Removes spatial (x, y, width, height), visual (color), and rendering metadata.
+ * Preserves semantic content: id, text, file, url, label for nodes; id, fromNode, toNode, label for edges.
+ */
+export function stripCanvasMetadata(input: CanvasData): CanvasData {
+  const nodes = Array.isArray(input?.nodes) ? input.nodes.map(node => {
+    const stripped: CanvasNode = { id: node.id, type: node.type };
+
+    // Preserve content fields
+    if ('text' in node && node.text !== undefined) stripped.text = node.text;
+    if ('file' in node && node.file !== undefined) stripped.file = node.file;
+    if ('url' in node && node.url !== undefined) stripped.url = node.url;
+    if ('label' in node && node.label !== undefined) stripped.label = node.label;
+
+    return stripped;
+  }) : [];
+
+  const edges = Array.isArray(input?.edges) ? input.edges.map(edge => {
+    const stripped: CanvasEdge = {
+      id: edge.id,
+      fromNode: edge.fromNode,
+      toNode: edge.toNode,
+    };
+
+    // Preserve semantic relationship label if present
+    if ('label' in edge && edge.label !== undefined) {
+      stripped.label = edge.label;
+    }
+
+    return stripped;
+  }) : [];
+
+  return { nodes, edges };
+}
+
 function isContainedBy(node: CanvasNode, group: CanvasNode): boolean {
   const nx = isFiniteNumber(node?.x) ? node.x : 0;
   const ny = isFiniteNumber(node?.y) ? node.y : 0;

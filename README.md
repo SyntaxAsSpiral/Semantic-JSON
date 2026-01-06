@@ -8,7 +8,7 @@ JSON Canvas adds 4 visuospatial primitives to the JSON format. This plugin makes
 
 ## 🎯 Why This Plugin?
 
-By default, Obsidian "scrambles" the JSON array in Canvas files on every save, discarding richly encoded meaning and forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its visual semantics as stable, deterministic JSON across four dimensions:
+By default, Obsidian "scrambles" the JSON array in Canvas files on every save, discarding its encoded meaning and forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its visual semantics as stable, deterministic JSON across four dimensions:
 
 - 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - 📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
@@ -17,8 +17,8 @@ By default, Obsidian "scrambles" the JSON array in Canvas files on every save, d
 
 ### Benefits
 
-- 🤝 Obsidian Canvas becomes a **WYSIWYG** JSON editor for both human and AI authors and readers.
 - 💬 JSON Canvas becomes **lingua franca** for the shared visuospatial grammar humans and AI already use natively as subtext for meaning. 
+- 🤝 Obsidian Canvas becomes an intuitive **WYSIWYG** editor for this richly contextual JSON format.
 
 ## ⚡ Features
 
@@ -48,8 +48,8 @@ By default, Obsidian "scrambles" the JSON array in Canvas files on every save, d
 
 ### Commands (via Command Palette)
 
-- **"Compile active canvas"**: Recompiles the `.canvas` file in-place (no visual changes in UI, no extra files)
-- **"Export canvas to JSON"**: Creates a separate `.json` file alongside the `.canvas`
+- **"Compile active canvas"**: Recompiles the `.canvas` file in-place preserving semantic structure
+- **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
 ### Settings
 
@@ -63,16 +63,17 @@ By default, Obsidian "scrambles" the JSON array in Canvas files on every save, d
 Enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
 
 ```bash
-# Basic usage (creates .json alongside .canvas)
+# Compile to semantic JSON Canvas
 node cli/canvas-compile.mjs --in <path-to-.canvas>
 
-# In-place compilation
-node cli/canvas-compile.mjs --in file.canvas --out file.canvas
+# Export pure data artifact (strip metadata)
+node cli/canvas-compile.mjs --in file.canvas --strip-metadata
 
 # Options
 --color-nodes / --no-color-nodes  # Color sorting (default: true)
 --color-edges / --no-color-edges  # Edge color sorting (default: true)
 --flow-sort / --no-flow-sort      # Flow topology sorting (default: false)
+--strip-metadata                  # Strip Canvas metadata for pure JSON export
 ```
 
 ## 📖 Specification

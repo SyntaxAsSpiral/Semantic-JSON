@@ -17,12 +17,14 @@ function usage(message) {
       '  --no-color-edges      Disable color-based edge sorting',
       '  --flow-sort           Enable directional flow topology sorting (default: false)',
       '  --no-flow-sort        Disable flow topology sorting',
+      '  --strip-metadata      Strip Canvas metadata to export pure data structure',
       '',
       'Behavior:',
       '  - Reads a JSON Canvas 1.0 file (.canvas)',
       '  - Compiles to semantic JSON via visuospatial encoding',
       '  - Encodes 4 visual dimensions: position, containment, color, directionality',
       '  - Outputs to specified path or <input-stem>.json in same directory',
+      '  - With --strip-metadata: removes spatial/visual fields, exports pure data artifact',
       '',
       'Visuospatial encoding:',
       '  - Position (x, y) → Linear reading sequence',
@@ -38,6 +40,7 @@ function parseArgs(argv) {
     colorNodes: true,
     colorEdges: true,
     flowSort: false,
+    stripMetadata: false,
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -72,6 +75,10 @@ function parseArgs(argv) {
     }
     if (a === '--no-flow-sort') {
       args.flowSort = false;
+      continue;
+    }
+    if (a === '--strip-metadata') {
+      args.stripMetadata = true;
       continue;
     }
     if (a === '--help' || a === '-h') {
@@ -691,6 +698,42 @@ export function compileCanvasAll({ input, settings }) {
   return { nodes: outNodes, edges: outEdges };
 }
 
+/**
+ * Strip Canvas metadata from compiled structure to produce pure data artifact.
+ * Removes spatial (x, y, width, height), visual (color), and rendering metadata.
+ * Preserves semantic content: id, text, file, url, label for nodes; id, fromNode, toNode, label for edges.
+ */
+function stripCanvasMetadata(input) {
+  const nodes = Array.isArray(input?.nodes) ? input.nodes.map(node => {
+    const stripped = { id: node.id, type: node.type };
+
+    // Preserve content fields
+    if ('text' in node && node.text !== undefined) stripped.text = node.text;
+    if ('file' in node && node.file !== undefined) stripped.file = node.file;
+    if ('url' in node && node.url !== undefined) stripped.url = node.url;
+    if ('label' in node && node.label !== undefined) stripped.label = node.label;
+
+    return stripped;
+  }) : [];
+
+  const edges = Array.isArray(input?.edges) ? input.edges.map(edge => {
+    const stripped = {
+      id: edge.id,
+      fromNode: edge.fromNode,
+      toNode: edge.toNode,
+    };
+
+    // Preserve semantic relationship label if present
+    if ('label' in edge && edge.label !== undefined) {
+      stripped.label = edge.label;
+    }
+
+    return stripped;
+  }) : [];
+
+  return { nodes, edges };
+}
+
 export function compileCanvasFile({ inPath, outPath, settings }) {
   const absIn = path.resolve(String(inPath ?? '').trim());
   const input = readJson(absIn);
@@ -699,7 +742,14 @@ export function compileCanvasFile({ inPath, outPath, settings }) {
   // Default output to same directory as input
   const absOut = String(outPath ?? '').trim() || path.resolve(path.dirname(absIn), `${stem}.json`);
 
-  const out = compileCanvasAll({ input, settings });
+  // Compile to semantic ordering
+  let out = compileCanvasAll({ input, settings });
+
+  // Strip Canvas metadata if requested
+  if (settings?.stripMetadata) {
+    out = stripCanvasMetadata(out);
+  }
+
   const serialized = JSON.stringify(out, null, 2) + '\n';
 
   fs.writeFileSync(absOut, serialized, 'utf8');
@@ -739,6 +789,7 @@ async function main() {
     colorSortNodes: args.colorNodes,
     colorSortEdges: args.colorEdges,
     flowSortNodes: args.flowSort,
+    stripMetadata: args.stripMetadata,
   };
 
   const res = compileCanvasFile({ inPath, outPath: args.out, settings });
