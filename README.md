@@ -17,7 +17,7 @@ By default, Obsidian "scrambles" the JSON array in Canvas files on every save, d
 
 ### Benefits
 
-- 🤝 Obsidian Canvas becomes a more intuitive JSON editor for both human and AI authors and readers.
+- 🤝 Obsidian Canvas becomes aa easier, more intuitive JSON editor for both human and AI authors and readers.
 - 💬 JSON Canvas becomes **lingua franca** for the shared visuospatial grammar humans and AI already use natively as subtext for meaning. 
 
 ## ⚡ Features
