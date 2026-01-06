@@ -10,16 +10,16 @@ JSON Canvas adds 4 visuospatial primitives to the JSON format. Semantic JSON mak
 
 By default, Obsidian "scrambles" the JSON array on every save, discarding richly encoded meaning and forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its visual semantics as stable, deterministic JSON across four dimensions:
 
-  📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
-  📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
-  🎨 **Color** (node/edge colors) → Semantic taxonomy (red=urgent, blue=reference, etc.)
-  ➡️ **Directionality** (arrow endpoints) → Information flow topology (source → sink)
+- 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
+- 📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
+- 🎨 **Color** (node/edge colors) → Semantic taxonomy (red=urgent, blue=reference, etc.)
+- ➡️ **Directionality** (arrow endpoints) → Information flow topology (source → sink)
 
 **Benefits:**
 
-💬 JSON becomes **lingua franca** for the shared visuospatial grammar humans and LLMS already use intuitively as subtext for meaning. 
-🤝 Create any structure you can imagine visually or have AI create novel structures, all in valid JSON that renders instantly.
-✅ Git tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback.
+  - 💬 JSON becomes **lingua franca** for the shared visuospatial grammar humans and LLMS already use intuitively as subtext for meaning. 
+  - 🤝 Create any structure you can imagine visually or have AI create novel structures, all in valid JSON that renders instantly.
+  - ✅ Git tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback.
 
 ## ⚡ Features
 
