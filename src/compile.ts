@@ -74,6 +74,15 @@ function getNodeTypePriority(node: CanvasNode): number {
   return 0;
 }
 
+function getNodeColor(node: CanvasNode): string {
+  const color = node?.color;
+  if (typeof color === 'string') {
+    return color.toLowerCase();
+  }
+  // No color = empty string (sorts first)
+  return '';
+}
+
 function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
   nodes.sort((a, b) => {
     const ay = isFiniteNumber(a?.y) ? a.y : 0;
@@ -88,6 +97,11 @@ function stableSortByXY(nodes: CanvasNode[]): CanvasNode[] {
     const aPriority = getNodeTypePriority(a);
     const bPriority = getNodeTypePriority(b);
     if (aPriority !== bPriority) return aPriority - bPriority;
+
+    // Sort by color (groups same-colored nodes together)
+    const aColor = getNodeColor(a);
+    const bColor = getNodeColor(b);
+    if (aColor !== bColor) return aColor.localeCompare(bColor);
 
     // Then by content
     return getNodeSortKey(a).localeCompare(getNodeSortKey(b));

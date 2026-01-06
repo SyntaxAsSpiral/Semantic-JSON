@@ -127,14 +127,19 @@ Nodes are reordered **hierarchically** based on spatial containment:
 
 Nodes at the same x,y position are sorted by:
 1. **Node type priority**: Link nodes always sort to bottom (like footnotes), content nodes (text/file/group) sort first
-2. **Content**: Within each type, sorted alphabetically by semantic content:
+2. **Color**: Nodes with same color group together (preserves visual semantic categories)
+   - Uncolored nodes appear first
+   - Colored nodes sort alphabetically by color value (hex or preset number)
+3. **Content**: Within each color group, sorted alphabetically by semantic content:
    - **Text nodes**: sorted by text content
    - **File nodes**: sorted by file path
    - **Link nodes**: sorted by raw URL (preserves protocol)
    - **Group nodes**: sorted by label
    - Falls back to node ID if no content available
 
-**Rationale**: Link nodes function as references/citations, so they appear after primary content like footnotes in a document.
+**Rationale**:
+- Link nodes function as references/citations, so appear after primary content like footnotes
+- Color grouping preserves visual taxonomy (e.g., red = urgent, blue = reference, yellow = in-progress)
 
 **Containment detection**: A node is contained by a group if its bounding box (x, y, width, height) falls entirely within the group's bounding box. For overlapping groups, the smallest containing group is chosen.
 

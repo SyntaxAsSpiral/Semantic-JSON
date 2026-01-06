@@ -6,8 +6,8 @@
       "text": "This node should be first if the .canvas has been ordered semantically. Making any changes within a standard vault will scramble these entries.",
       "x": -300,
       "y": -440,
-      "width": 250,
-      "height": 60
+      "width": 810,
+      "height": 80
     },
     {
       "id": "92bf93c3d9aa7318",
@@ -143,6 +143,42 @@
       "y": 80,
       "width": 250,
       "height": 60
+    },
+    {
+      "id": "50c34165b4456059",
+      "type": "group",
+      "x": -320,
+      "y": 240,
+      "width": 860,
+      "height": 400,
+      "label": "This concludes the test"
+    },
+    {
+      "id": "d28a8a5fed846ae6",
+      "type": "text",
+      "text": "See specification doc for complete details.",
+      "x": -300,
+      "y": 280,
+      "width": 250,
+      "height": 80
+    },
+    {
+      "id": "7039c9a8ce8430b7",
+      "type": "text",
+      "text": "This has been a test of the semantic JSON compilation protocol. If the test was successful, this should be the node. ",
+      "x": 260,
+      "y": 280,
+      "width": 260,
+      "height": 160
+    },
+    {
+      "id": "3f6fc8b44b0160a8",
+      "type": "link",
+      "url": "https://github.com/SyntaxAsSpiral/semantic-json/blob/main/semantic-json-spec.md",
+      "x": -20,
+      "y": 360,
+      "width": 240,
+      "height": 260
     }
   ],
   "edges": [
@@ -152,7 +188,8 @@
       "fromSide": "right",
       "toNode": "f4893c32e294e83b",
       "toSide": "left",
-      "toEnd": "none"
+      "toEnd": "none",
+      "color": "4"
     },
     {
       "id": "2612379941eb00e5",
@@ -160,7 +197,8 @@
       "fromSide": "bottom",
       "toNode": "58340fd7c10a8123",
       "toSide": "top",
-      "toEnd": "none"
+      "toEnd": "none",
+      "color": "5"
     },
     {
       "id": "7b07f3413f647bdd",
@@ -168,7 +206,8 @@
       "fromSide": "right",
       "toNode": "81a15da3c492c8d3",
       "toSide": "left",
-      "toEnd": "none"
+      "toEnd": "none",
+      "color": "4"
     },
     {
       "id": "63de22405a465a17",
@@ -241,6 +280,22 @@
       "toNode": "4932cd26f4647c03",
       "toSide": "left",
       "toEnd": "none"
+    },
+    {
+      "id": "32314f97ef0853ff",
+      "fromNode": "d28a8a5fed846ae6",
+      "fromSide": "right",
+      "toNode": "3f6fc8b44b0160a8",
+      "toSide": "left",
+      "label": "more info\n"
+    },
+    {
+      "id": "3f3b87a7affe38e0",
+      "fromNode": "3f6fc8b44b0160a8",
+      "fromSide": "right",
+      "toNode": "7039c9a8ce8430b7",
+      "toSide": "left",
+      "label": "fin"
     }
   ]
 }
