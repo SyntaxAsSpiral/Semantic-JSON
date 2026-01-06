@@ -15,7 +15,7 @@ Obsidian's default handling of the JSON array in Canvas files incidentally disca
 - 🎨 **Color** (node/edge colors) → Semantic taxonomy (red=urgent, blue=reference, etc.)
 - ➡️ **Directionality** (arrow endpoints) → Information flow topology (source → sink)
 
-### **Enhancing collaboration** between human and machine intelligence.
+### This greatly **enhances collaboration** between human and machine intelligence.
 
 - **JSON Canvas** format becomes a *lingua franca* for the shared visuospatial grammar that people and AI already use natively.
 - **Obsidian Canvas** becomes a full *WYSIWYG* authoring tool for this richly contextual JSON format.
