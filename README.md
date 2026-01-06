@@ -8,7 +8,7 @@
 
 ## Why This Plugin?
 
-By default, Obsidian "scrambles" the z-index array on every save, losing the spatial and structural meaning that Canvas format is designed to capture. This plugin recompiles the canvas, encoding visual intent into stable, deterministic JSON across four dimensions:
+By default, Obsidian "scrambles" the z-index array on every save, losing the spatial and structural meaning that Canvas format is designed to capture. This plugin recompiles the canvas, encoding visual semantics into stable, deterministic JSON across four dimensions:
 
 - **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - **Containment** (bounding boxes) → Hierarchical structure (groups + children)
