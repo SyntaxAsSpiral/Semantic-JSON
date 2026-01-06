@@ -17,7 +17,7 @@ By default, Obsidian "scrambles" the JSON array on every save, discarding richly
 
 **Benefits:**
 
-  - 🔄 **Shared generative grammar**: Humans compose spatially, AI composes semantically, canvas renders identically
+  - 🔄 **Shared generative grammar**: Humans compose JSON intuitively, AI composes semantically, canvas renders identically
   - 🤝 **Bidirectional authoring**: Template anything in canvas. AI generates novel, semantically valid JSON, structures render instantly.
   - ✅ **Clean diffs + stable semantics**: Git tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback
 
