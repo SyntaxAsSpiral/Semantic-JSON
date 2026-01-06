@@ -20,9 +20,9 @@ By default, Obsidian "scrambles" the JSON array in Canvas files on every save, d
 - **JSON Canvas** format becomes a *lingua franca* for the shared visuospatial grammar that people and AI already use natively.
 - **Obsidian Canvas** becomes an intuitive *WYSIWYG* authoring tool for this richly contextual JSON format, enhancing collaboration between human and machine intelligence.
 
-## ⚡ Features
+## ⚡Features
 
-- **Auto-compile on save**: Canvas files organize themselves deterministically instead of scrambling
+- **Auto-compile on save**: Canvas files arrange their contents deterministically instead of scrambling
 - **Intuitive JSON Editing**: Watch your no-code JSON structures self-assemble in real-time IDE
 - **Bidirectional Canvas ⇄ JSON compilation:** import structure, author visually, export semantics
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback.
