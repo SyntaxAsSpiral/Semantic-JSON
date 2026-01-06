@@ -15,11 +15,10 @@ By default, Obsidian "scrambles" the JSON array of Canvas files on every save, d
 - 🎨 **Color** (node/edge colors) → Semantic taxonomy (red=urgent, blue=reference, etc.)
 - ➡️ **Directionality** (arrow endpoints) → Information flow topology (source → sink)
 
-**Benefits:**
+### Benefits
 
-- 💬 JSON becomes **lingua franca** for the shared visuospatial grammar humans and LLMS already use intuitively as subtext for meaning.
-- 🤝 Easily template any structure you can imagine or have AI create semantically novel structures, all in valid JSON that renders instantly.
-- ✅ Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see immediate visual feedback.
+- 🤝 Obsidian Canvas becomes a more intuitive JSON editor for both human and AI authors and readers.
+- 💬 JSON Canvas becomes **lingua franca** for the shared visuospatial grammar humans and AI already use intuitively as subtext for meaning. 
 
 ## ⚡ Features
 
@@ -27,6 +26,7 @@ By default, Obsidian "scrambles" the JSON array of Canvas files on every save, d
 - **Intuitive JSON Editing**: Watch your no-code JSON structures self-assemble in real-time IDE
 - **CLI tool**: Included for batch processing or CI pipelines
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
+- **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback.
 
 ## 📥 Installation
 
