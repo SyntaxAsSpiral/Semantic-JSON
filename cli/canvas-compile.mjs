@@ -9,8 +9,10 @@ function usage(message) {
     [
       'Usage:',
       '  node cli/canvas-compile.mjs --in <path-to-.canvas> [--out <path-to-.json>] [options]',
+      '  node cli/canvas-compile.mjs --from-json <path-to-.json> [--out <path-to-.canvas>]',
       '',
       'Options:',
+      '  --from-json           Import JSON to Canvas (create visual scaffolding)',
       '  --color-nodes         Enable color-based node sorting (default: true)',
       '  --no-color-nodes      Disable color-based node sorting',
       '  --color-edges         Enable color-based edge sorting (default: true)',
@@ -18,13 +20,17 @@ function usage(message) {
       '  --flow-sort           Enable directional flow topology sorting (default: false)',
       '  --no-flow-sort        Disable flow topology sorting',
       '  --strip-metadata      Strip Canvas metadata to export pure data structure',
+      '  --strip-edges-when-flow-sorted    Strip edges from pure JSON when flow-sorted (default: true)',
+      '  --no-strip-edges-when-flow-sorted Preserve edges even when flow-sorted',
       '',
       'Behavior:',
-      '  - Reads a JSON Canvas 1.0 file (.canvas)',
-      '  - Compiles to semantic JSON via visuospatial encoding',
+      '  - Reads a JSON Canvas 1.0 file (.canvas) or JSON file (.json)',
+      '  - With --from-json: creates Canvas scaffolding (objects/arrays → groups, primitives → text nodes)',
+      '  - Without --from-json: compiles to semantic JSON via visuospatial encoding',
       '  - Encodes 4 visual dimensions: position, containment, color, directionality',
-      '  - Outputs to specified path or <input-stem>.json in same directory',
+      '  - Outputs to specified path or <input-stem>.json/.canvas in same directory',
       '  - With --strip-metadata: removes spatial/visual fields, exports pure data artifact',
+      '  - With --flow-sort + --strip-edges-when-flow-sorted: edges compiled into sequence order and stripped',
       '',
       'Visuospatial encoding:',
       '  - Position (x, y) → Linear reading sequence',
@@ -41,12 +47,17 @@ function parseArgs(argv) {
     colorEdges: true,
     flowSort: false,
     stripMetadata: false,
+    stripEdgesWhenFlowSorted: true,
   };
 
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--in') {
       args.in = argv[++i];
+      continue;
+    }
+    if (a === '--from-json') {
+      args.fromJson = argv[++i];
       continue;
     }
     if (a === '--out') {
@@ -79,6 +90,14 @@ function parseArgs(argv) {
     }
     if (a === '--strip-metadata') {
       args.stripMetadata = true;
+      continue;
+    }
+    if (a === '--strip-edges-when-flow-sorted') {
+      args.stripEdgesWhenFlowSorted = true;
+      continue;
+    }
+    if (a === '--no-strip-edges-when-flow-sorted') {
+      args.stripEdgesWhenFlowSorted = false;
       continue;
     }
     if (a === '--help' || a === '-h') {
@@ -702,8 +721,9 @@ export function compileCanvasAll({ input, settings }) {
  * Strip Canvas metadata from compiled structure to produce pure data artifact.
  * Removes spatial (x, y, width, height), visual (color), and rendering metadata.
  * Preserves semantic content: id, text, file, url, label for nodes; id, fromNode, toNode, label for edges.
+ * Optionally strips edges when flow-sorted (topology compiled into sequence order).
  */
-function stripCanvasMetadata(input) {
+function stripCanvasMetadata(input, settings) {
   const nodes = Array.isArray(input?.nodes) ? input.nodes.map(node => {
     const stripped = { id: node.id, type: node.type };
 
@@ -716,7 +736,10 @@ function stripCanvasMetadata(input) {
     return stripped;
   }) : [];
 
-  const edges = Array.isArray(input?.edges) ? input.edges.map(edge => {
+  // Strip edges when flow topology is compiled into node sequence order
+  const shouldStripEdges = settings?.flowSort && settings?.stripEdgesWhenFlowSorted;
+
+  const edges = shouldStripEdges ? [] : Array.isArray(input?.edges) ? input.edges.map(edge => {
     const stripped = {
       id: edge.id,
       fromNode: edge.fromNode,
@@ -734,6 +757,128 @@ function stripCanvasMetadata(input) {
   return { nodes, edges };
 }
 
+/**
+ * Import JSON data to Canvas structure.
+ * Creates visual scaffolding: objects/arrays → groups, primitives → text nodes.
+ * Simple vertical layout, zero edges (no implied causality).
+ */
+function importJsonToCanvas(data) {
+  const nodes = [];
+  let idCounter = 0;
+  const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
+
+  function traverse(value, key, context) {
+    const nodeId = generateId();
+    const nodeX = context.x;
+    const nodeY = context.y;
+
+    if (value === null || value === undefined) {
+      // Null/undefined → text node
+      const label = key !== null ? `${String(key)}: null` : 'null';
+      nodes.push({
+        id: nodeId,
+        type: 'text',
+        text: label,
+        x: nodeX,
+        y: nodeY,
+        width: 250,
+        height: 60,
+      });
+      context.y += 80;
+    } else if (typeof value === 'object' && !Array.isArray(value)) {
+      // Object → group
+      const label = key !== null ? String(key) : 'root';
+      const groupId = nodeId;
+      const childContext = { x: nodeX + 20, y: nodeY + 80 };
+
+      // Traverse children
+      const entries = Object.entries(value);
+      for (const [k, v] of entries) {
+        traverse(v, k, childContext);
+      }
+
+      // Create group wrapping children
+      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      nodes.push({
+        id: groupId,
+        type: 'group',
+        label,
+        x: nodeX,
+        y: nodeY,
+        width: 600,
+        height: groupHeight,
+      });
+
+      context.y = childContext.y;
+    } else if (Array.isArray(value)) {
+      // Array → group
+      const label = key !== null ? String(key) : 'array';
+      const groupId = nodeId;
+      const childContext = { x: nodeX + 20, y: nodeY + 80 };
+
+      // Traverse array items
+      for (let i = 0; i < value.length; i++) {
+        traverse(value[i], i, childContext);
+      }
+
+      // Create group wrapping children
+      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      nodes.push({
+        id: groupId,
+        type: 'group',
+        label,
+        x: nodeX,
+        y: nodeY,
+        width: 600,
+        height: groupHeight,
+      });
+
+      context.y = childContext.y;
+    } else {
+      // Primitive → text node
+      const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
+      const label = key !== null ? `${String(key)}: ${valueStr}` : valueStr;
+      nodes.push({
+        id: nodeId,
+        type: 'text',
+        text: label,
+        x: nodeX,
+        y: nodeY,
+        width: 250,
+        height: 60,
+      });
+      context.y += 80;
+    }
+  }
+
+  const rootContext = { x: 0, y: 0 };
+  traverse(data, null, rootContext);
+
+  return { nodes, edges: [] };
+}
+
+export function importJsonFile({ inPath, outPath }) {
+  const absIn = path.resolve(String(inPath ?? '').trim());
+  const input = readJson(absIn);
+  const stem = path.basename(absIn).replace(/\.json$/i, '');
+
+  // Default output to same directory as input
+  const absOut = String(outPath ?? '').trim() || path.resolve(path.dirname(absIn), `${stem}.canvas`);
+
+  // Import JSON to Canvas
+  const canvas = importJsonToCanvas(input);
+  const serialized = JSON.stringify(canvas, null, 2) + '\n';
+
+  fs.writeFileSync(absOut, serialized, 'utf8');
+
+  return {
+    inPath: absIn,
+    outPath: absOut,
+    nodesOut: canvas.nodes.length,
+    edgesOut: canvas.edges.length,
+  };
+}
+
 export function compileCanvasFile({ inPath, outPath, settings }) {
   const absIn = path.resolve(String(inPath ?? '').trim());
   const input = readJson(absIn);
@@ -747,7 +892,7 @@ export function compileCanvasFile({ inPath, outPath, settings }) {
 
   // Strip Canvas metadata if requested
   if (settings?.stripMetadata) {
-    out = stripCanvasMetadata(out);
+    out = stripCanvasMetadata(out, settings);
   }
 
   const serialized = JSON.stringify(out, null, 2) + '\n';
@@ -778,9 +923,23 @@ async function main() {
     return;
   }
 
+  // Import mode: --from-json
+  if (args.fromJson) {
+    const fromJsonPath = String(args.fromJson).trim();
+    if (!fromJsonPath) {
+      usage('missing value for --from-json');
+      process.exit(2);
+      return;
+    }
+    const res = importJsonFile({ inPath: fromJsonPath, outPath: args.out });
+    process.stdout.write(JSON.stringify(res, null, 2) + '\n');
+    return;
+  }
+
+  // Compile mode: --in
   const inPath = String(args.in ?? '').trim();
   if (!inPath) {
-    usage('missing required --in');
+    usage('missing required --in or --from-json');
     process.exit(2);
     return;
   }
@@ -790,6 +949,8 @@ async function main() {
     colorSortEdges: args.colorEdges,
     flowSortNodes: args.flowSort,
     stripMetadata: args.stripMetadata,
+    flowSort: args.flowSort,
+    stripEdgesWhenFlowSorted: args.stripEdgesWhenFlowSorted,
   };
 
   const res = compileCanvasFile({ inPath, outPath: args.out, settings });

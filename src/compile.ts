@@ -534,8 +534,9 @@ export function compileCanvasAll({ input, settings }: { input: CanvasData; setti
  * Strip Canvas metadata from compiled structure to produce pure data artifact.
  * Removes spatial (x, y, width, height), visual (color), and rendering metadata.
  * Preserves semantic content: id, text, file, url, label for nodes; id, fromNode, toNode, label for edges.
+ * Optionally strips edges when flow-sorted (topology compiled into sequence order).
  */
-export function stripCanvasMetadata(input: CanvasData): CanvasData {
+export function stripCanvasMetadata(input: CanvasData, settings?: CompileSettings & { stripEdgesWhenFlowSorted?: boolean }): CanvasData {
   const nodes = Array.isArray(input?.nodes) ? input.nodes.map(node => {
     const stripped: CanvasNode = { id: node.id, type: node.type };
 
@@ -548,7 +549,10 @@ export function stripCanvasMetadata(input: CanvasData): CanvasData {
     return stripped;
   }) : [];
 
-  const edges = Array.isArray(input?.edges) ? input.edges.map(edge => {
+  // Strip edges when flow topology is compiled into node sequence order
+  const shouldStripEdges = settings?.flowSortNodes && settings?.stripEdgesWhenFlowSorted;
+
+  const edges = shouldStripEdges ? [] : Array.isArray(input?.edges) ? input.edges.map(edge => {
     const stripped: CanvasEdge = {
       id: edge.id,
       fromNode: edge.fromNode,
@@ -564,6 +568,112 @@ export function stripCanvasMetadata(input: CanvasData): CanvasData {
   }) : [];
 
   return { nodes, edges };
+}
+
+/**
+ * Import JSON data to Canvas structure.
+ * Creates visual scaffolding: objects/arrays → groups, primitives → text nodes.
+ * Simple vertical layout, zero edges (no implied causality).
+ */
+export function importJsonToCanvas(data: unknown): CanvasData {
+  const nodes: CanvasNode[] = [];
+  let idCounter = 0;
+  const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
+
+  interface LayoutContext {
+    x: number;
+    y: number;
+  }
+
+  function traverse(value: unknown, key: string | number | null, context: LayoutContext): void {
+    const nodeId = generateId();
+    const nodeX = context.x;
+    const nodeY = context.y;
+
+    if (value === null || value === undefined) {
+      // Null/undefined → text node
+      const label = key !== null ? `${String(key)}: null` : 'null';
+      nodes.push({
+        id: nodeId,
+        type: 'text',
+        text: label,
+        x: nodeX,
+        y: nodeY,
+        width: 250,
+        height: 60,
+      });
+      context.y += 80;
+    } else if (typeof value === 'object' && !Array.isArray(value)) {
+      // Object → group
+      const label = key !== null ? String(key) : 'root';
+      const groupId = nodeId;
+      const childContext: LayoutContext = { x: nodeX + 20, y: nodeY + 80 };
+      const childStartY = childContext.y;
+
+      // Traverse children
+      const entries = Object.entries(value);
+      for (const [k, v] of entries) {
+        traverse(v, k, childContext);
+      }
+
+      // Create group wrapping children
+      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      nodes.push({
+        id: groupId,
+        type: 'group',
+        label,
+        x: nodeX,
+        y: nodeY,
+        width: 600,
+        height: groupHeight,
+      });
+
+      context.y = childContext.y;
+    } else if (Array.isArray(value)) {
+      // Array → group
+      const label = key !== null ? String(key) : 'array';
+      const groupId = nodeId;
+      const childContext: LayoutContext = { x: nodeX + 20, y: nodeY + 80 };
+
+      // Traverse array items
+      for (let i = 0; i < value.length; i++) {
+        traverse(value[i], i, childContext);
+      }
+
+      // Create group wrapping children
+      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      nodes.push({
+        id: groupId,
+        type: 'group',
+        label,
+        x: nodeX,
+        y: nodeY,
+        width: 600,
+        height: groupHeight,
+      });
+
+      context.y = childContext.y;
+    } else {
+      // Primitive → text node
+      const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
+      const label = key !== null ? `${String(key)}: ${valueStr}` : valueStr;
+      nodes.push({
+        id: nodeId,
+        type: 'text',
+        text: label,
+        x: nodeX,
+        y: nodeY,
+        width: 250,
+        height: 60,
+      });
+      context.y += 80;
+    }
+  }
+
+  const rootContext: LayoutContext = { x: 0, y: 0 };
+  traverse(data, null, rootContext);
+
+  return { nodes, edges: [] };
 }
 
 function isContainedBy(node: CanvasNode, group: CanvasNode): boolean {

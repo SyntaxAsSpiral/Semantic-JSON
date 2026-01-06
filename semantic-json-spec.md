@@ -241,6 +241,40 @@ The following sorting options can be configured in plugin settings:
 - **Color sort nodes** (default: enabled): Group nodes by color within same position
 - **Color sort edges** (default: enabled): Group edges by color within same topology
 - **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
+- **Strip edges from pure JSON when flow-sorted** (default: enabled): Remove edges from pure JSON exports when flow topology is compiled into node sequence order
+
+### Pure JSON Export
+
+The **"Export as pure JSON"** command strips Canvas-specific metadata to produce clean data artifacts while preserving compiled semantic structure.
+
+**Stripped fields:**
+- Spatial metadata: `x`, `y`, `width`, `height`
+- Visual metadata: `color`, `fromSide`, `toSide`, `toEnd`, `fromEnd`
+- Rendering metadata: `background`, `backgroundStyle`
+
+**Preserved fields:**
+- Node structure: `id`, `type`, `text`, `file`, `url`, `label`
+- Graph topology: `edges` array with `id`, `fromNode`, `toNode`, `label`
+- Compiled ordering: Hierarchical and flow-based sequence
+
+**Edge stripping behavior:**
+
+When **flow sorting is enabled** AND **strip edges when flow-sorted** is enabled (default):
+- Edges are automatically removed from pure JSON exports
+- Edge topology is **compiled into node sequence order**
+- The directed graph becomes a sequential narrative
+- Relationships are implicit in array position (nodes appear in execution/dependency order)
+
+When **flow sorting is disabled** OR **strip edges when flow-sorted** is disabled:
+- Edges are preserved in pure JSON exports
+- Graph topology remains explicit
+- Relationships require edges array for interpretation
+
+**Rationale:** When flow sorting compiles edge topology into node sequence order, edges become presentation scaffolding—their semantic meaning (source → intermediate → sink) is already encoded in the linear array position. Stripping edges produces minimal data artifacts where relationships are implicit in ordering rather than explicit in graph structure.
+
+**Use cases:**
+- Flow-sorted exports: Sequential workflows, execution plans, dependency lists (edges stripped by default)
+- Spatial exports: Knowledge graphs, network diagrams, relationship maps (edges preserved by default)
 
 ### Validation Rules
 

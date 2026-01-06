@@ -1,5 +1,5 @@
 import { Notice, Plugin, TFile } from 'obsidian';
-import { compileCanvasAll, stripCanvasMetadata } from './compile';
+import { compileCanvasAll, stripCanvasMetadata, importJsonToCanvas } from './compile';
 import {
   DEFAULT_SETTINGS,
   SemanticJsonSettingTab,
@@ -24,6 +24,12 @@ export default class SemanticJsonPlugin extends Plugin {
       id: 'export-as-pure-json',
       name: 'Export as pure JSON',
       callback: () => void this.exportAsPureJson(),
+    });
+
+    this.addCommand({
+      id: 'import-json-to-canvas',
+      name: 'Import JSON to Canvas',
+      callback: () => void this.importJsonToCanvas(),
     });
 
     this.registerEvent(
@@ -74,7 +80,10 @@ export default class SemanticJsonPlugin extends Plugin {
       });
 
       // Strip Canvas metadata
-      const stripped = stripCanvasMetadata(compiled);
+      const stripped = stripCanvasMetadata(compiled, {
+        flowSortNodes: this.settings.flowSortNodes,
+        stripEdgesWhenFlowSorted: this.settings.stripEdgesWhenFlowSorted,
+      });
       const serialized = JSON.stringify(stripped, null, 2) + '\n';
 
       // Create .pure.json filename
@@ -93,6 +102,41 @@ export default class SemanticJsonPlugin extends Plugin {
       console.error(error);
       new Notice(
         `Export failed${error instanceof Error ? `: ${error.message}` : ''}`
+      );
+    }
+  }
+
+  async importJsonToCanvas() {
+    const file = this.app.workspace.getActiveFile();
+    if (!file || file.extension !== 'json') {
+      new Notice('No active JSON file');
+      return;
+    }
+
+    try {
+      const raw = await this.app.vault.read(file);
+      const parsed = JSON.parse(raw);
+
+      // Import JSON to Canvas structure
+      const canvas = importJsonToCanvas(parsed);
+      const serialized = JSON.stringify(canvas, null, 2) + '\n';
+
+      // Create .canvas filename
+      const canvasPath = file.path.replace(/\.json$/, '.canvas');
+
+      // Check if file exists
+      const existingFile = this.app.vault.getAbstractFileByPath(canvasPath);
+      if (existingFile instanceof TFile) {
+        await this.app.vault.modify(existingFile, serialized);
+      } else {
+        await this.app.vault.create(canvasPath, serialized);
+      }
+
+      new Notice(`Imported to ${canvasPath}`);
+    } catch (error) {
+      console.error(error);
+      new Notice(
+        `Import failed${error instanceof Error ? `: ${error.message}` : ''}`
       );
     }
   }

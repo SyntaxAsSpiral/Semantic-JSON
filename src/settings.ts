@@ -6,6 +6,7 @@ export interface SemanticJsonSettings {
   colorSortNodes: boolean;
   colorSortEdges: boolean;
   flowSortNodes: boolean;
+  stripEdgesWhenFlowSorted: boolean;
 }
 
 export const DEFAULT_SETTINGS: SemanticJsonSettings = {
@@ -13,6 +14,7 @@ export const DEFAULT_SETTINGS: SemanticJsonSettings = {
   colorSortNodes: true,
   colorSortEdges: true,
   flowSortNodes: false,
+  stripEdgesWhenFlowSorted: true,
 };
 
 export class SemanticJsonSettingTab extends PluginSettingTab {
@@ -79,6 +81,22 @@ export class SemanticJsonSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.flowSortNodes)
           .onChange(async (value) => {
             this.plugin.settings.flowSortNodes = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName('Export')
+      .setHeading();
+
+    new Setting(containerEl)
+      .setName('Strip edges from pure JSON when flow-sorted')
+      .setDesc('Flow topology is compiled into node sequence order. Edges become redundant and can be safely removed from pure JSON exports.')
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.stripEdgesWhenFlowSorted)
+          .onChange(async (value) => {
+            this.plugin.settings.stripEdgesWhenFlowSorted = value;
             await this.plugin.saveSettings();
           })
       );
