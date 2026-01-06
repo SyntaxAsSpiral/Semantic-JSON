@@ -24,11 +24,7 @@ By default, Obsidian "scrambles" the JSON array on every save, discarding richly
 ## ⚡ Features
 
 - **Auto-compile on save**: Seamless workflow—canvas files automatically reorder when saved
-- **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
-- **Content-based sorting**: Nodes sort by semantic content (text/file path/URL/label) instead of random IDs
-- **Color taxonomy**: Optional color grouping preserves visual categories (enabled by default)
-- **Flow topology sorting**: Optional directional flow analysis—arrows define execution order, transforming spatial diagrams into sequential narratives (disabled by default)
-- **Topology-based edge sorting**: Edges ordered by connected node positions (or flow depth when flow sorting enabled)
+- **Intuitive JSON Editing**: Watch your no-code JSON structures self-assemble in real-time IDE
 - **CLI tool**: Included for batch processing or CI pipelines
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
 
@@ -52,7 +48,7 @@ By default, Obsidian "scrambles" the JSON array on every save, discarding richly
 
 ### Commands (via Command Palette)
 
-- **"Compile active canvas"**: Reorders the `.canvas` file in-place (no visual changes in UI, no extra files)
+- **"Compile active canvas"**: Recompiles the `.canvas` file in-place (no visual changes in UI, no extra files)
 - **"Export canvas to JSON"**: Creates a separate `.json` file alongside the `.canvas`
 
 ### Settings
@@ -64,7 +60,7 @@ By default, Obsidian "scrambles" the JSON array on every save, discarding richly
 
 ## 💻 Standalone CLI Tool
 
-Full feature parity with the plugin—enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
+Enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
 
 ```bash
 # Basic usage (creates .json alongside .canvas)
@@ -83,36 +79,19 @@ node cli/canvas-compile.mjs --in file.canvas --out file.canvas
 
 Full technical specification available in [`semantic-json-spec.md`](./semantic-json-spec.md).
 
-### Compilation Ordering
+### Compilation Process
 
-**Nodes** are reordered hierarchically based on spatial containment:
-1. Root orphan nodes (not contained by groups)
-2. Root groups, immediately followed by their contents (depth-first)
-3. Nested groups follow the same pattern recursively
-
-**Within each scope**, nodes are sorted by (when flow sorting disabled):
-- Spatial position (y, x)
-- Node type priority (link nodes to bottom like footnotes)
-- Color (optional, groups same-colored nodes)
-- Content (text/file path/URL/label instead of random IDs)
-
-**When flow sorting enabled:**
-- Directional edges create conceptual flow groups
-- Nodes sort by topological order (source → intermediate → sink)
-- Flow depth overrides type priority—link nodes stay in flow order
-- Isolated nodes use standard spatial sorting
-
-**Edges** are sorted by:
-- `fromNode` position (y, x) or flow depth
-- `toNode` position (y, x) or flow depth
-- Color (optional, groups same-colored edges)
-- Edge ID (fallback for determinism)
+- **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
+- **Content-based sorting**: Nodes sort by semantic content (text/file path/URL/label) instead of random IDs
+- **Color taxonomy**: Optional color grouping preserves visual categories (enabled by default)
+- **Flow topology sorting**: Optional directional flow analysis—arrows define execution order, transforming spatial diagrams into sequential narratives (disabled by default)
+- **Topology-based edge sorting**: Edges ordered by connected node positions (or flow depth when flow sorting enabled)
 
 This transforms spatial diagrams into linear narratives that preserve visual semantics, making flow diagrams, system architectures, and knowledge graphs immediately legible to LLMs without spatial reconstruction.
 
 ## 🧪 Examples
 
-See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test. The test card is pre-sorted in the repo, so opening it in Obsidian and saving will scramble it—demonstrating exactly what this plugin fixes.
+See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test. The test card is pre-sorted in the repo, so opening it in Obsidian and saving will scramble—demonstrating exactly what this plugin fixes.
 
 ## Development
 
