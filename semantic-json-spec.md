@@ -297,4 +297,4 @@ Compiled output uses stable JSON formatting:
 This format is optimized for:
 - **Git diffs**: Minimal line changes, easy to review
 - **LLM ingestion**: Token-efficient, semantically ordered
-- **Human readability**: Consistent structure, predictable layout
+- **Human readability**: Consistent structure, predictable layout, real-time feedback
