@@ -23,7 +23,7 @@ Obsidian's default handling of the JSON array in Canvas files incidentally disca
 ## ⚡Features
 
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
-- **Intuitive JSON Editing**: Watch your no-code JSON structures self-assemble in real-time IDE
+- **Intuitive JSON**: Watch your no-code JSON structures self-assemble in real-time IDE
 - **Bidirectional Canvas ⇄ JSON compilation:** import structure, author visually, export semantics
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
 - **CLI tool**: Included for batch processing or CI pipelines
