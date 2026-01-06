@@ -1,6 +1,6 @@
 # ◈ Semantic JSON
 
-Semantic JSON is a deterministic compiler that preserves the visual semantics of JSON Canvas files as stable, machine-legible structure.
+Semantic JSON is a deterministic compiler that preserves the spatial and visual meaning of JSON Canvas files as stable, machine-legible structure.
 
 ## What is JSON Canvas?
 
