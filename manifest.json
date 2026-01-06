@@ -3,7 +3,7 @@
   "name": "Semantic JSON",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
-  "description": "JSON Canvas adds 4 visuospatial primitives to the JSON format. Semantic JSON makes them grammatical for human visual authoring and AI semantic generation by compiling Canvas files into deterministic, semantically legible JSON for agentic workflows and human–AI collaboration.",
+  "description": "JSON Canvas adds 4 visuospatial primitives to the JSON format. Semantic JSON makes them grammatical for human visual authoring and AI generation by compiling Canvas files into deterministic, semantically legible JSON for agentic workflows and human–AI collaboration.",
   "author": "Zach Battin",
   "isDesktopOnly": true
 }
