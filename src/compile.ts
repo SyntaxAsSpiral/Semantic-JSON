@@ -608,7 +608,6 @@ export function importJsonToCanvas(data: unknown): CanvasData {
       const label = key !== null ? String(key) : 'root';
       const groupId = nodeId;
       const childContext: LayoutContext = { x: nodeX + 20, y: nodeY + 80 };
-      const childStartY = childContext.y;
 
       // Traverse children
       const entries = Object.entries(value);

@@ -28,7 +28,7 @@ export default class SemanticJsonPlugin extends Plugin {
 
     this.addCommand({
       id: 'import-json-to-canvas',
-      name: 'Import JSON to Canvas',
+      name: 'Import JSON to canvas',
       callback: () => void this.importJsonToCanvas(),
     });
 
