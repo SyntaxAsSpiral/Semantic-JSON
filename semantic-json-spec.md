@@ -261,7 +261,7 @@ Specific values for the preset colors are intentionally not defined so that appl
 
 ## Semantic JSON Compilation
 
-Semantic JSON extends the base JSON Canvas spec with **compiled ordering** of the z-index array for stable, deterministic serialization. This enables:
+Semantic JSON extends the base JSON Canvas spec with intelligently **compiled ordering** of the z-index array for stable, deterministic serialization. This enables:
 - Stable diffs for version control
 - Predictable LLM ingestion
 - Visuospatial encoding (visual field semantics → logical order)
