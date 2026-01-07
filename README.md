@@ -11,7 +11,7 @@
 
 ## 🎯 Why this Plugin?
 
-Obsidian's default handling of the JSON array in Canvas files incidentally discards visually encoded meaning, forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as stable, deterministic JSON across four dimensions:
+Obsidian's default handling of the JSON array in Canvas files incidentally discards visually encoded meaning, forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as legible, deterministic JSON across four dimensions:
 
 - 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - 📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
