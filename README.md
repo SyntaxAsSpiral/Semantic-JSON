@@ -11,7 +11,7 @@
 
 ## 🎯 Why this Plugin?
 
-Obsidian's default handling of the JSON array in Canvas files incidentally discards visually encoded meaning, forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as stable, deterministic JSON across four dimensions:
+Obsidian's default handling of the JSON array in Canvas files incidentally discards visually encoded meaning, forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as legible, deterministic JSON across four dimensions:
 
 - 📍 **Position** (x, y) → Linear reading sequence (top-left to bottom-right)
 - 📦 **Containment** (bounding boxes) → Hierarchical structure (groups + children)
@@ -91,11 +91,11 @@ Full technical specification available in [`semantic-json-spec.md`](./semantic-j
 - **Flow topology sorting**: Optional directional flow analysis—arrows define execution order, transforming spatial diagrams into sequential narratives (disabled by default)
 - **Topology-based edge sorting**: Edges ordered by connected node positions (or flow depth when flow sorting enabled)
 
-This transforms spatial diagrams into linear narratives that preserve visual semantics, making flow diagrams, system architectures, and knowledge graphs immediately legible to LLMs without spatial reconstruction.
+This transforms spatial diagrams into linear narratives that preserve visual semantics, making flow diagrams, system architectures, and knowledge graphs immediately legible to readers in JSON without spatial reconstruction.
 
 ## 🧪 Examples
 
-See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test. The test card is pre-sorted in the repo, so opening it in Obsidian and saving will scramble—demonstrating exactly what this plugin fixes.
+See [`examples/conformance-test-card.canvas`](./examples/conformance-test-card.canvas) for a self-documenting test. The test card is pre-sorted in the repo, so opening it in Obsidian and saving will scramble the entries, demonstrating exactly what this plugin fixes.
 
 ## Development
 
