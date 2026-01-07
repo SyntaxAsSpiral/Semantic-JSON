@@ -1,6 +1,6 @@
 # ◈ Semantic JSON
 
-![semantic_json](Pasted%20image%2020260107021526.png)
+![semantic_json](before-after.png)
 
 ## ⚡Features
 
