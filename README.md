@@ -1,7 +1,7 @@
 # ◈ Semantic JSON
 
 ![Before/After diff](examples/before-after.png)
-*Default JSON Canvas vs Semantic JSON - both display exactly the same in Obsidian*
+*Default JSON Canvas vs Semantic JSON - both render exactly the same in Obsidian*
 
 ## ⚡Features
 
