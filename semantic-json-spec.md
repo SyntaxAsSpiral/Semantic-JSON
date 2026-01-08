@@ -144,8 +144,6 @@ Specific values for the preset colors are intentionally not defined so that appl
 
 **Problem:** Obsidian scrambles Canvas JSON on every save, discarding semantic order and randomizing both node positions in the array and field order within objects.
 
-**Solution:** Semantic JSON compiles spatial layout into deterministic order, preserving visual semantics as stable, legible structure.
-
 ### 😵‍💫 Before (Vanilla JSON Canvas)
 
 Real-world example: A Cavapoos information canvas saved in Obsidian.
@@ -175,6 +173,8 @@ Real-world example: A Cavapoos information canvas saved in Obsidian.
 - ❌ Impossible to read as a document—requires mental reconstruction of spatial layout
 - ❌ Git diffs show massive object repositioning on every save
 - ❌ LLMs receive incoherent structure: "Here's appearance... now temperament... oh wait, here's the title at the end"
+
+**Solution:** Semantic JSON compiles spatial layout into deterministic order, preserving visual semantics as stable, legible structure.
 
 ### 🤓 After (Semantic JSON)
 
