@@ -144,7 +144,7 @@ Specific values for the preset colors are intentionally not defined so that appl
 
 ### 😵‍💫 Before (Obsidian's output)
 
-Real-world example: A Cavapoos information canvas saved by Obsidian.
+Real-world example: A Cavapoos information canvas saved in Obsidian.
 
 ```json
 {
