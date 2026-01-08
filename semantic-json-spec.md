@@ -347,9 +347,27 @@ All three layers preserve JSON Canvas spec compliance—no data added, removed, 
 ---
 ### Main Process
 
-### 1)📦+📍  Compiled Node Ordering (Z-INDEX)
+### 1) 📦+📍  Compiled Node Ordering (Z-INDEX)
 
-Nodes are reordered **hierarchically** based on spatial containment:
+#### 👁️‍🗨️ Node Visual Semantics
+
+**Link node placement**: Link nodes function as references/citations, appearing after primary content (like footnotes) when not in a flow group.
+
+**Color taxonomy**: Color grouping (when enabled) preserves visual semantic categories:
+- 🔴 = urgent/error
+- 🟠 = warning
+- 🟡 = in-progress
+- 🟢 = success/complete
+- 🔵 = info/reference
+- 🟣 = special/custom
+
+**Flow topology**: When flow sorting is enabled, directional arrows define information flow, transforming spatial diagrams into linear reading order based on dependency graphs. Workflows and pipelines become sequential narratives.
+
+**Reading order**: Top-left to bottom-right spatial interpretation, depth-first through the containment hierarchy (or topological flow order when flow sorting enabled).
+
+**Hierarchical containment**: Spatial containment (bounding boxes) creates explicit nesting. A node is contained by a group if its bounding box (x, y, width, height) falls entirely within the group's bounding box. For overlapping groups, the smallest containing group is chosen. This makes group structure explicit for linear readers without requiring spatial reconstruction.
+
+**Example order**: `orphan-1` → `group-A` → `group-A-child-1` → `group-A-child-2` → `nested-group-B` → `nested-group-B-child-1` → `group-C` → ...
 
 ```crystal
 # Hierarchical node ordering (depth-first traversal)
@@ -373,7 +391,7 @@ end
 
 This creates depth-first traversal: each group appears immediately followed by all its contents before the next sibling group.
 
-####  💫 Sorting Rules
+#### 💫 Core Sorting Rules
 
 When **flow sorting is disabled** (default), nodes within each scope are sorted by:
 ```crystal
@@ -403,7 +421,7 @@ def content_key(node)
 end
 ```
 
-#### 🔗 Flow Sorting
+####  🔗 Flow Sorting Rules
 
 When **flow sorting is enabled** (optional, disabled by default), nodes within each scope are sorted by:
 
@@ -465,27 +483,23 @@ def sort_isolated_nodes(nodes)
 end
 ```
 
-#### 👁️ Visual Semantics
-
-**Link node placement**: Link nodes function as references/citations, appearing after primary content (like footnotes) when not in a flow group.
-
-**Color taxonomy**: Color grouping (when enabled) preserves visual semantic categories:
-- 🔴 = urgent/error
-- 🟠 = warning
-- 🟡 = in-progress
-- 🟢 = success/complete
-- 🔵 = info/reference
-- 🟣 = special/custom
-
-**Flow topology**: When flow sorting is enabled, directional arrows define information flow, transforming spatial diagrams into linear reading order based on dependency graphs. Workflows and pipelines become sequential narratives.
-
-**Hierarchical containment**: Spatial containment (bounding boxes) creates explicit nesting. A node is contained by a group if its bounding box (x, y, width, height) falls entirely within the group's bounding box. For overlapping groups, the smallest containing group is chosen. This makes group structure explicit for linear readers without requiring spatial reconstruction.
-
-**Example order**: `orphan-1` → `group-A` → `group-A-child-1` → `group-A-child-2` → `nested-group-B` → `nested-group-B-child-1` → `group-C` → ...
-
-**Reading order**: Top-left to bottom-right spatial interpretation, depth-first through the containment hierarchy (or topological flow order when flow sorting enabled).
-
 ### 2)  ↘️ Compiled Edge Ordering
+
+#### 👁️‍🗨️ Edge Visual Semantics
+
+**Spatial topology**: Edges encode directional information flow. They appear in the order a reader would trace them visually (top-to-bottom, left-to-right).
+
+**Color-coded flows**: Edge colors (when enabled) preserve visual flow semantics:
+- 🟢 = success path / horizontal connections
+- 🔴 = error path / critical flow
+- 🔵 = vertical connections / downward flow
+- 🟡 = alternative path / horizontal flow
+- 🟠 = warning path
+- 🟣 = special connections
+
+**Flow inheritance**: When flow sorting is enabled, edges follow the topological order of their connected nodes rather than spatial positions. This transforms flow diagrams, system architectures, and dependency graphs into sequential narratives where edges appear in execution/causation order.
+
+**Example**: In a data pipeline `Extract → Transform → Load`, edges appear as: `Extract→Transform`, `Transform→Load` (sequential flow) rather than random ID order.
 
 When **flow sorting is disabled** (default), edges are sorted by **spatial topology**:
 
@@ -536,22 +550,6 @@ def sort_edges_flow(edges, flow_groups, node_positions)
   end
 end
 ```
-
-#### ➡️ Edge Visual Semantics
-
-**Spatial topology**: Edges encode directional information flow. They appear in the order a reader would trace them visually (top-to-bottom, left-to-right).
-
-**Color-coded flows**: Edge colors (when enabled) preserve visual flow semantics:
-- 🟢 = success path / horizontal connections
-- 🔴 = error path / critical flow
-- 🔵 = vertical connections / downward flow
-- 🟡 = alternative path / horizontal flow
-- 🟠 = warning path
-- 🟣 = special connections
-
-**Flow inheritance**: When flow sorting is enabled, edges follow the topological order of their connected nodes rather than spatial positions. This transforms flow diagrams, system architectures, and dependency graphs into sequential narratives where edges appear in execution/causation order.
-
-**Example**: In a data pipeline `Extract → Transform → Load`, edges appear as: `Extract→Transform`, `Transform→Load` (sequential flow) rather than random ID order.
 
 ## III. 🎮 **Commands & Settings**
 
