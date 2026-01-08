@@ -48,7 +48,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 
 ### Commands (via Command Palette)
 
-- 💫 **"Compile active canvas"**: Recompiles the `.canvas` file in-place preserving semantic structure
+- 🪄 **"Compile active canvas"**: Recompiles the `.canvas` file in-place preserving semantic structure
 - 📥 **"Import JSON to Canvas"**: Creates visual scaffolding from JSON (objects/arrays → groups, primitives → text nodes)
 - 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
