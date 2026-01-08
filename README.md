@@ -52,12 +52,12 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 - 📥 **"Import JSON to Canvas"**: Creates visual scaffolding from JSON (objects/arrays → groups, primitives → text nodes)
 - 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
-### 🎛️ Settings
+### Settings
 
-- **Auto-compile on save** (default: enabled): Automatically reorder canvas files when saved
-- **Color sort nodes** (default: enabled): Group nodes by color within same spatial position
-- **Color sort edges** (default: enabled): Group edges by color within same topology
-- **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
+-🪄 **Auto-compile on save** (default: enabled): Automatically reorder canvas files when saved
+-🎨 **Color sort nodes** (default: enabled): Group nodes by color within same spatial position
+-📲 **Color sort edges** (default: enabled): Group edges by color within same topology
+-🔗 **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
 
 ## Standalone CLI Tool
 
