@@ -44,7 +44,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 3. Reload Obsidian
 4. Enable "Semantic JSON" in Community Plugins settings
 
-## Usage
+## 🎮 Usage
 
 ### Commands (via Command Palette)
 
