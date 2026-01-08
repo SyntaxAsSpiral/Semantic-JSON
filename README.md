@@ -52,7 +52,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 - 📥 **"Import JSON to Canvas"**: Creates visual scaffolding from JSON (objects/arrays → groups, primitives → text nodes)
 - 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
-### Settings
+### 🎛️ Settings
 
 - **Auto-compile on save** (default: enabled): Automatically reorder canvas files when saved
 - **Color sort nodes** (default: enabled): Group nodes by color within same spatial position
@@ -86,7 +86,7 @@ node cli/canvas-compile.mjs --in file.canvas --strip-metadata
 [JSON Canvas](https://jsoncanvas.org/) is an open file format for infinite canvas data, originally developed for Obsidian Canvas. It promotes longevity, readability, interoperability, and extensibility using the `.canvas` extension and a simple JSON structure with nodes and edges. Infinite canvas tools organize information **spatially** like a digital whiteboard.
 
 ### Compilation Process
-[Full technical specification](./semantic-json-spec.md)
+[Full documentation](./semantic-json-spec.md)
 
 - **Hierarchical ordering**: Groups followed immediately by their contents, depth-first traversal
 - **Content-based sorting**: Nodes sort by semantic content (text/file name/URL/label) instead of random IDs
