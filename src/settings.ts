@@ -1,7 +1,7 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import SemanticJsonPlugin from './main';
+import SemanticJsonModernPlugin from './main';
 
-export interface SemanticJsonSettings {
+export interface SemanticJsonModernSettings {
   autoCompile: boolean;
   colorSortNodes: boolean;
   colorSortEdges: boolean;
@@ -9,7 +9,7 @@ export interface SemanticJsonSettings {
   stripEdgesWhenFlowSorted: boolean;
 }
 
-export const DEFAULT_SETTINGS: SemanticJsonSettings = {
+export const DEFAULT_SETTINGS: SemanticJsonModernSettings = {
   autoCompile: true,
   colorSortNodes: true,
   colorSortEdges: true,
@@ -17,10 +17,10 @@ export const DEFAULT_SETTINGS: SemanticJsonSettings = {
   stripEdgesWhenFlowSorted: true,
 };
 
-export class SemanticJsonSettingTab extends PluginSettingTab {
-  plugin: SemanticJsonPlugin;
+export class SemanticJsonModernSettingTab extends PluginSettingTab {
+  plugin: SemanticJsonModernPlugin;
 
-  constructor(app: App, plugin: SemanticJsonPlugin) {
+  constructor(app: App, plugin: SemanticJsonModernPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }

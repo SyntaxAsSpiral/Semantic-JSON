@@ -1,5 +1,6 @@
 node_modules/
 *.map
 main.js
-.rollup.cache/
+dist/
 .DS_Store
+agents.md

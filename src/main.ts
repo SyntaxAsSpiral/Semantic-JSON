@@ -2,17 +2,17 @@ import { Notice, Plugin, TFile } from 'obsidian';
 import { compileCanvasAll, stripCanvasMetadata, importJsonToCanvas } from './compile';
 import {
   DEFAULT_SETTINGS,
-  SemanticJsonSettingTab,
-  SemanticJsonSettings,
+  SemanticJsonModernSettingTab,
+  SemanticJsonModernSettings,
 } from './settings';
 
-export default class SemanticJsonPlugin extends Plugin {
-  settings: SemanticJsonSettings = { ...DEFAULT_SETTINGS };
+export default class SemanticJsonModernPlugin extends Plugin {
+  settings: SemanticJsonModernSettings = { ...DEFAULT_SETTINGS };
   private isCompiling = false;
 
   async onload() {
     await this.loadSettings();
-    this.addSettingTab(new SemanticJsonSettingTab(this.app, this));
+    this.addSettingTab(new SemanticJsonModernSettingTab(this.app, this));
 
     this.addCommand({
       id: 'compile-active-canvas',
