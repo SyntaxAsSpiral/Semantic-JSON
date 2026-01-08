@@ -110,12 +110,8 @@ npm run build  # Production build
 
 ## Contributing
 
-Issues and PRs welcome! Please follow existing code style and include tests for new features.
+Issues and PRs welcome!
 
 ## License
 
 MIT
-
----
-
-**Transforms visual canvases into semantic narratives—reading spatial field as language, compiling visual meaning into linear order.**
