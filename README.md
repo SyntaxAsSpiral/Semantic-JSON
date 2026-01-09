@@ -57,7 +57,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 - 🪄 **Auto-compile on save** (default: enabled): Automatically reorder canvas files when saved
 - 🎨 **Color sort nodes** (default: enabled): Group nodes by color within same spatial position
 - 📲 **Color sort edges** (default: enabled): Group edges by color within same topology
-- 🔗 **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
+- 🔗 **Flow sort nodes** (default: disabled): Group by directional flow topology before spatial position
 - 🏠 **Group orphan nodes** (default: disabled): Group orphan nodes first before sorting spatially
 
 ## Standalone CLI Tool
