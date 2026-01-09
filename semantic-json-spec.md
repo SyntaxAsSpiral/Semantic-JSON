@@ -621,7 +621,7 @@ The **"Export as pure JSON"** command strips Canvas-specific metadata to produce
 
 #### 🔗 Labeled Edge Embedding
 
-**NEW FEATURE:** Labeled edges are automatically embedded into connected nodes as directional `from` and `to` arrays, preserving flow semantics while creating self-contained relationship data.
+Labeled edges are automatically embedded into connected nodes as directional `from` and `to` arrays, preserving flow semantics while creating self-contained relationship data.
 
 **Transformation behavior:**
 
