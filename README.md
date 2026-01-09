@@ -6,7 +6,7 @@
 ## ⚡Features
 
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
-- **Intuitive JSON**: Watch your no-code JSON structures self-assemble in real-time IDE
+- **Intuitive JSON**: Watch your clean data structure self-assemble in real-time IDE
 - **Pure JSON imports ⇄ exports:** import structure to Canvas, author visually, export clean semantic JSON
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
 - **CLI tool**: Included for batch processing or CI pipelines
