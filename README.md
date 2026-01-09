@@ -58,7 +58,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 - 🎨 **Color sort nodes** (default: enabled): Group nodes by color within same spatial position
 - 📲 **Color sort edges** (default: enabled): Group edges by color within same topology
 - 🔗 **Flow sort nodes** (default: disabled): Group nodes by directional flow topology instead of spatial position
-- 🏠 **Semantic sort orphans** (default: disabled): Group orphan nodes at top instead of spatially
+- 🏠 **Semantic sort orphans** (default: disabled): Group orphan nodes first instead of spatial position
 
 ## Standalone CLI Tool
 
