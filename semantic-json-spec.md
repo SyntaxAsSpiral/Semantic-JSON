@@ -484,6 +484,44 @@ def sort_isolated_nodes(nodes)
 end
 ```
 
+#### 🏠 Orphan Node Sorting
+
+**Orphan nodes** are nodes not contained within any group. By default, they sort spatially (by position), but can optionally be grouped and sorted semantically.
+
+**Default behavior** (spatial sorting):
+- Orphans sort by position (y, x coordinates) alongside groups
+- Maintains original Canvas spatial layout
+- Mixed positioning: orphans interspersed with groups based on coordinates
+
+**Semantic orphan sorting** (optional, `--semantic-sort-orphans`):
+- All orphan nodes grouped together at the top of the document
+- Within the orphan group, nodes sort semantically (by content) instead of spatially
+- Groups still sort spatially and appear after orphans
+- Creates clear document structure: orphans → groups → nested content
+
+```crystal
+# Semantic orphan sorting (when enabled)
+
+def sort_orphans_semantically(orphan_nodes)
+  orphan_nodes.sort_by do |node|
+    [
+      node.type_priority,   # content nodes before links
+      node.color,           # optional: group same colors
+      node.content_key      # alphabetical by content
+    ]
+  end
+end
+
+# Document structure with semantic orphan sorting:
+# 1. All orphan nodes (sorted semantically)
+# 2. All root groups (sorted spatially)
+#    - Group children (sorted semantically within groups)
+```
+
+**Use cases:**
+- **Semantic orphan sorting**: When orphans represent metadata, references, or standalone concepts that should be grouped together
+- **Spatial orphan sorting** (default): When orphans are positioned intentionally and should maintain their spatial relationships with groups
+
 ### 2)  ↘️ Compiled Edge Ordering
 
 #### 👁️‍🗨️ Edge Visual Semantics
@@ -563,6 +601,7 @@ The following sorting options can be configured in plugin settings:
 - **Color sort nodes** (default: enabled): Group nodes by color within same position
 - **Color sort edges** (default: enabled): Group edges by color within same topology
 - **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
+- **Semantic sort orphans** (default: disabled): Group orphan nodes at top and sort semantically instead of spatially
 - **Strip edges from pure JSON when flow-sorted** (default: enabled): Remove edges from pure JSON exports when flow topology is compiled into node sequence order
 
 ### 📤 Pure JSON Export
@@ -578,25 +617,92 @@ The **"Export as pure JSON"** command strips Canvas-specific metadata to produce
 - Node structure: `id`, `type`, `text`, `file`, `url`, `label`
 - Graph topology: `edges` array with `id`, `fromNode`, `toNode`, `label`
 - Compiled ordering: Hierarchical and flow-based sequence
+- **Labeled edge relationships**: Embedded directly in nodes via `via` property
+
+#### 🔗 Labeled Edge Embedding
+
+**NEW FEATURE:** Labeled edges are automatically embedded into connected nodes as directional `from` and `to` arrays, preserving flow semantics while creating self-contained relationship data.
+
+**Transformation behavior:**
+
+**Labeled edges** (edges with `label` property):
+- Embedded into connected nodes as directional arrays
+- `from` array: incoming relationships (what this node receives)
+- `to` array: outgoing relationships (what this node sends)
+- Each entry: `{"node": "target_id", "label": "relationship_name"}`
+- Preserves directional flow semantics
+- Removed from main `edges` array (no duplication)
+
+**Unlabeled edges** (edges without `label` property):
+- Follow existing behavior (stripped or preserved based on flow settings)
+- Remain in main `edges` array when preserved
+
+**Example transformation:**
+
+```json
+// Before: Traditional edge array
+{
+  "nodes": [
+    {"id": "A", "type": "text", "text": "Start Process"},
+    {"id": "B", "type": "text", "text": "End Process"}
+  ],
+  "edges": [
+    {"id": "edge1", "fromNode": "A", "toNode": "B", "label": "triggers"},
+    {"id": "edge2", "fromNode": "A", "toNode": "B"}
+  ]
+}
+
+// After: Labeled edges embedded with directionality, unlabeled preserved
+{
+  "nodes": [
+    {
+      "id": "A",
+      "type": "text", 
+      "text": "Start Process",
+      "to": [{"node": "B", "label": "triggers"}]
+    },
+    {
+      "id": "B",
+      "type": "text",
+      "text": "End Process", 
+      "from": [{"node": "A", "label": "triggers"}]
+    }
+  ],
+  "edges": [
+    {"id": "edge2", "fromNode": "A", "toNode": "B"}
+  ]
+}
+```
+
+**Benefits:**
+- **Self-contained nodes**: Each node carries its relationship context
+- **Semantic preservation**: Relationship labels maintained and accessible
+- **Directional flow**: Clear distinction between incoming and outgoing relationships
+- **Efficient traversal**: Easy to navigate relationships in either direction
+- **Cleaner structure**: Reduces edge array size, focuses on meaningful connections
+- **LLM-friendly**: Relationships co-located with node content for better context
+
+#### 📊 Edge Processing Rules
 
 **Edge stripping behavior:**
 
-When **flow sorting is enabled** AND **strip edges when flow-sorted** is enabled (default):
-- Edges are automatically removed from pure JSON exports
-- Edge topology is **compiled into node sequence order**
+When **flow sorting is enabled** OR **strip edges when flow-sorted** is enabled:
+- Unlabeled edges are automatically removed from pure JSON exports
+- Edge topology is **compiled into node sequence order** (when flow sorting enabled)
 - The directed graph becomes a sequential narrative
 - Relationships are implicit in array position (nodes appear in execution/dependency order)
 
-When **flow sorting is disabled** OR **strip edges when flow-sorted** is disabled:
-- Edges are preserved in pure JSON exports
+When **flow sorting is disabled** AND **strip edges when flow-sorted** is disabled:
+- Unlabeled edges are preserved in pure JSON exports
 - Graph topology remains explicit
 - Relationships require edges array for interpretation
 
 **Rationale:** When flow sorting compiles edge topology into node sequence order, edges become presentation scaffolding—their semantic meaning (source → intermediate → sink) is already encoded in the linear array position. Stripping edges produces minimal data artifacts where relationships are implicit in ordering rather than explicit in graph structure.
 
 **Use cases:**
-- Flow-sorted exports: Sequential workflows, execution plans, dependency lists (edges stripped by default)
-- Spatial exports: Knowledge graphs, network diagrams, relationship maps (edges preserved by default)
+- **Labeled relationship networks**: Knowledge graphs, semantic models, workflow diagrams
+- **Flow-sorted exports**: Sequential workflows, execution plans, dependency lists (edges stripped by default)
+- **Spatial exports**: Network diagrams, relationship maps (edges preserved by default)
 
 ### 📥 Import JSON to Canvas
 

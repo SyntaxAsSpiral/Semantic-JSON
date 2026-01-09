@@ -22,6 +22,8 @@ function usage(message) {
       '  --strip-metadata      Strip Canvas metadata to export pure data structure',
       '  --strip-edges-when-flow-sorted    Strip edges from pure JSON when flow-sorted (default: true)',
       '  --no-strip-edges-when-flow-sorted Preserve edges even when flow-sorted',
+      '  --semantic-sort-orphans           Group orphan nodes at top and sort semantically (default: false)',
+      '  --no-semantic-sort-orphans        Sort orphan nodes spatially (default behavior)',
       '',
       'Behavior:',
       '  - Reads a JSON Canvas 1.0 file (.canvas) or JSON file (.json)',
@@ -48,6 +50,7 @@ function parseArgs(argv) {
     flowSort: false,
     stripMetadata: false,
     stripEdgesWhenFlowSorted: true,
+    semanticSortOrphans: false,
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -98,6 +101,14 @@ function parseArgs(argv) {
     }
     if (a === '--no-strip-edges-when-flow-sorted') {
       args.stripEdgesWhenFlowSorted = false;
+      continue;
+    }
+    if (a === '--semantic-sort-orphans') {
+      args.semanticSortOrphans = true;
+      continue;
+    }
+    if (a === '--no-semantic-sort-orphans') {
+      args.semanticSortOrphans = false;
       continue;
     }
     if (a === '--help' || a === '-h') {
@@ -352,7 +363,7 @@ function buildFlowGroups(nodes, allEdges, nodePositions) {
   return flowGroups;
 }
 
-function stableSortByXY(nodes, settings, allEdges, nodePositions) {
+function stableSortByXY(nodes, settings, allEdges, nodePositions, isWithinGroup) {
   // Build flow groups if flow sorting is enabled
   let flowGroups = [];
   const nodeToFlowGroup = new Map();
@@ -429,7 +440,25 @@ function stableSortByXY(nodes, settings, allEdges, nodePositions) {
       // Both isolated: fall through to standard sorting
     }
 
-    // Spatial sorting
+    // Within groups: always use semantic sorting
+    if (isWithinGroup) {
+      // Sort by type priority (content nodes before link nodes)
+      const aPriority = getNodeTypePriority(a);
+      const bPriority = getNodeTypePriority(b);
+      if (aPriority !== bPriority) return aPriority - bPriority;
+
+      // Sort by color (groups same-colored nodes together) - optional
+      if (settings?.colorSortNodes !== false) {
+        const aColor = getNodeColor(a);
+        const bColor = getNodeColor(b);
+        if (aColor !== bColor) return aColor.localeCompare(bColor);
+      }
+
+      // Sort by content (semantic)
+      return getNodeSortKey(a).localeCompare(getNodeSortKey(b));
+    }
+
+    // Spatial sorting (for orphans and groups themselves)
     const ay = isFiniteNumber(a?.y) ? a.y : 0;
     const by = isFiniteNumber(b?.y) ? b.y : 0;
     if (ay !== by) return ay - by;
@@ -632,7 +661,7 @@ function flattenHierarchical(nodes, parentMap, settings, allEdges, nodePositions
     // If this node is a group, add its children
     if (node.type === 'group' && parentMap.has(nodeId)) {
       const children = parentMap.get(nodeId);
-      stableSortByXY(children, settings, allEdges, nodePositions);
+      stableSortByXY(children, settings, allEdges, nodePositions, true);
 
       // Separate children into groups and non-groups
       const childGroups = children.filter((c) => c?.type === 'group');
@@ -670,7 +699,7 @@ function flattenHierarchical(nodes, parentMap, settings, allEdges, nodePositions
   });
 
   // Sort and add root nodes
-  stableSortByXY(rootNodes, settings, allEdges, nodePositions);
+  stableSortByXY(rootNodes, settings, allEdges, nodePositions, settings?.semanticSortOrphans);
   stableSortByXY(rootGroups, settings, allEdges, nodePositions);
 
   for (const node of rootNodes) {
@@ -723,8 +752,42 @@ export function compileCanvasAll({ input, settings }) {
  * Removes spatial (x, y, width, height), visual (color), and rendering metadata.
  * Preserves semantic content: id, text, file, url, label for nodes; id, fromNode, toNode, label for edges.
  * Optionally strips edges when flow-sorted (topology compiled into sequence order).
+ * Embeds labeled edges directly into connected nodes via "via" property.
  */
 function stripCanvasMetadata(input, settings) {
+  const inputEdges = Array.isArray(input?.edges) ? input.edges : [];
+  
+  // Separate labeled and unlabeled edges
+  const labeledEdges = inputEdges.filter(edge => 'label' in edge && edge.label !== undefined);
+  const unlabeledEdges = inputEdges.filter(edge => !('label' in edge) || edge.label === undefined);
+  
+  // Create node ID to directional edges mapping
+  const nodeFromEdges = new Map();
+  const nodeToEdges = new Map();
+  
+  for (const edge of labeledEdges) {
+    const fromId = normalizedId(edge.fromNode);
+    const toId = normalizedId(edge.toNode);
+    
+    // Add to fromNode's "to" array (outgoing)
+    if (!nodeToEdges.has(fromId)) {
+      nodeToEdges.set(fromId, []);
+    }
+    nodeToEdges.get(fromId).push({
+      node: toId,
+      label: edge.label
+    });
+    
+    // Add to toNode's "from" array (incoming)
+    if (!nodeFromEdges.has(toId)) {
+      nodeFromEdges.set(toId, []);
+    }
+    nodeFromEdges.get(toId).push({
+      node: fromId,
+      label: edge.label
+    });
+  }
+
   const nodes = Array.isArray(input?.nodes) ? input.nodes.map(node => {
     const stripped = { id: node.id, type: node.type };
 
@@ -733,27 +796,32 @@ function stripCanvasMetadata(input, settings) {
     if ('file' in node && node.file !== undefined) stripped.file = node.file;
     if ('url' in node && node.url !== undefined) stripped.url = node.url;
     if ('label' in node && node.label !== undefined) stripped.label = node.label;
+    
+    // Add directional edges if any labeled edges connect to this node
+    const nodeId = normalizedId(node.id);
+    if (nodeFromEdges.has(nodeId)) {
+      stripped.from = nodeFromEdges.get(nodeId);
+    }
+    if (nodeToEdges.has(nodeId)) {
+      stripped.to = nodeToEdges.get(nodeId);
+    }
 
     return stripped;
   }) : [];
 
-  // Strip edges when flow topology is compiled into node sequence order
-  const shouldStripEdges = settings?.flowSort && settings?.stripEdgesWhenFlowSorted;
+  // Strip edges when flow topology is compiled into node sequence order OR when explicitly requested
+  const shouldStripEdges = settings?.flowSort || settings?.stripEdgesWhenFlowSorted;
 
-  const edges = shouldStripEdges ? [] : Array.isArray(input?.edges) ? input.edges.map(edge => {
+  // Only process unlabeled edges (labeled edges are now embedded in nodes)
+  const edges = shouldStripEdges ? [] : unlabeledEdges.map(edge => {
     const stripped = {
       id: edge.id,
       fromNode: edge.fromNode,
       toNode: edge.toNode,
     };
 
-    // Preserve semantic relationship label if present
-    if ('label' in edge && edge.label !== undefined) {
-      stripped.label = edge.label;
-    }
-
     return stripped;
-  }) : [];
+  });
 
   return { nodes, edges };
 }
@@ -952,6 +1020,7 @@ async function main() {
     stripMetadata: args.stripMetadata,
     flowSort: args.flowSort,
     stripEdgesWhenFlowSorted: args.stripEdgesWhenFlowSorted,
+    semanticSortOrphans: args.semanticSortOrphans,
   };
 
   const res = compileCanvasFile({ inPath, outPath: args.out, settings });

@@ -76,6 +76,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
           colorSortNodes: this.settings.colorSortNodes,
           colorSortEdges: this.settings.colorSortEdges,
           flowSortNodes: this.settings.flowSortNodes,
+          semanticSortOrphans: this.settings.semanticSortOrphans,
         },
       });
 
@@ -154,6 +155,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
           colorSortNodes: this.settings.colorSortNodes,
           colorSortEdges: this.settings.colorSortEdges,
           flowSortNodes: this.settings.flowSortNodes,
+          semanticSortOrphans: this.settings.semanticSortOrphans,
         },
       });
       const serialized = JSON.stringify(output, null, 2) + '\n';

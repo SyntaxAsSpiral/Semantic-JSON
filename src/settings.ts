@@ -6,6 +6,7 @@ export interface SemanticJsonModernSettings {
   colorSortNodes: boolean;
   colorSortEdges: boolean;
   flowSortNodes: boolean;
+  semanticSortOrphans: boolean;
   stripEdgesWhenFlowSorted: boolean;
 }
 
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: SemanticJsonModernSettings = {
   colorSortNodes: true,
   colorSortEdges: true,
   flowSortNodes: false,
+  semanticSortOrphans: false,
   stripEdgesWhenFlowSorted: true,
 };
 
@@ -81,6 +83,18 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.flowSortNodes)
           .onChange(async (value) => {
             this.plugin.settings.flowSortNodes = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName('Semantic sort orphans')
+      .setDesc('Group orphan nodes (not contained in groups) at the top and sort them semantically by content instead of spatially by position.')
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.semanticSortOrphans)
+          .onChange(async (value) => {
+            this.plugin.settings.semanticSortOrphans = value;
             await this.plugin.saveSettings();
           })
       );
