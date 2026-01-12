@@ -638,8 +638,8 @@ export function stripCanvasMetadata(input: CanvasData, settings?: CompileSetting
 
 /**
  * Import JSON data to Canvas structure.
+ * Enhanced with rainbow coloring for top-level items and hierarchical coloring for nested content.
  * Creates visual scaffolding from pure JSON: objects to groups, arrays to groups, primitives to text nodes.
- * Enhanced with hierarchical coloring system and improved layout.
  */
 export function importJsonToCanvas(data: unknown): CanvasData {
   const nodes: CanvasNode[] = [];
@@ -651,12 +651,54 @@ export function importJsonToCanvas(data: unknown): CanvasData {
     y: number;
   }
 
-  // Generate a beautiful base color for the root structure
-  const rootColor = '#89b4fa'; // Catppuccin blue as base
-  const hierarchicalColors = generateHierarchicalColors(rootColor, 8);
+  // Check if this is a top-level object with multiple properties or a top-level array
+  const isTopLevelObject = typeof data === 'object' && data !== null && !Array.isArray(data);
+  const isTopLevelArray = Array.isArray(data);
+  
+  if (isTopLevelObject) {
+    // For top-level objects, treat each property as a separate rainbow-colored section
+    const entries = Object.entries(data as Record<string, unknown>);
+    const rainbowColors = generateRainbowGradient(entries.length);
+    
+    let currentY = 50;
+    
+    entries.forEach(([key, value], index) => {
+      const baseColor = rainbowColors[index];
+      const hierarchicalColors = generateHierarchicalColors(baseColor, 6);
+      const context: LayoutContext = { x: 50, y: currentY };
+      
+      // Traverse this property with its own color scheme
+      traverseWithColors(value, key, context, 0, hierarchicalColors);
+      currentY = context.y + 50; // Add spacing between top-level sections
+    });
+    
+  } else if (isTopLevelArray) {
+    // For top-level arrays, treat each item as a separate rainbow-colored section
+    const rainbowColors = generateRainbowGradient(data.length);
+    
+    let currentY = 50;
+    
+    data.forEach((item, index) => {
+      const baseColor = rainbowColors[index];
+      const hierarchicalColors = generateHierarchicalColors(baseColor, 6);
+      const context: LayoutContext = { x: 50, y: currentY };
+      
+      // Traverse this array item with its own color scheme
+      traverseWithColors(item, `[${index}]`, context, 0, hierarchicalColors);
+      currentY = context.y + 50; // Add spacing between top-level sections
+    });
+    
+  } else {
+    // For primitive top-level values, use single hierarchical coloring
+    const baseColor = '#89b4fa'; // Catppuccin blue as base
+    const hierarchicalColors = generateHierarchicalColors(baseColor, 6);
+    const context: LayoutContext = { x: 50, y: 50 };
+    
+    traverseWithColors(data, null, context, 0, hierarchicalColors);
+  }
 
   // Enhanced traverse function with hierarchical coloring
-  function traverseWithColors(value: unknown, key: string | number | null, context: LayoutContext, depth = 0): void {
+  function traverseWithColors(value: unknown, key: string | number | null, context: LayoutContext, depth: number, hierarchicalColors: string[]): void {
     const colorIndex = Math.min(depth, hierarchicalColors.length - 1);
     const currentColor = hierarchicalColors[colorIndex];
     
@@ -677,12 +719,12 @@ export function importJsonToCanvas(data: unknown): CanvasData {
       // Object to Group
       const groupId = generateId();
       const groupStartY = context.y;
-      const label = key !== null ? String(key) : 'Root Object';
+      const label = key !== null ? String(key) : 'Object';
       context.y += 40; // Space for group header
       
       const entries = Object.entries(value as Record<string, unknown>);
       entries.forEach(([k, v]) => {
-        traverseWithColors(v, k, context, depth + 1);
+        traverseWithColors(v, k, context, depth + 1, hierarchicalColors);
       });
       
       const groupHeight = Math.max(context.y - groupStartY + 20, 100);
@@ -706,7 +748,7 @@ export function importJsonToCanvas(data: unknown): CanvasData {
       context.y += 40; // Space for group header
       
       value.forEach((item, index) => {
-        traverseWithColors(item, `[${index}]`, context, depth + 1);
+        traverseWithColors(item, `[${index}]`, context, depth + 1, hierarchicalColors);
       });
       
       const groupHeight = Math.max(context.y - groupStartY + 20, 100);
@@ -742,10 +784,6 @@ export function importJsonToCanvas(data: unknown): CanvasData {
       context.y += Math.max(80, Math.ceil(displayText.length / 40) * 20 + 60);
     }
   }
-
-  // Start traversal with enhanced coloring
-  const rootContext: LayoutContext = { x: 50, y: 50 };
-  traverseWithColors(data, null, rootContext);
 
   return { nodes, edges: [] };
 }
@@ -1169,6 +1207,25 @@ function flattenHierarchical(
   return result;
 }
 /**
+ * Check if JSON data is a pure Canvas export (should be treated like JSONL records)
+ */
+function isPureCanvasExport(data: unknown): data is { nodes: unknown[]; edges?: unknown[] } {
+  // Check if it has the Canvas export structure: {nodes: [...], edges: [...]}
+  if (typeof data === 'object' && data !== null && 'nodes' in data) {
+    const canvasData = data as Record<string, unknown>;
+    if (Array.isArray(canvasData.nodes)) {
+      // Check if nodes contain Canvas node properties
+      const firstNode = canvasData.nodes[0];
+      if (firstNode && typeof firstNode === 'object' && firstNode !== null && 
+          'id' in firstNode && 'type' in firstNode) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+/**
  * Unified import function that detects input type by file extension and content.
  * Supports .json, .jsonl files with automatic type detection.
  */
@@ -1196,6 +1253,14 @@ export function importDataToCanvas(filePath: string, fileContent: string): Canva
     } else if (extension === 'json') {
       // JSON: Parse as single object/array
       const data = JSON.parse(fileContent);
+      
+      // Check if this is a pure JSON export from Canvas (should be treated like JSONL)
+      if (isPureCanvasExport(data)) {
+        // Extract the nodes array and treat each node as a separate record
+        const nodeRecords = Array.isArray(data.nodes) ? data.nodes : [];
+        return importJsonlToCanvas(nodeRecords);
+      }
+      
       return importJsonToCanvas(data);
       
     } else {

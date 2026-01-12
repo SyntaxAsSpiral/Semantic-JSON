@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
-import { importDataToCanvas } from '../src/compile.ts';
 
 function usage(message) {
   if (message) process.stderr.write(`${message}\n\n`);
@@ -851,98 +850,281 @@ function stripCanvasMetadata(input, settings) {
 }
 
 /**
- * Import JSONL data to Canvas structure.
- * Creates visual scaffolding for multiple JSON objects: each object → group, arranged in a grid.
- * Objects/arrays → groups, primitives → text nodes within each object group.
+ * Color manipulation utilities for palette mutations
  */
-function importJsonlToCanvas(jsonObjects) {
+function hexToHsl(hex) {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h, s;
+  const l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // achromatic
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+      default: h = 0;
+    }
+    h /= 6;
+  }
+
+  return [h * 360, s * 100, l * 100];
+}
+
+function hslToHex(h, s, l) {
+  h = h / 360;
+  s = s / 100;
+  l = l / 100;
+
+  const hue2rgb = (p, q, t) => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
+  };
+
+  let r, g, b;
+  if (s === 0) {
+    r = g = b = l; // achromatic
+  } else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+
+  const toHex = (c) => {
+    const hex = Math.round(c * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function mutateColor(hex, hueShift, satMult, lightMult) {
+  let [h, s, l] = hexToHsl(hex);
+  
+  h = (h + hueShift) % 360;
+  if (h < 0) h += 360;
+  
+  s = Math.max(0, Math.min(100, s * satMult));
+  l = Math.max(0, Math.min(100, l * lightMult));
+  
+  return hslToHex(h, s, l);
+}
+
+/**
+ * Generate rainbow gradient colors for grid layout
+ */
+function generateRainbowGradient(count) {
+  const colors = [];
+  const baseHues = [0, 30, 60, 120, 180, 240, 300]; // Red, Orange, Yellow, Green, Cyan, Blue, Purple
+  
+  for (let i = 0; i < count; i++) {
+    // Cycle through base hues, then interpolate between them
+    const hueIndex = i % baseHues.length;
+    const cyclePosition = Math.floor(i / baseHues.length);
+    
+    // Add slight variation for multiple cycles
+    const hueVariation = cyclePosition * 15; // 15 degree shift per cycle
+    const baseHue = baseHues[hueIndex];
+    const finalHue = (baseHue + hueVariation) % 360;
+    
+    // Vary saturation and lightness for visual interest
+    const saturation = 65 + (i % 3) * 10; // 65-85%
+    const lightness = 70 + (i % 4) * 5;   // 70-85%
+    
+    colors.push(hslToHex(finalHue, saturation, lightness));
+  }
+  
+  return colors;
+}
+
+/**
+ * Generate hierarchical color mutations for nested content
+ */
+function generateHierarchicalColors(baseColor, depth) {
+  const colors = [baseColor];
+  
+  for (let i = 1; i <= depth; i++) {
+    // Each level gets progressively more muted and shifted
+    const hueShift = i * 25; // Shift hue by 25 degrees per level
+    const satReduction = 0.85 - (i * 0.1); // Reduce saturation
+    const lightIncrease = 1.1 + (i * 0.05); // Increase lightness slightly
+    
+    const mutatedColor = mutateColor(baseColor, hueShift, satReduction, lightIncrease);
+    colors.push(mutatedColor);
+  }
+  
+  return colors;
+}
+
+/**
+ * Enhanced JSON import with rainbow coloring for top-level items and hierarchical coloring for nested content.
+ * Creates visual scaffolding from pure JSON: objects to groups, arrays to groups, primitives to text nodes.
+ */
+function importJsonToCanvasEnhanced(data) {
   const nodes = [];
   let idCounter = 0;
   const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
 
-  function traverse(value, key, context) {
-    const nodeId = generateId();
-    const nodeX = context.x;
-    const nodeY = context.y;
+  // Check if this is a top-level object with multiple properties or a top-level array
+  const isTopLevelObject = typeof data === 'object' && data !== null && !Array.isArray(data);
+  const isTopLevelArray = Array.isArray(data);
+  
+  if (isTopLevelObject) {
+    // For top-level objects, treat each property as a separate rainbow-colored section
+    const entries = Object.entries(data);
+    const rainbowColors = generateRainbowGradient(entries.length);
+    
+    let currentY = 50;
+    
+    entries.forEach(([key, value], index) => {
+      const baseColor = rainbowColors[index];
+      const hierarchicalColors = generateHierarchicalColors(baseColor, 6);
+      const context = { x: 50, y: currentY };
+      
+      // Traverse this property with its own color scheme
+      traverseWithColors(value, key, context, 0, hierarchicalColors);
+      currentY = context.y + 50; // Add spacing between top-level sections
+    });
+    
+  } else if (isTopLevelArray) {
+    // For top-level arrays, treat each item as a separate rainbow-colored section
+    const rainbowColors = generateRainbowGradient(data.length);
+    
+    let currentY = 50;
+    
+    data.forEach((item, index) => {
+      const baseColor = rainbowColors[index];
+      const hierarchicalColors = generateHierarchicalColors(baseColor, 6);
+      const context = { x: 50, y: currentY };
+      
+      // Traverse this array item with its own color scheme
+      traverseWithColors(item, `[${index}]`, context, 0, hierarchicalColors);
+      currentY = context.y + 50; // Add spacing between top-level sections
+    });
+    
+  } else {
+    // For primitive top-level values, use single hierarchical coloring
+    const baseColor = '#89b4fa'; // Catppuccin blue as base
+    const hierarchicalColors = generateHierarchicalColors(baseColor, 6);
+    const context = { x: 50, y: 50 };
+    
+    traverseWithColors(data, null, context, 0, hierarchicalColors);
+  }
 
+  // Enhanced traverse function with hierarchical coloring
+  function traverseWithColors(value, key, context, depth, hierarchicalColors) {
+    const colorIndex = Math.min(depth, hierarchicalColors.length - 1);
+    const currentColor = hierarchicalColors[colorIndex];
+    
     if (value === null || value === undefined) {
-      // Null/undefined → text node
-      const label = key !== null ? `${String(key)}: null` : 'null';
+      const displayValue = value === null ? 'null' : 'undefined';
       nodes.push({
-        id: nodeId,
+        id: generateId(),
         type: 'text',
-        text: label,
-        x: nodeX,
-        y: nodeY,
+        text: key !== null ? `**${String(key)}**: ${displayValue}` : displayValue,
+        x: context.x,
+        y: context.y,
         width: 250,
         height: 60,
+        color: currentColor,
       });
       context.y += 80;
     } else if (typeof value === 'object' && !Array.isArray(value)) {
-      // Object → group
-      const label = key !== null ? String(key) : 'object';
-      const groupId = nodeId;
-      const childContext = { x: nodeX + 20, y: nodeY + 80 };
-
-      // Traverse children
+      // Object to Group
+      const groupId = generateId();
+      const groupStartY = context.y;
+      const label = key !== null ? String(key) : 'Object';
+      context.y += 40; // Space for group header
+      
       const entries = Object.entries(value);
-      for (const [k, v] of entries) {
-        traverse(v, k, childContext);
-      }
-
-      // Create group wrapping children
-      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      entries.forEach(([k, v]) => {
+        traverseWithColors(v, k, context, depth + 1, hierarchicalColors);
+      });
+      
+      const groupHeight = Math.max(context.y - groupStartY + 20, 100);
       nodes.push({
         id: groupId,
         type: 'group',
         label,
-        x: nodeX,
-        y: nodeY,
-        width: 600,
+        x: context.x - 10,
+        y: groupStartY,
+        width: Math.max(600, 300 + depth * 50), // Wider groups for deeper nesting
         height: groupHeight,
+        color: currentColor,
       });
-
-      context.y = childContext.y;
+      
+      context.y += 20; // Space after group
     } else if (Array.isArray(value)) {
-      // Array → group
-      const label = key !== null ? String(key) : 'array';
-      const groupId = nodeId;
-      const childContext = { x: nodeX + 20, y: nodeY + 80 };
-
-      // Traverse array items
-      for (let i = 0; i < value.length; i++) {
-        traverse(value[i], i, childContext);
-      }
-
-      // Create group wrapping children
-      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      // Array to Group
+      const groupId = generateId();
+      const groupStartY = context.y;
+      const label = key !== null ? `${String(key)} [${value.length}]` : `Array [${value.length}]`;
+      context.y += 40; // Space for group header
+      
+      value.forEach((item, index) => {
+        traverseWithColors(item, `[${index}]`, context, depth + 1, hierarchicalColors);
+      });
+      
+      const groupHeight = Math.max(context.y - groupStartY + 20, 100);
       nodes.push({
         id: groupId,
         type: 'group',
         label,
-        x: nodeX,
-        y: nodeY,
-        width: 600,
+        x: context.x - 10,
+        y: groupStartY,
+        width: Math.max(600, 300 + depth * 50),
         height: groupHeight,
+        color: currentColor,
       });
-
-      context.y = childContext.y;
+      
+      context.y += 20; // Space after group
     } else {
-      // Primitive → text node
-      const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
-      const label = key !== null ? `${String(key)}: ${valueStr}` : valueStr;
+      // Primitive to Text node
+      const valueStr = typeof value === 'string' ? `"${value}"` : 
+                      typeof value === 'number' || typeof value === 'boolean' ? String(value) :
+                      typeof value === 'object' ? JSON.stringify(value) : 'unknown';
+      const displayText = key !== null ? `**${String(key)}**: ${valueStr}` : valueStr;
+      
       nodes.push({
-        id: nodeId,
+        id: generateId(),
         type: 'text',
-        text: label,
-        x: nodeX,
-        y: nodeY,
-        width: 250,
-        height: 60,
+        text: displayText,
+        x: context.x,
+        y: context.y,
+        width: Math.max(250, Math.min(500, displayText.length * 8 + 50)),
+        height: Math.max(60, Math.ceil(displayText.length / 40) * 20 + 40),
+        color: currentColor,
       });
-      context.y += 80;
+      context.y += Math.max(80, Math.ceil(displayText.length / 40) * 20 + 60);
     }
   }
+
+  return { nodes, edges: [] };
+}
+
+/**
+ * Enhanced JSONL import with rainbow gradient coloring and grid layout.
+ * Creates visual scaffolding for multiple JSON objects: each object to group, arranged in a grid.
+ * Objects/arrays to groups, primitives to text nodes within each object group.
+ */
+function importJsonlToCanvasEnhanced(jsonObjects) {
+  const nodes = [];
+  let idCounter = 0;
+  const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
 
   // Grid layout configuration
   const recordWidth = 700;  // Width of each record group (including padding)
@@ -965,10 +1147,17 @@ function importJsonlToCanvas(jsonObjects) {
 
   console.log(`Arranging ${recordCount} records in ${cols}x${rows} grid (aspect ratio: ${(cols/rows).toFixed(2)})`);
 
+  // Generate rainbow gradient colors for main records
+  const rainbowColors = generateRainbowGradient(recordCount);
+
   // Layout each JSON object in grid position
   for (let i = 0; i < jsonObjects.length; i++) {
     const obj = jsonObjects[i];
     const objectGroupId = generateId();
+    const baseColor = rainbowColors[i];
+    
+    // Generate hierarchical colors for this record's nested content
+    const hierarchicalColors = generateHierarchicalColors(baseColor, 5);
     
     // Calculate grid position
     const col = i % cols;
@@ -978,10 +1167,93 @@ function importJsonlToCanvas(jsonObjects) {
     
     const objectContext = { x: gridX + 20, y: gridY + 80 };
     
-    // Traverse the object content
-    traverse(obj, null, objectContext);
+    // Enhanced traverse function with hierarchical coloring
+    function traverseWithColors(value, key, context, depth = 0) {
+      const colorIndex = Math.min(depth, hierarchicalColors.length - 1);
+      const currentColor = hierarchicalColors[colorIndex];
+      
+      if (value === null || value === undefined) {
+        nodes.push({
+          id: generateId(),
+          type: 'text',
+          text: `**${key || 'null'}**: ${value}`,
+          x: context.x,
+          y: context.y,
+          width: 200,
+          height: 60,
+          color: currentColor,
+        });
+        context.y += 80;
+      } else if (typeof value === 'object' && !Array.isArray(value)) {
+        // Object to Group
+        const groupId = generateId();
+        const groupStartY = context.y;
+        context.y += 40; // Space for group header
+        
+        const entries = Object.entries(value);
+        entries.forEach(([k, v]) => {
+          traverseWithColors(v, k, context, depth + 1);
+        });
+        
+        const groupHeight = Math.max(context.y - groupStartY + 20, 100);
+        nodes.push({
+          id: groupId,
+          type: 'group',
+          label: key || 'Object',
+          x: context.x - 10,
+          y: groupStartY,
+          width: 300,
+          height: groupHeight,
+          color: currentColor,
+        });
+        
+        context.y += 20; // Space after group
+      } else if (Array.isArray(value)) {
+        // Array to Group
+        const groupId = generateId();
+        const groupStartY = context.y;
+        context.y += 40; // Space for group header
+        
+        value.forEach((item, index) => {
+          traverseWithColors(item, `[${index}]`, context, depth + 1);
+        });
+        
+        const groupHeight = Math.max(context.y - groupStartY + 20, 100);
+        nodes.push({
+          id: groupId,
+          type: 'group',
+          label: key ? `${key} [${value.length}]` : `Array [${value.length}]`,
+          x: context.x - 10,
+          y: groupStartY,
+          width: 300,
+          height: groupHeight,
+          color: currentColor,
+        });
+        
+        context.y += 20; // Space after group
+      } else {
+        // Primitive to Text node
+        const displayValue = typeof value === 'string' ? `"${value}"` : 
+                            typeof value === 'number' || typeof value === 'boolean' ? String(value) :
+                            typeof value === 'object' ? JSON.stringify(value) : 'unknown';
+        nodes.push({
+          id: generateId(),
+          type: 'text',
+          text: key ? `**${key}**: ${displayValue}` : displayValue,
+          x: context.x,
+          y: context.y,
+          width: 250,
+          height: Math.max(60, Math.ceil(displayValue.length / 30) * 20 + 40),
+          color: currentColor,
+        });
+        context.y += Math.max(80, Math.ceil(displayValue.length / 30) * 20 + 60);
+      }
+    }
     
-    // Create wrapper group for this JSONL object
+    // Traverse the object content with hierarchical coloring
+    traverseWithColors(obj, null, objectContext);
+    
+    // Create wrapper group for this JSONL object with rainbow color
     const objectHeight = Math.max(objectContext.y - gridY + 20, 100);
     nodes.push({
       id: objectGroupId,
@@ -991,7 +1263,7 @@ function importJsonlToCanvas(jsonObjects) {
       y: gridY,
       width: recordWidth,
       height: objectHeight,
-      color: i % 2 === 0 ? '#a8e6cf' : '#dcedc1', // Alternate colors for visual separation
+      color: baseColor,
     });
   }
 
@@ -999,111 +1271,93 @@ function importJsonlToCanvas(jsonObjects) {
 }
 
 /**
- * Import JSON data to Canvas structure.
- * Creates enhanced visual scaffolding: objects/arrays → groups, primitives → text nodes.
- * Enhanced with hierarchical coloring and improved layout, zero edges (no implied causality).
+ * Check if JSON data is a pure Canvas export (should be treated like JSONL records)
  */
-function importJsonToCanvas(data) {
-  const nodes = [];
-  let idCounter = 0;
-  const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
-
-  function traverse(value, key, context) {
-    const nodeId = generateId();
-    const nodeX = context.x;
-    const nodeY = context.y;
-
-    if (value === null || value === undefined) {
-      // Null/undefined → text node
-      const label = key !== null ? `${String(key)}: null` : 'null';
-      nodes.push({
-        id: nodeId,
-        type: 'text',
-        text: label,
-        x: nodeX,
-        y: nodeY,
-        width: 250,
-        height: 60,
-      });
-      context.y += 80;
-    } else if (typeof value === 'object' && !Array.isArray(value)) {
-      // Object → group
-      const label = key !== null ? String(key) : 'root';
-      const groupId = nodeId;
-      const childContext = { x: nodeX + 20, y: nodeY + 80 };
-
-      // Traverse children
-      const entries = Object.entries(value);
-      for (const [k, v] of entries) {
-        traverse(v, k, childContext);
-      }
-
-      // Create group wrapping children
-      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
-      nodes.push({
-        id: groupId,
-        type: 'group',
-        label,
-        x: nodeX,
-        y: nodeY,
-        width: 600,
-        height: groupHeight,
-      });
-
-      context.y = childContext.y;
-    } else if (Array.isArray(value)) {
-      // Array → group
-      const label = key !== null ? String(key) : 'array';
-      const groupId = nodeId;
-      const childContext = { x: nodeX + 20, y: nodeY + 80 };
-
-      // Traverse array items
-      for (let i = 0; i < value.length; i++) {
-        traverse(value[i], i, childContext);
-      }
-
-      // Create group wrapping children
-      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
-      nodes.push({
-        id: groupId,
-        type: 'group',
-        label,
-        x: nodeX,
-        y: nodeY,
-        width: 600,
-        height: groupHeight,
-      });
-
-      context.y = childContext.y;
-    } else {
-      // Primitive → text node
-      const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
-      const label = key !== null ? `${String(key)}: ${valueStr}` : valueStr;
-      nodes.push({
-        id: nodeId,
-        type: 'text',
-        text: label,
-        x: nodeX,
-        y: nodeY,
-        width: 250,
-        height: 60,
-      });
-      context.y += 80;
+function isPureCanvasExport(data) {
+  // Check if it has the Canvas export structure: {nodes: [...], edges: [...]}
+  if (typeof data === 'object' && data !== null && Array.isArray(data.nodes)) {
+    // Check if nodes contain Canvas node properties
+    const firstNode = data.nodes[0];
+    if (firstNode && typeof firstNode === 'object' && 
+        'id' in firstNode && 'type' in firstNode) {
+      return true;
     }
   }
-
-  const rootContext = { x: 0, y: 0 };
-  traverse(data, null, rootContext);
-
-  return { nodes, edges: [] };
+  return false;
 }
 
+/**
+ * Unified import function that detects input type by file extension and content.
+ * Supports .json, .jsonl files with automatic type detection and enhanced visual features.
+ */
+function importDataToCanvasEnhanced(filePath, fileContent) {
+  const extension = filePath.toLowerCase().split('.').pop();
+  
+  try {
+    if (extension === 'jsonl') {
+      // JSONL: Parse each line as separate JSON object
+      const lines = fileContent.trim().split('\n').filter(line => line.trim());
+      const jsonObjects = lines.map(line => {
+        try {
+          return JSON.parse(line);
+        } catch (error) {
+          throw new Error(`Invalid JSON on line: ${line.substring(0, 50)}... Error: ${error instanceof Error ? error.message : 'Parse failed'}`);
+        }
+      });
+      
+      if (jsonObjects.length === 0) {
+        throw new Error('No valid JSON objects found in JSONL file');
+      }
+      
+      return importJsonlToCanvasEnhanced(jsonObjects);
+      
+    } else if (extension === 'json') {
+      // JSON: Parse as single object/array
+      const data = JSON.parse(fileContent);
+      
+      // Check if this is a pure JSON export from Canvas (should be treated like JSONL)
+      if (isPureCanvasExport(data)) {
+        // Extract the nodes array and treat each node as a separate record
+        const nodeRecords = Array.isArray(data.nodes) ? data.nodes : [];
+        return importJsonlToCanvasEnhanced(nodeRecords);
+      }
+      
+      return importJsonToCanvasEnhanced(data);
+      
+    } else {
+      // Auto-detect based on content structure
+      const trimmedContent = fileContent.trim();
+      
+      // Check if it looks like JSONL (multiple lines with JSON objects)
+      const lines = trimmedContent.split('\n').filter(line => line.trim());
+      if (lines.length > 1) {
+        // Try parsing as JSONL first
+        try {
+          const jsonObjects = lines.map(line => JSON.parse(line));
+          return importJsonlToCanvasEnhanced(jsonObjects);
+        } catch {
+          // Fall through to JSON parsing
+        }
+      }
+      
+      // Try parsing as regular JSON
+      try {
+        const data = JSON.parse(trimmedContent);
+        return importJsonToCanvasEnhanced(data);
+      } catch (error) {
+        throw new Error(`Unable to parse file as JSON or JSONL: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+  } catch (error) {
+    throw new Error(`Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
 export function importFile({ inPath, outPath }) {
   const absIn = path.resolve(String(inPath ?? '').trim());
   const fileContent = fs.readFileSync(absIn, 'utf8');
   
-  // Use the unified import function from compile.ts
-  const canvas = importDataToCanvas(absIn, fileContent);
+  // Use the enhanced unified import function with beautiful colors and grid organization
+  const canvas = importDataToCanvasEnhanced(absIn, fileContent);
   
   // Determine output path
   const stem = path.basename(absIn).replace(/\.(json|jsonl)$/i, '');
@@ -1140,8 +1394,8 @@ export function importJsonlFile({ inPath, outPath }) {
   // Default output to same directory as input
   const absOut = String(outPath ?? '').trim() || path.resolve(path.dirname(absIn), `${stem}.canvas`);
 
-  // Import JSONL to Canvas
-  const canvas = importJsonlToCanvas(jsonObjects);
+  // Import JSONL to Canvas with enhanced rainbow gradient coloring
+  const canvas = importJsonlToCanvasEnhanced(jsonObjects);
   const serialized = JSON.stringify(canvas, null, 2) + '\n';
 
   fs.writeFileSync(absOut, serialized, 'utf8');
@@ -1163,8 +1417,8 @@ export function importJsonFile({ inPath, outPath }) {
   // Default output to same directory as input
   const absOut = String(outPath ?? '').trim() || path.resolve(path.dirname(absIn), `${stem}.canvas`);
 
-  // Import JSON to Canvas
-  const canvas = importJsonToCanvas(input);
+  // Import JSON to Canvas with enhanced hierarchical coloring
+  const canvas = importJsonToCanvasEnhanced(input);
   const serialized = JSON.stringify(canvas, null, 2) + '\n';
 
   fs.writeFileSync(absOut, serialized, 'utf8');

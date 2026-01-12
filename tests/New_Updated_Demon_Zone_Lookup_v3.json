@@ -1,0 +1,2474 @@
+{
+    "Zone Lookup": [
+        {
+            "Zone Number": 0,
+            "Syzygy Partner": 9,
+            "Syzygy Aspect": "Foundation",
+            "Time System": "Plex",
+            "Current Name": "Plex",
+            "Current Destination Zone": 9,
+            "Gate Name": "Gt-0",
+            "Gate Destination Zone": 0,
+            "Reference Tag": "[Zone 0]"
+        },
+        {
+            "Zone Number": 1,
+            "Syzygy Partner": 8,
+            "Syzygy Aspect": "Anamnesis",
+            "Time System": "Time-Circuit",
+            "Current Name": "Rise",
+            "Current Destination Zone": 7,
+            "Gate Name": "Gt-1",
+            "Gate Destination Zone": 1,
+            "Reference Tag": "[Zone 1]"
+        },
+        {
+            "Zone Number": 2,
+            "Syzygy Partner": 7,
+            "Syzygy Aspect": "Genesis",
+            "Time System": "Time-Circuit",
+            "Current Name": "Hold",
+            "Current Destination Zone": 5,
+            "Gate Name": "Gt-3",
+            "Gate Destination Zone": 3,
+            "Reference Tag": "[Zone 2]"
+        },
+        {
+            "Zone Number": 3,
+            "Syzygy Partner": 6,
+            "Syzygy Aspect": "Fortune",
+            "Time System": "Warp",
+            "Current Name": "Warp",
+            "Current Destination Zone": 3,
+            "Gate Name": "Gt-6",
+            "Gate Destination Zone": 6,
+            "Reference Tag": "[Zone 3]"
+        },
+        {
+            "Zone Number": 4,
+            "Syzygy Partner": 5,
+            "Syzygy Aspect": "Apocalypse",
+            "Time System": "Time-Circuit",
+            "Current Name": "Sink",
+            "Current Destination Zone": 1,
+            "Gate Name": "Gt-10",
+            "Gate Destination Zone": 1,
+            "Reference Tag": "[Zone 4]"
+        },
+        {
+            "Zone Number": 5,
+            "Syzygy Partner": 4,
+            "Syzygy Aspect": "Apocalypse",
+            "Time System": "Time-Circuit",
+            "Current Name": "Sink",
+            "Current Destination Zone": 1,
+            "Gate Name": "Gt-15",
+            "Gate Destination Zone": 6,
+            "Reference Tag": "[Zone5]"
+        },
+        {
+            "Zone Number": 6,
+            "Syzygy Partner": 3,
+            "Syzygy Aspect": "Fortune",
+            "Time System": "Warp",
+            "Current Name": "Warp",
+            "Current Destination Zone": 3,
+            "Gate Name": "Gt-21",
+            "Gate Destination Zone": 3,
+            "Reference Tag": "[Zone6]"
+        },
+        {
+            "Zone Number": 7,
+            "Syzygy Partner": 2,
+            "Syzygy Aspect": "Genesis",
+            "Time System": "Time-Circuit",
+            "Current Name": "Hold",
+            "Current Destination Zone": 5,
+            "Gate Name": "Gt-28",
+            "Gate Destination Zone": 1,
+            "Reference Tag": "[Zone7]"
+        },
+        {
+            "Zone Number": 8,
+            "Syzygy Partner": 1,
+            "Syzygy Aspect": "Anamnesis",
+            "Time System": "Time-Circuit",
+            "Current Name": "Rise",
+            "Current Destination Zone": 7,
+            "Gate Name": "Gt-36",
+            "Gate Destination Zone": 9,
+            "Reference Tag": "[Zone8]"
+        },
+        {
+            "Zone Number": 9,
+            "Syzygy Partner": 0,
+            "Syzygy Aspect": "Foundation",
+            "Time System": "Plex",
+            "Current Name": "Plex",
+            "Current Destination Zone": 9,
+            "Gate Name": "Gt-45",
+            "Gate Destination Zone": 9,
+            "Reference Tag": "[Zone9]"
+        }
+    ],
+    "Demon Lookup": [
+        {
+            "Mesh Number": "Mesh-00",
+            "Net-Span": "1::0",
+            "Reference Tag": "[M#0 (1::0)]",
+            "Name": "Lurgo (Legba)",
+            "Stillwell Classification": "(Terminal) Initiator",
+            "Pitch": "Ana-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "Gt-00, Lurgo is known as the First Door and the Door of Doors in Muvian sorcery. Her mesh number (00) clicks the 0th Gate (Gt-00), linking her to a highly occulted region in numogrammatic cartography.",
+                "Ciphers": [
+                    "Gt-01",
+                    "Gt-10"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Openings (The Door of Doors)",
+            "Phase": {
+                "Phase Position": [
+                    "1st Door (The Pod)",
+                    "1st Phase-limit"
+                ],
+                "Planetary Affiliation": "[Mercury]",
+                "Spinal Association": "Dorsal"
+            },
+            "Decadology Classification": "C/tp-#7 ~ Mj+ [7C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "Rt-1",
+                    "Description": "[1890] Spinal-voyage (fate line) ~ programming"
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                "Her major rite is detailed as a path requiring repeated patience, subtlety, and compliance.",
+                "Described as a numogrammatic 'plunge line' passing through the 8th gate (Gt-36).",
+                "It maps to yogic practices of spinal descent and is evoked in various contemporary myths and dream sorcery practices."
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "Lurgo is mentioned as 'nesting' these demons. This nesting relationship is significant in the context of the Munumese saying 'the end lies within the beginning'. Lurgo is also said to dwell between Murrumur & Uttunul, beneath the sea but above the twins in the furnace.",
+                    "Name": "Minommo",
+                    "Reference Tag": "[M#28 (8::0)]"
+                },
+                {
+                    "Name": "Murrumur",
+                    "Reference Tag": "[M#29 (8::1)]",
+                    "Additional Note": "Additionally, the 'plunge line' of Lurgo's rite passes through the lair of Murrumur."
+                },
+                {
+                    "Name": "Uttunul",
+                    "Reference Tag": "[M#36 (9::0)]",
+                    "Additional Note": "Lurgo's rite also descends following a numogrammatic line that passes through the lair of Uttunul."
+                },
+                {
+                    "Name": "Tutagool",
+                    "Reference Tag": "[M#37 (9::1)]"
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "In Tzikvik tradition, she is called Oogvhu, the Immortal Worm of primordial communication.",
+                "In Haitian Voodoo, she is paralleled by Legba, the first and last of the Loa to be invoked in rituals.",
+                "In Western esotericism, particularly in the context of the Decadence game, Lurgo is unique for allowing a termination without loss.",
+                "She is connected to the golem myth in esoteric Judaism and to the concept of the Original Subtraction.",
+                "Lurgo's domain is positioned between the orbits of Mercury and the Sun in Lemurian Planetworks.",
+                "Lurgo is described as having a pitch of Ana-1 and is noted for her absence of imps, attributed to her primordiality or ultimateness.",
+                "Her name in the Old Muvian Tongue is Gl\u2019eiaoung, translated as 'The Initiator' in Munumese and English.",
+                "Her net-span is linked to the concept of binary code and Taoist polarities of Yang and Yin.",
+                "The I Ching's code of unbroken and broken lines is suggested to be a relic of a primordial language first enunciated by Lurgo.",
+                "Horowitz's research into the 'gl' subphoneme of Lurgo's name suggests its significance to the glottopolitics of the English language, leading to a labyrinth of 'glitter-glyphs'.",
+                "Lurgo is noted for concluding each Decadence Aeon without loss, and is key in the Decadology system of the Western uptake of Pandemonium."
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-01",
+            "Net-Span": "2::0",
+            "Reference Tag": "[M#1 (2::0)]",
+            "Name": "Duoddod",
+            "Stillwell Classification": "Duplicitous Redoubler",
+            "Pitch": "Ana-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "Clicks Gt-01",
+                "Ciphers": [
+                    null
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Abstract Addiction",
+            "Phase": {
+                "Phase Position": "2nd Door (The Crypt)",
+                "Planetary Affiliation": "[Venus]",
+                "Spinal Association": "Cervical"
+            },
+            "Decadology Classification": "C/tp-#8 ~ Mj+ [8C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "Rt-1",
+                    "Description": "[271890] Pineal-regression (rear vision)"
+                },
+                {
+                    "Rite Number": "Rt-2",
+                    "Description": "[27541890] Datacomb searches digital exactitude (every second counts)"
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                "The pineal-regression rite emphasizes a deep dive into subconscious and esoteric knowledge, possibly linking to ancient mystical traditions and occult practices.",
+                "The datacomb searches rite alludes to a meticulous and obsessive quest for precision and exactitude, resonant with modern digital data analysis and information processing."
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "Other Phase 2 Lemur",
+                    "Name": "Doogu",
+                    "Reference Tag": "[M#2 (2::1)]",
+                    "Additional Note": "The syzygetic relationship with Doogu (Mesh-02) emphasizes the dualistic nature of Duoddod, embodying the tension between division and unity."
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "Embodies the essence of duplicity, mirroring, and the abstract nature of addiction in both a metaphorical and literal sense.",
+                "Identified in Muvian sorcery with the Second Door, invoked as the 'Main Lo-Way' into the Crypt by K-goth cults.",
+                "Described by Horovitz as 'reduplicating its double-twinness though its multitude' in relation to Zone-2, reflecting its complex and reflexive nature."
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-02",
+            "Net-Span": "2::1",
+            "Reference Tag": "[M#2 (2::1)]",
+            "Name": "Doogu (The Blob)",
+            "Stillwell Classification": "Original-Schism",
+            "Pitch": "Ana-3",
+            "Hyperstitial Interplay": {
+                "Clicks": "Clicks Gt-21",
+                "Ciphers": [
+                    "Gt-21"
+                ]
+            },
+            "Currents": "Shadows Surge-Current",
+            "Title": "Cyclic Chronodemon of Splitting-Waters",
+            "Phase": {
+                "Phase Position": "2nd Phase-limit",
+                "Planetary Affiliation": "[Earth]",
+                "Spinal Association": "Lumbar"
+            },
+            "Decadology Classification": "C/tp-#1 ~ Mn+ [1H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "Rt-1",
+                    "Description": "[1872] Mn. Primordial breath (pneumatic practices)"
+                },
+                {
+                    "Rite Number": "Rt-2",
+                    "Description": "[271] Ambivalent capture ~ hooks (live-bait ~ traps ~ plot-twists)"
+                },
+                {
+                    "Rite Number": "Rt-3",
+                    "Description": "[27541] Mj. Slow pull to stasis ~ protection from drowning"
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                "Doogu's rites are deeply entwined with primordial and elemental forces, emphasizing themes of origin, division, and preservation."
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "Syzygetic relationship with Duoddod, highlighting themes of division and duality.",
+                    "Name": "Duoddod",
+                    "Reference Tag": "[M#1 (2::0)]",
+                    "Additional Note": "Together, Doogu and Duoddod form a complex interplay between splitting and duplicity within Phase 2 of the Numogram."
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "Represents the primordial division of the original unity, echoing mythological themes of creation through splitting or separation.",
+                "Associated with elemental forces of water and earth, symbolizing the dynamic interplay between fluidity and solidity, change and stability."
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-03",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Ixix (Yix)",
+            "Stillwell Classification": "Abductor",
+            "Pitch": "Ana-3",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Chaotic Xenodemon of Cosmic Indifference",
+            "Phase": {
+                "Phase Position": "3rd Door (The Swirl) ~ [Earth] ~ Cranial",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": NaN,
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-04",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Ixigool (Djinn of the Magi)",
+            "Stillwell Classification": "Over-Ghoul",
+            "Pitch": "Ana-4",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Tridentity (Sphinx-time)",
+            "Phase": {
+                "Phase Position": "3rd Phase - second lemur",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#4 ~ Mn+ [4H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "[+1 sub-Rt]",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-05",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Ixidod (King Sid)",
+            "Stillwell Classification": "The Zombie-Maker",
+            "Pitch": "Ana-5",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Escape-velocity",
+            "Phase": {
+                "Phase Position": "3rd Phase-limit",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#5 ~ Mn+ [5H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "[+1 sub-Rt]",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-06",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Krako (Kru ~ Karak-oa)",
+            "Stillwell Classification": "The Croaking Curse",
+            "Pitch": "Ana-4",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Burning-Hail",
+            "Phase": {
+                "Phase Position": "4th Door (Delta) ~ [Mars] ~ Cervical",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#9 ~ Mj+ [9C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "[+1 sub-Rt]",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-07",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Sukugool (Old Skug)",
+            "Stillwell Classification": "The Sucking-Ghoul",
+            "Pitch": "Ana-5",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Prowls Sink-Current",
+            "Title": "Cyclic Chronodemon of deluge and implosion",
+            "Phase": {
+                "Phase Position": "4th Phase - second lemur",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#3 ~ Mj+ [3C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "[+1 sub-Rt]",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-08",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Skoodu (Li'l Scud)",
+            "Stillwell Classification": "The Fashioner",
+            "Pitch": "Ana-6",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Shadows Hold-Current",
+            "Title": "Cyclic Chronodemon of Switch-Crazes",
+            "Phase": {
+                "Phase Position": "4th Phase - third lemur",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#2 ~ Mn+ [2H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-09",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Skarkix (Sharky ~ Scar-head)",
+            "Stillwell Classification": "Buzz-Cutter",
+            "Pitch": "Ana-7 (Uppermost)",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of anti-evolution (eddies of the Delta)",
+            "Phase": {
+                "Phase Position": "4th Phase-limit",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#6 ~ Mj+ [6C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-10",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Tokhatto (Old Toker ~ Top Cat)",
+            "Stillwell Classification": "Decimal Camouflage",
+            "Pitch": "Cth-4",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Talismania",
+            "Phase": {
+                "Phase Position": "5th Door (Hyperborea) ~ [Jupiter] ~ Cervical",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#9 ~ Mj- [9S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-11",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Tukkamu",
+            "Stillwell Classification": "Occulturation",
+            "Pitch": "Cth-3",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Prowls Sink-Current",
+            "Title": "Cyclic Chronodemon of Pathogenesis",
+            "Phase": {
+                "Phase Position": "5th Phase - Lemur 2",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#3 ~ Mj- [3S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-12",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Kuttadid (Kitty)",
+            "Stillwell Classification": "Ticking Machines",
+            "Pitch": "Cth-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Prowls Hold-Current",
+            "Title": "Cyclic Chronodemon of Precarious States",
+            "Phase": {
+                "Phase Position": "5th Phase - Lemur 3",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#2 ~ Mn- [2D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-13",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Tikkitix (Tickler)",
+            "Stillwell Classification": "Clicking Menaces",
+            "Pitch": "Cth-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Vortical Delirium",
+            "Phase": {
+                "Phase Position": "5th Phase - Lemur 4",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#6 ~ Mj- [6S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+2 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-14",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Katak",
+            "Stillwell Classification": "Desolator",
+            "Pitch": "Null",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Feeds Sink-Current",
+            "Title": "Syzygetic Chronodemon of Cataclysmic Convergence",
+            "Phase": {
+                "Phase Position": "5th Phase limit",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#0 [Joker]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-15",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Tchu (Tchanul)",
+            "Stillwell Classification": "Source of Subnothingness",
+            "Pitch": "Cth-3",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Chaotic Xenodemon of Ultimate Outsideness (and unnamable things)",
+            "Phase": {
+                "Phase Position": "6th Door (Undu) ~ [Saturn] ~ Cranial",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": NaN,
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-16",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Djungo",
+            "Stillwell Classification": "Infiltrator",
+            "Pitch": "Cth-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Subtle Involvements (and intricate puzzles)",
+            "Phase": {
+                "Phase Position": "6th Phase - Lemur 2",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#4 ~ Mn- [4D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-17",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Djuddha (Judd Dread)",
+            "Stillwell Classification": "Decentred Threat",
+            "Pitch": "Cth-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Artificial Turbulence (complex-dynamics simulations)",
+            "Phase": {
+                "Phase Position": "6th Phase - Lemur 3",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#5 ~ Mn- [5D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-18",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Djynxx (Ching ~ The Jinn)",
+            "Stillwell Classification": "Child Stealer",
+            "Pitch": "Null",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Feeds and Prowls Warp-Current",
+            "Title": "Syzygetic Xenodemon of Time-Lapse",
+            "Phase": {
+                "Phase Position": "6th Phase - Lemur 4",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": NaN,
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+2 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-19",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Tchakki (Chuckles)",
+            "Stillwell Classification": "Bag of Tricks",
+            "Pitch": "Ana-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Combustion",
+            "Phase": {
+                "Phase Position": "6th Phase - Lemur 5",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#6 ~ Mn+ [6H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+3 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-20",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Tchattuk (One Eyed Jack ~ Djatka)",
+            "Stillwell Classification": "Pseudo-Basis",
+            "Pitch": "Cth-7 (Lowermost)",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Unscreened Matrix",
+            "Phase": {
+                "Phase Position": "6th Phase-limit",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#6 ~ Mn- [6D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+2 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-21",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Puppo (The Pup)",
+            "Stillwell Classification": "Break-Outs",
+            "Pitch": "Cth-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Larval Regression",
+            "Phase": {
+                "Phase Position": "7th Door (Akasha) ~ [Uranus] ~ Cervical",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#8 ~ Mj- [8S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-22",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Bubbamu (Bubs)",
+            "Stillwell Classification": "After Babylon",
+            "Pitch": "Cth-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Prowls Surge-Current",
+            "Title": "Cyclic Chronodemon of Relapse",
+            "Phase": {
+                "Phase Position": "7th Phase - Lemur 2",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#1 ~ Mn- [1D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-23",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Oddubb (Odba)",
+            "Stillwell Classification": "Broken Mirror",
+            "Pitch": "Null",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Feeds Hold-Current",
+            "Title": "Syzygetic Chronodemon of Swamp-Labyrinths (and blind-doubles)",
+            "Phase": {
+                "Phase Position": "7th Phase - Lemur 3",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": NaN,
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-24",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Pabbakis (Pabzix)",
+            "Stillwell Classification": "Dabbler",
+            "Pitch": "Ana-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Interference (and fakery)",
+            "Phase": {
+                "Phase Position": "7th Phase - Lemur 4",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#5 ~ Mj+ [5C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-25",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Ababbatok (Abracadabra)",
+            "Stillwell Classification": "Regenerator",
+            "Pitch": "Ana-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Shadows Hold-Current",
+            "Title": "Cyclic Chronodemon of Suspended Decay",
+            "Phase": {
+                "Phase Position": "7th Phase - Lemur 5",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#2 ~ Mj+ [2C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-26",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Papatakoo (Pataku)",
+            "Stillwell Classification": "Upholder",
+            "Pitch": "Cth-6",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Prowls Hold-Current",
+            "Title": "Cyclic Chronodemon of Calendric Time",
+            "Phase": {
+                "Phase Position": "7th Phase - Lemur 6",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#2 ~ Mj- [2S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-27",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Bobobja (Bubbles ~ Beelzebub (Lord of the Flies))",
+            "Stillwell Classification": "Heavy Atmosphere",
+            "Pitch": "Cth-5",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Teeming Pestilence",
+            "Phase": {
+                "Phase Position": "7th Phase-limit",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#5 ~ Mj- [5S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-28",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Minommo",
+            "Stillwell Classification": "Webmaker",
+            "Pitch": "Cth-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Submergance",
+            "Phase": {
+                "Phase Position": "8th Door (Limbo) ~ [Neptune] ~  Lumbar",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#7 ~ Mj- [7S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-29",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Mur Mur (Murrumur ~ Mu(mu))",
+            "Stillwell Classification": "Dream-Serpent",
+            "Pitch": "Null",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Feeds Surge-Current",
+            "Title": "Syzygetic Chronodemon of the Deep Ones",
+            "Phase": {
+                "Phase Position": "8th Phase - Lemur 2",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": NaN,
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-30",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Nammamad",
+            "Stillwell Classification": "Mirroracle",
+            "Pitch": "Ana-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Shadows Surge-Current",
+            "Title": "Cyclic Chronodemon of Subterranean Commerce",
+            "Phase": {
+                "Phase Position": "8th Phase - Lemur 3",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#1 ~ Mj+ [1C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-31",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Mummumix (Mix-Up)",
+            "Stillwell Classification": "The Mist-Crawler",
+            "Pitch": "Ana-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Insidious Fog (Nyarlathotep)",
+            "Phase": {
+                "Phase Position": "8th Phase - Lemur 4",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#4 ~ Mj+ [4C]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-32",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Numko (Old Nuk)",
+            "Stillwell Classification": "Keeper of Old Terrors",
+            "Pitch": "Ana-3",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Prowls Sink-Current",
+            "Title": "Cyclic Chronodemon of Autochthony",
+            "Phase": {
+                "Phase Position": "8th Phase - Lemur 5",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#3 ~ Mn+ [3H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-33",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Muntuk (Manta ~ Manitou)",
+            "Stillwell Classification": "Desert Swimmer",
+            "Pitch": "Cth-5",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Shadows Sink-Current",
+            "Title": "Cyclic Chronodemon of Arid Seabeds",
+            "Phase": {
+                "Phase Position": "8th Phase - Lemur 6",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#3 ~ Mn- [3D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-34",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Mommoljo (Mama Jo)",
+            "Stillwell Classification": "Alien Mother",
+            "Pitch": "Cth-4",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Xenogenesis",
+            "Phase": {
+                "Phase Position": "8th Phase - Lemur 7",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#4 ~ Mj- [4S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-35",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Mombbo",
+            "Stillwell Classification": "Tentacle Face (Fishy-princess)",
+            "Pitch": "Cth-3",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Prowls Surge-Current",
+            "Title": "Cyclic Chronodemon of Hybridity",
+            "Phase": {
+                "Phase Position": "8th Phase-limit",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#1 ~ Mj- [1S]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-36",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Uttunul",
+            "Stillwell Classification": "Seething Void",
+            "Pitch": "Null",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Feeds and Prowls Plex-Current",
+            "Title": "Syzygetic Xenodemon of Atonality",
+            "Phase": {
+                "Phase Position": "9th Door (Cthelll) ~ [Pluto] ~ Sacrum",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": NaN,
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-37",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Tutagool (Yettuk)",
+            "Stillwell Classification": "The Tattered Ghoul",
+            "Pitch": "Ana-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Punctuality",
+            "Phase": {
+                "Phase Position": "9th Phase - Lemur 2",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#7 ~ Mn+ [7H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-38",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Unnunddo (The False Nun)",
+            "Stillwell Classification": "Double-Undoing",
+            "Pitch": "Ana-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Endless Uncasing (onion-skin horror)",
+            "Phase": {
+                "Phase Position": "9th Phase - Lemur 3",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#8 ~ Mn+ [8H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-39",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Ununuttix (Tick-Tock)",
+            "Stillwell Classification": "Particle Clocks",
+            "Pitch": "Ana-3",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Chaotic Xenodemon of Absolute Coincidence",
+            "Phase": {
+                "Phase Position": "9th Phase - Lemur 4",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": NaN,
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-40",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Ununak (Nuke)",
+            "Stillwell Classification": "Blind Catastrophe",
+            "Pitch": "Ana-4",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Convulsions",
+            "Phase": {
+                "Phase Position": "9th Phase - Lemur 5",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#9 ~ Mn+ [9H]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-41",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Tukutu (Killer-Kate)",
+            "Stillwell Classification": "Cosmotraumatics",
+            "Pitch": "Cth-4",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Death-Strokes",
+            "Phase": {
+                "Phase Position": "9th Phase - Lemur 6",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#9 ~ Mn- [9D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-42",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Unnutchi (Outch ~ T'ai Chi)",
+            "Stillwell Classification": "Tachyonic immobility (slow vortex)",
+            "Pitch": "Cth-3",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Chaotic Xenodemon of Coiling Outsideness",
+            "Phase": {
+                "Phase Position": "9th Phase - Lemur 7",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": NaN,
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-43",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Nuttubab (Nut-Cracker)",
+            "Stillwell Classification": "Mimetic Anorganism",
+            "Pitch": "Cth-2",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": NaN,
+            "Title": "Amphidemon of Metaloid Unlife",
+            "Phase": {
+                "Phase Position": "9th Phase - Lemur 8",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#8 ~ Mn- [8D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": "+1 sub-Rt",
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        },
+        {
+            "Mesh Number": "Mesh-44",
+            "Net-Span": "X::X",
+            "Reference Tag": "[M#XX (X::X)]",
+            "Name": "Ummnu (Om ~ Omni ~ Amen ~ Omen)",
+            "Stillwell Classification": "Ultimate Inconsequence",
+            "Pitch": "Cth-1",
+            "Hyperstitial Interplay": {
+                "Clicks": "",
+                "Ciphers": [
+                    "Gt-XX"
+                ]
+            },
+            "Currents": "Shadows Plex-Current",
+            "Title": "Amphidemon of Earth-Screams",
+            "Phase": {
+                "Phase Position": "9th Phase-limit",
+                "Planetary Affiliation": "",
+                "Spinal Association": ""
+            },
+            "Decadology Classification": "C/tp-#7 ~ Mn- [7D]",
+            "Rites (Rt)": [
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                },
+                {
+                    "Rite Number": "",
+                    "Description": ""
+                }
+            ],
+            "Sub-Rites (sub-Rt)": NaN,
+            "Rite Details": [
+                ""
+            ],
+            "Demonic Associations": [
+                {
+                    "Associations": "",
+                    "Name": "",
+                    "Reference Tag": "",
+                    "Additional Note": ""
+                }
+            ],
+            "Symbolic and Esoteric Associations": [
+                "",
+                ""
+            ]
+        }
+    ]
+}
