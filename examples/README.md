@@ -1,6 +1,6 @@
 # 🧪 Examples Index
 
-This folder contains self-documenting examples demonstrating Semantic JSON's compilation and export features.
+This folder contains [self-documenting examples](https://github.com/SyntaxAsSpiral/Collectivist) demonstrating Semantic JSON's compilation and export features.
 
 ## 📁 File Index
 
@@ -60,7 +60,7 @@ This is the kind of output you'd share with an AI assistant or consume in a data
 
 ## 🔗 Related Methodologies
 
-This self-documenting examples pattern aligns with broader documentation architectures:
+This [self-documenting examples pattern](https://github.com/SyntaxAsSpiral/Collectivist) aligns with broader documentation architectures:
 
 - **[Semantic JSON](https://github.com/SyntaxAsSpiral/semantic-json)** - Parent project: Obsidian plugin for smart Canvas data recompiling
 - **[Context Engineering Skills](https://github.com/SyntaxAsSpiral/zk-context-vault/blob/master/skills/README.md)** - Dual-format documentation system using similar conformance testing patterns
