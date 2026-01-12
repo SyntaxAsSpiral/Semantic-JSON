@@ -23,7 +23,7 @@ const DEFAULT_LLM_SETTINGS: LLMSettings = {
   provider: 'lmstudio',
   baseUrl: 'http://localhost:1234',
   apiKey: '',
-  model: 'openai/gpt-oss-20b',
+  model: 'microsoft/Phi-3.5-mini-instruct',
   enabled: false,
 };
 
@@ -50,32 +50,32 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
       case 'lmstudio':
         return {
           baseUrl: 'http://localhost:1234',
-          model: 'openai/gpt-oss-20b'
+          model: 'microsoft/Phi-3.5-mini-instruct'
         };
       case 'ollama':
         return {
           baseUrl: 'http://localhost:11434',
-          model: 'llama3.2'
+          model: 'llama3.3'
         };
       case 'openrouter':
         return {
           baseUrl: 'https://openrouter.ai/api/v1',
-          model: 'meta-llama/llama-3.1-8b-instruct:free'
+          model: 'meta-llama/llama-3.3-70b-instruct'
         };
       case 'openai':
         return {
           baseUrl: 'https://api.openai.com/v1',
-          model: 'gpt-4o-mini'
+          model: 'gpt-4o'
         };
       case 'anthropic':
         return {
           baseUrl: 'https://api.anthropic.com',
-          model: 'claude-3-haiku-20240307'
+          model: 'claude-3-5-sonnet-20241022'
         };
       default:
         return {
           baseUrl: 'http://localhost:1234',
-          model: 'openai/gpt-oss-20b'
+          model: 'microsoft/Phi-3.5-mini-instruct'
         };
     }
   }
@@ -229,7 +229,7 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
         .setDesc('Specific model name to use for analysis.')
         .addText((text) =>
           text
-            .setPlaceholder('openai/gpt-oss-20b')
+            .setPlaceholder('microsoft/Phi-3.5-mini-instruct')
             .setValue(this.plugin.settings.llm.model)
             .onChange(async (value) => {
               this.plugin.settings.llm.model = value;

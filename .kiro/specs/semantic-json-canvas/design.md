@@ -357,7 +357,7 @@ const DEFAULT_LLM_SETTINGS: LLMSettings = {
   provider: 'lmstudio',
   baseUrl: 'http://localhost:1234',
   apiKey: '',
-  model: 'openai/gpt-oss-20b',
+  model: 'microsoft/Phi-3.5-mini-instruct',
   enabled: false
 };
 ```

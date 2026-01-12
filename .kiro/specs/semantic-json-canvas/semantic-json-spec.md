@@ -1081,11 +1081,11 @@ interface LLMSettings {
 
 #### Provider-Specific Defaults
 
-- **LMStudio**: `openai/gpt-oss-20b` model, localhost endpoint
-- **Ollama**: `llama3.2` model, localhost endpoint  
-- **OpenRouter**: `meta-llama/llama-3.1-8b-instruct:free` model
-- **OpenAI**: `gpt-4o-mini` model
-- **Anthropic**: `claude-3-haiku-20240307` model
+- **LMStudio**: `microsoft/Phi-3.5-mini-instruct` model, localhost endpoint
+- **Ollama**: `llama3.3` model, localhost endpoint  
+- **OpenRouter**: `meta-llama/llama-3.3-70b-instruct` model
+- **OpenAI**: `gpt-4o` model
+- **Anthropic**: `claude-3-5-sonnet-20241022` model
 
 #### Error Handling & Fallbacks
 
