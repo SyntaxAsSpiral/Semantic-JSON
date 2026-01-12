@@ -58,7 +58,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 
 - 💫 **"Compile active canvas"**: Recompiles the `.canvas` file in-place preserving semantic structure
 - 📥 **"Import to canvas"**: Auto-detects JSON/JSONL format and creates enhanced visual scaffolding with hierarchical coloring and rainbow gradients
-- 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)c
+- 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact with varying levels of edge preservation (`.pure.json`)
 
 ### Settings
 
