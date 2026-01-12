@@ -632,8 +632,8 @@ export function stripCanvasMetadata(input: CanvasData, settings?: CompileSetting
 
 /**
  * Import JSON data to Canvas structure.
- * Creates visual scaffolding: objects/arrays → groups, primitives → text nodes.
- * Simple vertical layout, zero edges (no implied causality).
+ * Creates visual scaffolding from pure JSON: objects → groups, arrays → groups, primitives → text nodes.
+ * Enhanced with hierarchical coloring system and improved layout.
  */
 export function importJsonToCanvas(data: unknown): CanvasData {
   const nodes: CanvasNode[] = [];
@@ -645,92 +645,98 @@ export function importJsonToCanvas(data: unknown): CanvasData {
     y: number;
   }
 
-  function traverse(value: unknown, key: string | number | null, context: LayoutContext): void {
-    const nodeId = generateId();
-    const nodeX = context.x;
-    const nodeY = context.y;
+  // Generate a beautiful base color for the root structure
+  const rootColor = '#89b4fa'; // Catppuccin blue as base
+  const hierarchicalColors = generateHierarchicalColors(rootColor, 8);
 
+  // Enhanced traverse function with hierarchical coloring
+  function traverseWithColors(value: unknown, key: string | number | null, context: LayoutContext, depth = 0): void {
+    const colorIndex = Math.min(depth, hierarchicalColors.length - 1);
+    const currentColor = hierarchicalColors[colorIndex];
+    
     if (value === null || value === undefined) {
-      // Null/undefined → text node
-      const label = key !== null ? `${String(key)}: null` : 'null';
       nodes.push({
-        id: nodeId,
+        id: generateId(),
         type: 'text',
-        text: label,
-        x: nodeX,
-        y: nodeY,
+        text: key !== null ? `**${String(key)}**: ${value}` : String(value),
+        x: context.x,
+        y: context.y,
         width: 250,
         height: 60,
+        color: currentColor,
       });
       context.y += 80;
     } else if (typeof value === 'object' && !Array.isArray(value)) {
-      // Object → group
-      const label = key !== null ? String(key) : 'root';
-      const groupId = nodeId;
-      const childContext: LayoutContext = { x: nodeX + 20, y: nodeY + 80 };
-
-      // Traverse children
-      const entries = Object.entries(value);
-      for (const [k, v] of entries) {
-        traverse(v, k, childContext);
-      }
-
-      // Create group wrapping children
-      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      // Object → Group
+      const groupId = generateId();
+      const groupStartY = context.y;
+      const label = key !== null ? String(key) : 'Root Object';
+      context.y += 40; // Space for group header
+      
+      const entries = Object.entries(value as Record<string, unknown>);
+      entries.forEach(([k, v]) => {
+        traverseWithColors(v, k, context, depth + 1);
+      });
+      
+      const groupHeight = Math.max(context.y - groupStartY + 20, 100);
       nodes.push({
         id: groupId,
         type: 'group',
         label,
-        x: nodeX,
-        y: nodeY,
-        width: 600,
+        x: context.x - 10,
+        y: groupStartY,
+        width: Math.max(600, 300 + depth * 50), // Wider groups for deeper nesting
         height: groupHeight,
+        color: currentColor,
       });
-
-      context.y = childContext.y;
+      
+      context.y += 20; // Space after group
     } else if (Array.isArray(value)) {
-      // Array → group
-      const label = key !== null ? String(key) : 'array';
-      const groupId = nodeId;
-      const childContext: LayoutContext = { x: nodeX + 20, y: nodeY + 80 };
-
-      // Traverse array items
-      for (let i = 0; i < value.length; i++) {
-        traverse(value[i], i, childContext);
-      }
-
-      // Create group wrapping children
-      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      // Array → Group
+      const groupId = generateId();
+      const groupStartY = context.y;
+      const label = key !== null ? `${String(key)} [${value.length}]` : `Array [${value.length}]`;
+      context.y += 40; // Space for group header
+      
+      value.forEach((item, index) => {
+        traverseWithColors(item, `[${index}]`, context, depth + 1);
+      });
+      
+      const groupHeight = Math.max(context.y - groupStartY + 20, 100);
       nodes.push({
         id: groupId,
         type: 'group',
         label,
-        x: nodeX,
-        y: nodeY,
-        width: 600,
+        x: context.x - 10,
+        y: groupStartY,
+        width: Math.max(600, 300 + depth * 50),
         height: groupHeight,
+        color: currentColor,
       });
-
-      context.y = childContext.y;
+      
+      context.y += 20; // Space after group
     } else {
-      // Primitive → text node
-      const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
-      const label = key !== null ? `${String(key)}: ${valueStr}` : valueStr;
+      // Primitive → Text node
+      const valueStr = typeof value === 'string' ? `"${value}"` : String(value);
+      const displayText = key !== null ? `**${String(key)}**: ${valueStr}` : valueStr;
+      
       nodes.push({
-        id: nodeId,
+        id: generateId(),
         type: 'text',
-        text: label,
-        x: nodeX,
-        y: nodeY,
-        width: 250,
-        height: 60,
+        text: displayText,
+        x: context.x,
+        y: context.y,
+        width: Math.max(250, Math.min(500, displayText.length * 8 + 50)),
+        height: Math.max(60, Math.ceil(displayText.length / 40) * 20 + 40),
+        color: currentColor,
       });
-      context.y += 80;
+      context.y += Math.max(80, Math.ceil(displayText.length / 40) * 20 + 60);
     }
   }
 
-  const rootContext: LayoutContext = { x: 0, y: 0 };
-  traverse(data, null, rootContext);
+  // Start traversal with enhanced coloring
+  const rootContext: LayoutContext = { x: 50, y: 50 };
+  traverseWithColors(data, null, rootContext);
 
   return { nodes, edges: [] };
 }
@@ -1152,4 +1158,83 @@ function flattenHierarchical(
   }
 
   return result;
+}
+/**
+ * Unified import function that detects input type by file extension and content.
+ * Supports .json, .jsonl files with automatic type detection.
+ */
+export function importDataToCanvas(filePath: string, fileContent: string): CanvasData {
+  const extension = filePath.toLowerCase().split('.').pop();
+  
+  try {
+    if (extension === 'jsonl') {
+      // JSONL: Parse each line as separate JSON object
+      const lines = fileContent.trim().split('\n').filter(line => line.trim());
+      const jsonObjects = lines.map(line => {
+        try {
+          return JSON.parse(line);
+        } catch (error) {
+          throw new Error(`Invalid JSON on line: ${line.substring(0, 50)}... Error: ${error instanceof Error ? error.message : 'Parse failed'}`);
+        }
+      });
+      
+      if (jsonObjects.length === 0) {
+        throw new Error('No valid JSON objects found in JSONL file');
+      }
+      
+      console.log(`Importing JSONL with ${jsonObjects.length} records`);
+      return importJsonlToCanvas(jsonObjects);
+      
+    } else if (extension === 'json') {
+      // JSON: Parse as single object/array
+      const data = JSON.parse(fileContent);
+      console.log('Importing JSON data structure');
+      return importJsonToCanvas(data);
+      
+    } else {
+      // Auto-detect based on content structure
+      const trimmedContent = fileContent.trim();
+      
+      // Check if it looks like JSONL (multiple lines with JSON objects)
+      const lines = trimmedContent.split('\n').filter(line => line.trim());
+      if (lines.length > 1) {
+        // Try parsing as JSONL first
+        try {
+          const jsonObjects = lines.map(line => JSON.parse(line));
+          console.log(`Auto-detected JSONL format with ${jsonObjects.length} records`);
+          return importJsonlToCanvas(jsonObjects);
+        } catch {
+          // Fall through to JSON parsing
+        }
+      }
+      
+      // Try parsing as regular JSON
+      try {
+        const data = JSON.parse(trimmedContent);
+        console.log('Auto-detected JSON format');
+        return importJsonToCanvas(data);
+      } catch (error) {
+        throw new Error(`Unable to parse file as JSON or JSONL: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+  } catch (error) {
+    throw new Error(`Import failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+}
+
+/**
+ * Convenience function for importing from file system (Node.js environments)
+ */
+export async function importFileToCanvas(filePath: string): Promise<CanvasData> {
+  try {
+    // Dynamic import for Node.js fs module (only available in Node environments)
+    const fs = await import('fs');
+    const fileContent = fs.readFileSync(filePath, 'utf-8');
+    return importDataToCanvas(filePath, fileContent);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('Cannot resolve module')) {
+      throw new Error('File system access not available in this environment. Use importDataToCanvas with file content instead.');
+    }
+    throw error;
+  }
 }
