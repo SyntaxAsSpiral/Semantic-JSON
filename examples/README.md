@@ -67,13 +67,6 @@ This [self-documenting examples pattern](https://github.com/SyntaxAsSpiral/Colle
 - **[Context Engineering Skills](https://github.com/SyntaxAsSpiral/zk-context-vault/blob/master/skills/README.md)** - Dual-format documentation system using similar conformance testing patterns
 - **[ZK Context Vault](https://github.com/SyntaxAsSpiral/zk-context-vault)** - Comprehensive agent system documentation following self-documenting principles
 
-## 🚧 Future Examples (Contributions Welcome!)
-
-- [ ] `sample-data.jsonl` — JSONL import demonstration
-- [ ] `sample-data.canvas` — Result of JSONL → Canvas import
-- [ ] `🩷Catppuccin.canvas` — Source canvas for the pure JSON export
-- [ ] `scrambled-example.json` — "Before" state showing what bad ordering looks like
-
 ---
 
 ← [Back to main README](../README.md)
