@@ -102,7 +102,8 @@ export default tseslint.config(
 			"@typescript-eslint/no-unsafe-assignment": "off",
 			"@typescript-eslint/no-unsafe-return": "off",
 			"@typescript-eslint/no-base-to-string": "off",
-			"no-console": "off", // Allow console for debugging in plugin development
+			// Allow only specific console methods (warn, error, debug)
+			"no-console": ["error", { "allow": ["warn", "error", "debug"] }],
 		},
 	},
 	{

@@ -40,8 +40,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
 
     this.addCommand({
       id: 'import-jsonl-to-canvas',
-      // eslint-disable-next-line obsidianmd/ui/sentence-case
-      name: 'Import JSONL to canvas',
+      name: 'Import data to canvas',
       callback: () => void this.importJsonlToCanvas(),
     });
 
@@ -123,8 +122,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
   async importToCanvas() {
     const file = this.app.workspace.getActiveFile();
     if (!file || (file.extension !== 'json' && file.extension !== 'jsonl')) {
-      // eslint-disable-next-line obsidianmd/ui/sentence-case
-      new Notice('No active JSON or JSONL file');
+      new Notice('No active data file');
       return;
     }
 
@@ -193,8 +191,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
   async importJsonlToCanvas() {
     const file = this.app.workspace.getActiveFile();
     if (!file || file.extension !== 'jsonl') {
-      // eslint-disable-next-line obsidianmd/ui/sentence-case
-      new Notice('No active JSONL file');
+      new Notice('No active data file');
       return;
     }
 

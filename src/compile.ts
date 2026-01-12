@@ -655,10 +655,11 @@ export function importJsonToCanvas(data: unknown): CanvasData {
     const currentColor = hierarchicalColors[colorIndex];
     
     if (value === null || value === undefined) {
+      const displayValue = value === null ? 'null' : 'undefined';
       nodes.push({
         id: generateId(),
         type: 'text',
-        text: key !== null ? `**${String(key)}**: ${value}` : String(value),
+        text: key !== null ? `**${String(key)}**: ${displayValue}` : displayValue,
         x: context.x,
         y: context.y,
         width: 250,
@@ -717,7 +718,9 @@ export function importJsonToCanvas(data: unknown): CanvasData {
       context.y += 20; // Space after group
     } else {
       // Primitive to Text node
-      const valueStr = typeof value === 'string' ? `"${value}"` : String(value);
+      const valueStr = typeof value === 'string' ? `"${value}"` : 
+                      typeof value === 'number' || typeof value === 'boolean' ? String(value) :
+                      typeof value === 'object' ? JSON.stringify(value) : 'unknown';
       const displayText = key !== null ? `**${String(key)}**: ${valueStr}` : valueStr;
       
       nodes.push({
@@ -896,8 +899,6 @@ export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
     rows = Math.ceil(recordCount / cols);
   }
 
-  console.log(`Arranging ${recordCount} records in ${cols}x${rows} grid (aspect ratio: ${(cols/rows).toFixed(2)})`);
-
   // Generate rainbow gradient colors for main records
   const rainbowColors = generateRainbowGradient(recordCount);
 
@@ -984,7 +985,9 @@ export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
         context.y += 20; // Space after group
       } else {
         // Primitive to Text node
-        const displayValue = typeof value === 'string' ? `"${value}"` : String(value);
+        const displayValue = typeof value === 'string' ? `"${value}"` : 
+                            typeof value === 'number' || typeof value === 'boolean' ? String(value) :
+                            typeof value === 'object' ? JSON.stringify(value) : 'unknown';
         nodes.push({
           id: generateId(),
           type: 'text',
@@ -1182,13 +1185,11 @@ export function importDataToCanvas(filePath: string, fileContent: string): Canva
         throw new Error('No valid JSON objects found in JSONL file');
       }
       
-      console.log(`Importing JSONL with ${jsonObjects.length} records`);
       return importJsonlToCanvas(jsonObjects);
       
     } else if (extension === 'json') {
       // JSON: Parse as single object/array
       const data = JSON.parse(fileContent);
-      console.log('Importing JSON data structure');
       return importJsonToCanvas(data);
       
     } else {
@@ -1201,7 +1202,6 @@ export function importDataToCanvas(filePath: string, fileContent: string): Canva
         // Try parsing as JSONL first
         try {
           const jsonObjects = lines.map(line => JSON.parse(line));
-          console.log(`Auto-detected JSONL format with ${jsonObjects.length} records`);
           return importJsonlToCanvas(jsonObjects);
         } catch {
           // Fall through to JSON parsing
@@ -1211,7 +1211,6 @@ export function importDataToCanvas(filePath: string, fileContent: string): Canva
       // Try parsing as regular JSON
       try {
         const data = JSON.parse(trimmedContent);
-        console.log('Auto-detected JSON format');
         return importJsonToCanvas(data);
       } catch (error) {
         throw new Error(`Unable to parse file as JSON or JSONL: ${error instanceof Error ? error.message : 'Unknown error'}`);
