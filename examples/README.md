@@ -58,6 +58,13 @@ The `.json` is what you'd feed to an LLM or use in a pipeline.
 
 This is the kind of output you'd share with an AI assistant or consume in a data pipeline.
 
+## 🔗 Related Methodologies
+
+This self-documenting examples pattern aligns with broader documentation architectures:
+
+- **[Context Engineering Skills](https://github.com/SyntaxAsSpiral/zk-context-vault/blob/master/skills/README.md)** - Dual-format documentation system using similar conformance testing patterns
+- **[ZK Context Vault](https://github.com/SyntaxAsSpiral/zk-context-vault)** - Comprehensive agent system documentation following self-documenting principles
+
 ## 🚧 Future Examples (Contributions Welcome!)
 
 - [ ] `sample-data.jsonl` — JSONL import demonstration
