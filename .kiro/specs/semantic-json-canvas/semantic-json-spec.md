@@ -15,12 +15,16 @@ status: living-document
 
 #### I. [[#I. Base Spec|Base Specification]]
 #### II. [[#II. ◈ Semantic JSON Extension|Semantic JSON Extension]]
-#### III. [[#III. 🎮 Commands & Settings|Commands & Settings]]
+#### III. [[#III. 🧠 LLM Integration|LLM Integration]]
+####   - [[#🤖 Semantic ID Assignment]]
+####   - [[#�️ Taxonomy Inference]]
+####   - [[#🔧 Multi-Provider Support]]
+#### IV. [[#IV. �🎮 Commands & Settings|Commands & Settings]]
 ####   - [[#🎛️ Plugin Settings]]
 ####   - [[#📤 Pure JSON Export]]
 ####   - [[#📥 Import JSON to Canvas]]
 ####   - [[#📥 Import JSONL to Canvas]]
-#### IV. [[#IV. 🍥 The Anticompiler|Philosophy]]
+#### V. [[#V. 🍥 The Anticompiler|Philosophy]]
 
 ---
 
@@ -604,6 +608,7 @@ The following sorting options can be configured in plugin settings:
 - **Flow sort nodes** (default: disabled): Sort by directional flow topology instead of spatial position
 - **🏠 Group orphan nodes** (default: disabled): Group orphan nodes first before sorting spatially
 - **Strip edges from pure JSON when flow-sorted** (default: enabled): Remove edges from pure JSON exports when flow topology is compiled into node sequence order
+- **🧠 LLM Integration** (default: disabled): Enable LLM-based semantic ID assignment with support for local (LMStudio, Ollama) and cloud providers (OpenAI, Anthropic, OpenRouter)
 
 ### 📤 Pure JSON Export
 
@@ -714,6 +719,7 @@ The **unified import system** provides enhanced JSON/JSONL import capabilities w
 **Primary Interface:**
 - **CLI:** `--import <file>` (auto-detects JSON/JSONL format)
 - **Plugin:** "Import to canvas" command (auto-detects JSON/JSONL format)
+- **Plugin:** "Assign Semantic IDs" command (LLM-based semantic ID assignment with taxonomy inference)
 
 **Legacy/Compatibility Commands (Plugin only):**
 - "Import JSON to canvas" - specifically for JSON files
@@ -896,3 +902,164 @@ This is **semantic unzipping**:
 ---
 
 *A compiler makes thought executable; an anticompiler makes execution thinkable again.*
+
+---
+
+## 🧠 **LLM Integration**
+
+The LLM Integration system extends Semantic JSON with intelligent content analysis and semantic ID assignment capabilities. This system transforms Canvas files from generic node IDs to meaningful semantic identifiers with optional taxonomy inference.
+
+### 🤖 Semantic ID Assignment
+
+The **"Assign Semantic IDs"** command analyzes canvas content using Large Language Models to generate meaningful node identifiers that reflect the actual content and relationships within the canvas.
+
+#### Process Flow
+
+1. **Content Extraction**: All node content (text, file paths, URLs, labels) is extracted
+2. **LLM Analysis**: Complete canvas structure is sent to configured LLM provider
+3. **Taxonomy Inference**: LLM optionally generates a coherent type system for the canvas
+4. **ID Assignment**: Semantic IDs are assigned in format `type::variant::hash`
+5. **Reference Updates**: All edge references are updated to maintain graph connectivity
+6. **Fallback Handling**: Generic kebab-case IDs (`node-001`, `node-002`) when LLM fails
+
+#### Example Transformation
+
+**Before (Generic IDs):**
+```json
+{
+  "nodes": [
+    {
+      "id": "a1b2c3d4e5f6",
+      "type": "text",
+      "text": "Machine Learning Fundamentals"
+    },
+    {
+      "id": "f6e5d4c3b2a1",
+      "type": "text", 
+      "text": "Data preprocessing steps"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge123",
+      "fromNode": "a1b2c3d4e5f6",
+      "toNode": "f6e5d4c3b2a1"
+    }
+  ]
+}
+```
+
+**After (Semantic IDs with Taxonomy):**
+```json
+{
+  "nodes": [
+    {
+      "id": "concept::machine-learning::fundamentals",
+      "type": "text",
+      "text": "Machine Learning Fundamentals"
+    },
+    {
+      "id": "process::data-preprocessing::steps",
+      "type": "text",
+      "text": "Data preprocessing steps"
+    }
+  ],
+  "edges": [
+    {
+      "id": "relation::depends-on::ml-preprocessing",
+      "fromNode": "concept::machine-learning::fundamentals",
+      "toNode": "process::data-preprocessing::steps"
+    }
+  ],
+  "_taxonomy": {
+    "concept": "Core ideas and theoretical knowledge",
+    "process": "Actions, workflows, and procedures",
+    "relation": "Connections and dependencies"
+  }
+}
+```
+
+### 🏷️ Taxonomy Inference
+
+The LLM system can optionally generate a **locally-appropriate taxonomy** specific to each canvas content domain.
+
+#### Taxonomy Features
+
+- **Domain-Specific**: Generated based on actual canvas content, not generic categories
+- **Coherent Classification**: Types form a logical system relevant to the specific use case
+- **Optional Metadata**: Stored as `_taxonomy` field with type descriptions
+- **Flexible Structure**: Supports both simple (`type`) and hierarchical (`type::subtype::variant`) formats
+
+#### Example Taxonomies
+
+**Software Architecture Canvas:**
+```json
+"_taxonomy": {
+  "component": "System components and modules",
+  "service": "External services and APIs", 
+  "data": "Data stores and models",
+  "flow": "Information and control flow"
+}
+```
+
+**Research Canvas:**
+```json
+"_taxonomy": {
+  "hypothesis": "Research hypotheses and questions",
+  "method": "Research methods and approaches",
+  "finding": "Results and discoveries",
+  "source": "References and citations"
+}
+```
+
+### 🔧 Multi-Provider Support
+
+The system supports both local and cloud-based LLM providers for maximum flexibility.
+
+#### Supported Providers
+
+| Provider | Type | Base URL | API Key Required |
+|----------|------|----------|------------------|
+| **LMStudio** | Local | `http://localhost:1234` | No |
+| **Ollama** | Local | `http://localhost:11434` | No |
+| **OpenRouter** | Cloud | `https://openrouter.ai/api/v1` | Yes |
+| **OpenAI** | Cloud | `https://api.openai.com/v1` | Yes |
+| **Anthropic** | Cloud | `https://api.anthropic.com` | Yes |
+
+#### Configuration
+
+LLM integration is configured through the plugin settings:
+
+```typescript
+interface LLMSettings {
+  provider: 'lmstudio' | 'ollama' | 'openrouter' | 'openai' | 'anthropic';
+  baseUrl: string;      // Provider endpoint
+  apiKey: string;       // For cloud providers
+  model: string;        // Specific model name
+  enabled: boolean;     // Enable/disable LLM features
+}
+```
+
+#### Provider-Specific Defaults
+
+- **LMStudio**: `openai/gpt-oss-20b` model, localhost endpoint
+- **Ollama**: `llama3.2` model, localhost endpoint  
+- **OpenRouter**: `meta-llama/llama-3.1-8b-instruct:free` model
+- **OpenAI**: `gpt-4o-mini` model
+- **Anthropic**: `claude-3-haiku-20240307` model
+
+#### Error Handling & Fallbacks
+
+The system provides robust error handling:
+
+1. **Network Failures**: Graceful degradation to generic IDs
+2. **Invalid Responses**: Fallback to kebab-case numbering
+3. **Partial Failures**: Mixed semantic and generic IDs as needed
+4. **Graph Validation**: Ensures all edge references remain valid
+
+#### Privacy & Security
+
+- **Local-First Option**: LMStudio and Ollama keep data on-device
+- **No Data Retention**: Cloud providers configured for single-request processing
+- **Content Analysis Only**: Only node content is sent, no vault metadata
+- **User Control**: Explicit opt-in required, disabled by default
