@@ -114,7 +114,7 @@ This transforms spatial diagrams into linear narratives that preserve visual sem
 
 ## 🧪 Examples
 
-See [`examples/`](./examples/) for a self-documenting test. The test card canvas is pre-sorted in the repo, so opening it in Obsidian and saving will scramble the entries, demonstrating exactly what this plugin fixes. The JSON version shows it stripped of Canvas metadata.
+See [`examples/`](./examples/) for a [self-documenting](https://github.com/SyntaxAsSpiral/Collectivist) test. The test card canvas is pre-sorted in the repo, so opening it in Obsidian and saving will scramble the entries, demonstrating exactly what this plugin fixes. The JSON version shows it stripped of Canvas metadata.
 
 ## Development
 
