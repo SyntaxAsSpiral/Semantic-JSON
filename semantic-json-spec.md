@@ -19,6 +19,7 @@ status: living-document
 ####   - [[#🎛️ Plugin Settings]]
 ####   - [[#📤 Pure JSON Export]]
 ####   - [[#📥 Import JSON to Canvas]]
+####   - [[#📥 Import JSONL to Canvas]]
 #### IV. [[#IV. 🍥 The Anticompiler|Philosophy]]
 
 ---
@@ -711,6 +712,13 @@ The **"Import JSON to Canvas"** command creates visual scaffolding from pure JSO
 **Input:** Pure JSON (objects, arrays, primitives)
 **Output:** Valid `.canvas` file with visual representation
 
+### 📥 Import JSONL to Canvas
+
+The **"Import JSONL to Canvas"** command creates visual scaffolding from JSONL (JSON Lines) data, where each line contains a separate JSON object. Each object becomes a separate record group in the canvas.
+
+**Input:** JSONL file (multiple JSON objects, one per line)
+**Output:** Valid `.canvas` file with visual representation of all records
+
 **Transformation rules:**
 
 **Objects** → Group nodes
@@ -728,12 +736,19 @@ The **"Import JSON to Canvas"** command creates visual scaffolding from pure JSO
 - Value rendered as Markdown text
 - Node label = value (truncated if long)
 
+**JSONL-specific layout:**
+- Each JSON object becomes a "Record N" group
+- Records are arranged in a grid with monitor-friendly aspect ratio (approximately 16:9)
+- Grid dimensions are automatically calculated based on record count
+- Alternating colors for visual separation
+- All transformation rules apply within each record group
+
 **Generated Canvas metadata:**
 
 All imported nodes receive:
 - `x`, `y`: Spatial position (auto-calculated grid layout)
 - `width`, `height`: Node dimensions (based on content size)
-- `color`: Optional (can apply taxonomy colors based on data type)
+- `color`: Optional (can apply taxonomy colors based on data type, alternating for JSONL records)
 - `id`: Deterministic (derived from JSON path: `root.users.0.name`)
 
 **Spatial layout algorithm:**
@@ -742,11 +757,13 @@ All imported nodes receive:
 2. **Grid-based arrangement**: Children laid out in predictable grid
 3. **Depth offset**: Nested groups indented/offset for visual hierarchy
 4. **Collision avoidance**: Nodes never overlap
+5. **JSONL grid layout**: Records arranged in monitor-friendly grid with optimal aspect ratio
 
 **Use cases:**
 - Visualize JSON data structures (API responses, config files, etc.)
+- Visualize JSONL datasets (logs, streaming data, batch records)
 - Author structured data visually in Canvas, export as clean JSON
-- Round-trip editing: JSON → Canvas (visual edit) → JSON
+- Round-trip editing: JSON/JSONL → Canvas (visual edit) → JSON
 
 **Reversibility:** Import then export (with metadata stripping) should produce semantically equivalent JSON, though formatting may differ (whitespace, key order).
 

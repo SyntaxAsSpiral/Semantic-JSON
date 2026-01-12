@@ -7,7 +7,7 @@
 
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Intuitive JSON**: Watch your clean data structure self-assemble in real-time IDE
-- **Pure JSON imports ⇄ exports:** import structure to Canvas, author visually, export clean semantic JSON
+- **Pure JSON/JSONL imports ⇄ exports:** import structure to Canvas, author visually, export clean semantic JSON
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
 - **CLI tool**: Included for batch processing or CI pipelines
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
@@ -50,6 +50,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 
 - 💫 **"Compile active canvas"**: Recompiles the `.canvas` file in-place preserving semantic structure
 - 📥 **"Import JSON to Canvas"**: Creates visual scaffolding from JSON (objects/arrays → groups, primitives → text nodes)
+- 📥 **"Import JSONL to Canvas"**: Creates visual scaffolding from JSONL files (each line becomes a record group)
 - 📤 **"Export as pure JSON"**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
 ### Settings
@@ -68,6 +69,9 @@ Enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
 # Import JSON to Canvas (create visual scaffolding)
 node cli/canvas-compile.mjs --from-json data.json
 
+# Import JSONL to Canvas (each line becomes a record group)
+node cli/canvas-compile.mjs --from-jsonl data.jsonl
+
 # Compile to semantic JSON Canvas
 node cli/canvas-compile.mjs --in <path-to-.canvas>
 
@@ -76,6 +80,7 @@ node cli/canvas-compile.mjs --in file.canvas --strip-metadata
 
 # Options
 --from-json                       # Import JSON to Canvas
+--from-jsonl                      # Import JSONL to Canvas
 --color-nodes / --no-color-nodes  # Color sorting (default: true)
 --color-edges / --no-color-edges  # Edge color sorting (default: true)
 --flow-sort / --no-flow-sort      # Flow topology sorting (default: false)

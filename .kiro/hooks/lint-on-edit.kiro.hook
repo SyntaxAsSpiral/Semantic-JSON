@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Lint TypeScript Files",
+  "description": "Automatically runs ESLint on TypeScript files when they are edited to catch linting issues and suggest fixes",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.ts",
+      "*.mts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Run `eslint` on the edited file and fix any linting errors or warnings found. If there are no issues, confirm the file passes linting."
+  }
+}

@@ -15,6 +15,34 @@ export default tseslint.config(
 			},
 		},
 	},
+	{
+		files: ["**/*.mjs", "**/*.js"],
+		languageOptions: {
+			globals: {
+				...globals.node,
+			},
+			ecmaVersion: 2022,
+			sourceType: "module",
+		},
+		rules: {
+			// Basic JavaScript linting rules
+			"no-unused-vars": "error",
+			"no-undef": "error",
+			"no-unreachable": "error",
+			"no-dupe-keys": "error",
+			"no-duplicate-case": "error",
+			"no-empty": "error",
+			"no-extra-semi": "error",
+			"no-func-assign": "error",
+			"no-invalid-regexp": "error",
+			"no-irregular-whitespace": "error",
+			"no-obj-calls": "error",
+			"no-sparse-arrays": "error",
+			"no-unexpected-multiline": "error",
+			"use-isnan": "error",
+			"valid-typeof": "error",
+		},
+	},
 	...tseslint.configs.recommended,
 	{
 		files: ["src/**/*.ts"],

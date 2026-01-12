@@ -10,9 +10,11 @@ function usage(message) {
       'Usage:',
       '  node cli/canvas-compile.mjs --in <path-to-.canvas> [--out <path-to-.json>] [options]',
       '  node cli/canvas-compile.mjs --from-json <path-to-.json> [--out <path-to-.canvas>]',
+      '  node cli/canvas-compile.mjs --from-jsonl <path-to-.jsonl> [--out <path-to-.canvas>]',
       '',
       'Options:',
       '  --from-json           Import JSON to Canvas (create visual scaffolding)',
+      '  --from-jsonl          Import JSONL to Canvas (each line becomes a record group)',
       '  --color-nodes         Enable color-based node sorting (default: true)',
       '  --no-color-nodes      Disable color-based node sorting',
       '  --color-edges         Enable color-based edge sorting (default: true)',
@@ -26,9 +28,10 @@ function usage(message) {
       '  --no-group-orphan-nodes           Sort orphan nodes spatially (default behavior)',
       '',
       'Behavior:',
-      '  - Reads a JSON Canvas 1.0 file (.canvas) or JSON file (.json)',
+      '  - Reads a JSON Canvas 1.0 file (.canvas), JSON file (.json), or JSONL file (.jsonl)',
       '  - With --from-json: creates Canvas scaffolding (objects/arrays → groups, primitives → text nodes)',
-      '  - Without --from-json: compiles to semantic JSON via visuospatial encoding',
+      '  - With --from-jsonl: creates Canvas scaffolding with each JSONL record as a separate group',
+      '  - Without --from-json/--from-jsonl: compiles to semantic JSON via visuospatial encoding',
       '  - Encodes 4 visual dimensions: position, containment, color, directionality',
       '  - Outputs to specified path or <input-stem>.json/.canvas in same directory',
       '  - With --strip-metadata: removes spatial/visual fields, exports pure data artifact',
@@ -61,6 +64,10 @@ function parseArgs(argv) {
     }
     if (a === '--from-json') {
       args.fromJson = argv[++i];
+      continue;
+    }
+    if (a === '--from-jsonl') {
+      args.fromJsonl = argv[++i];
       continue;
     }
     if (a === '--out') {
@@ -830,6 +837,154 @@ function stripCanvasMetadata(input, settings) {
 }
 
 /**
+ * Import JSONL data to Canvas structure.
+ * Creates visual scaffolding for multiple JSON objects: each object → group, arranged in a grid.
+ * Objects/arrays → groups, primitives → text nodes within each object group.
+ */
+function importJsonlToCanvas(jsonObjects) {
+  const nodes = [];
+  let idCounter = 0;
+  const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
+
+  function traverse(value, key, context) {
+    const nodeId = generateId();
+    const nodeX = context.x;
+    const nodeY = context.y;
+
+    if (value === null || value === undefined) {
+      // Null/undefined → text node
+      const label = key !== null ? `${String(key)}: null` : 'null';
+      nodes.push({
+        id: nodeId,
+        type: 'text',
+        text: label,
+        x: nodeX,
+        y: nodeY,
+        width: 250,
+        height: 60,
+      });
+      context.y += 80;
+    } else if (typeof value === 'object' && !Array.isArray(value)) {
+      // Object → group
+      const label = key !== null ? String(key) : 'object';
+      const groupId = nodeId;
+      const childContext = { x: nodeX + 20, y: nodeY + 80 };
+
+      // Traverse children
+      const entries = Object.entries(value);
+      for (const [k, v] of entries) {
+        traverse(v, k, childContext);
+      }
+
+      // Create group wrapping children
+      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      nodes.push({
+        id: groupId,
+        type: 'group',
+        label,
+        x: nodeX,
+        y: nodeY,
+        width: 600,
+        height: groupHeight,
+      });
+
+      context.y = childContext.y;
+    } else if (Array.isArray(value)) {
+      // Array → group
+      const label = key !== null ? String(key) : 'array';
+      const groupId = nodeId;
+      const childContext = { x: nodeX + 20, y: nodeY + 80 };
+
+      // Traverse array items
+      for (let i = 0; i < value.length; i++) {
+        traverse(value[i], i, childContext);
+      }
+
+      // Create group wrapping children
+      const groupHeight = Math.max(childContext.y - nodeY + 20, 100);
+      nodes.push({
+        id: groupId,
+        type: 'group',
+        label,
+        x: nodeX,
+        y: nodeY,
+        width: 600,
+        height: groupHeight,
+      });
+
+      context.y = childContext.y;
+    } else {
+      // Primitive → text node
+      const valueStr = typeof value === 'string' ? value : JSON.stringify(value);
+      const label = key !== null ? `${String(key)}: ${valueStr}` : valueStr;
+      nodes.push({
+        id: nodeId,
+        type: 'text',
+        text: label,
+        x: nodeX,
+        y: nodeY,
+        width: 250,
+        height: 60,
+      });
+      context.y += 80;
+    }
+  }
+
+  // Grid layout configuration
+  const recordWidth = 700;  // Width of each record group (including padding)
+  const recordSpacing = 50; // Spacing between records
+  const totalRecordWidth = recordWidth + recordSpacing;
+  
+  // Calculate grid dimensions for monitor-friendly aspect ratio (16:9 to 16:10)
+  const targetAspectRatio = 16 / 9; // Start with 16:9, can adjust
+  const recordCount = jsonObjects.length;
+  
+  // Calculate optimal grid dimensions
+  let cols = Math.ceil(Math.sqrt(recordCount * targetAspectRatio));
+  let rows = Math.ceil(recordCount / cols);
+  
+  // Adjust to ensure we don't have too many empty spots
+  while (cols * rows - recordCount > cols && cols > 1) {
+    cols--;
+    rows = Math.ceil(recordCount / cols);
+  }
+
+  console.log(`Arranging ${recordCount} records in ${cols}x${rows} grid (aspect ratio: ${(cols/rows).toFixed(2)})`);
+
+  // Layout each JSON object in grid position
+  for (let i = 0; i < jsonObjects.length; i++) {
+    const obj = jsonObjects[i];
+    const objectGroupId = generateId();
+    
+    // Calculate grid position
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const gridX = col * totalRecordWidth;
+    const gridY = row * 3500; // Vertical spacing between rows (enough for most records)
+    
+    const objectContext = { x: gridX + 20, y: gridY + 80 };
+    
+    // Traverse the object content
+    traverse(obj, null, objectContext);
+    
+    // Create wrapper group for this JSONL object
+    const objectHeight = Math.max(objectContext.y - gridY + 20, 100);
+    nodes.push({
+      id: objectGroupId,
+      type: 'group',
+      label: `Record ${i + 1}`,
+      x: gridX,
+      y: gridY,
+      width: recordWidth,
+      height: objectHeight,
+      color: i % 2 === 0 ? '#a8e6cf' : '#dcedc1', // Alternate colors for visual separation
+    });
+  }
+
+  return { nodes, edges: [] };
+}
+
+/**
  * Import JSON data to Canvas structure.
  * Creates visual scaffolding: objects/arrays → groups, primitives → text nodes.
  * Simple vertical layout, zero edges (no implied causality).
@@ -929,6 +1084,40 @@ function importJsonToCanvas(data) {
   return { nodes, edges: [] };
 }
 
+export function importJsonlFile({ inPath, outPath }) {
+  const absIn = path.resolve(String(inPath ?? '').trim());
+  const raw = fs.readFileSync(absIn, 'utf8');
+  
+  // Parse JSONL: split by lines and parse each non-empty line as JSON
+  const lines = raw.split('\n').filter(line => line.trim());
+  const jsonObjects = lines.map((line, index) => {
+    try {
+      return JSON.parse(line);
+    } catch (error) {
+      throw new Error(`Invalid JSON on line ${index + 1}: ${error.message}`);
+    }
+  });
+
+  const stem = path.basename(absIn).replace(/\.jsonl$/i, '');
+
+  // Default output to same directory as input
+  const absOut = String(outPath ?? '').trim() || path.resolve(path.dirname(absIn), `${stem}.canvas`);
+
+  // Import JSONL to Canvas
+  const canvas = importJsonlToCanvas(jsonObjects);
+  const serialized = JSON.stringify(canvas, null, 2) + '\n';
+
+  fs.writeFileSync(absOut, serialized, 'utf8');
+
+  return {
+    inPath: absIn,
+    outPath: absOut,
+    recordsIn: jsonObjects.length,
+    nodesOut: canvas.nodes.length,
+    edgesOut: canvas.edges.length,
+  };
+}
+
 export function importJsonFile({ inPath, outPath }) {
   const absIn = path.resolve(String(inPath ?? '').trim());
   const input = readJson(absIn);
@@ -1008,10 +1197,23 @@ async function main() {
     return;
   }
 
+  // Import mode: --from-jsonl
+  if (args.fromJsonl) {
+    const fromJsonlPath = String(args.fromJsonl).trim();
+    if (!fromJsonlPath) {
+      usage('missing value for --from-jsonl');
+      process.exit(2);
+      return;
+    }
+    const res = importJsonlFile({ inPath: fromJsonlPath, outPath: args.out });
+    process.stdout.write(JSON.stringify(res, null, 2) + '\n');
+    return;
+  }
+
   // Compile mode: --in
   const inPath = String(args.in ?? '').trim();
   if (!inPath) {
-    usage('missing required --in or --from-json');
+    usage('missing required --in, --from-json, or --from-jsonl');
     process.exit(2);
     return;
   }

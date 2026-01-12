@@ -735,6 +735,284 @@ export function importJsonToCanvas(data: unknown): CanvasData {
   return { nodes, edges: [] };
 }
 
+/**
+ * Color manipulation utilities for palette mutations
+ */
+function hexToHsl(hex: string): [number, number, number] {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  let h: number, s: number;
+  const l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0; // achromatic
+  } else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+      default: h = 0;
+    }
+    h /= 6;
+  }
+
+  return [h * 360, s * 100, l * 100];
+}
+
+function hslToHex(h: number, s: number, l: number): string {
+  h = h / 360;
+  s = s / 100;
+  l = l / 100;
+
+  const hue2rgb = (p: number, q: number, t: number): number => {
+    if (t < 0) t += 1;
+    if (t > 1) t -= 1;
+    if (t < 1/6) return p + (q - p) * 6 * t;
+    if (t < 1/2) return q;
+    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    return p;
+  };
+
+  let r: number, g: number, b: number;
+  if (s === 0) {
+    r = g = b = l; // achromatic
+  } else {
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+
+  const toHex = (c: number): string => {
+    const hex = Math.round(c * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function mutateColor(hex: string, hueShift: number, satMult: number, lightMult: number): string {
+  let [h, s, l] = hexToHsl(hex);
+  
+  h = (h + hueShift) % 360;
+  if (h < 0) h += 360;
+  
+  s = Math.max(0, Math.min(100, s * satMult));
+  l = Math.max(0, Math.min(100, l * lightMult));
+  
+  return hslToHex(h, s, l);
+}
+
+/**
+ * Generate rainbow gradient colors for grid layout
+ */
+function generateRainbowGradient(count: number): string[] {
+  const colors: string[] = [];
+  const baseHues = [0, 30, 60, 120, 180, 240, 300]; // Red, Orange, Yellow, Green, Cyan, Blue, Purple
+  
+  for (let i = 0; i < count; i++) {
+    // Cycle through base hues, then interpolate between them
+    const hueIndex = i % baseHues.length;
+    const cyclePosition = Math.floor(i / baseHues.length);
+    
+    // Add slight variation for multiple cycles
+    const hueVariation = cyclePosition * 15; // 15° shift per cycle
+    const baseHue = baseHues[hueIndex];
+    const finalHue = (baseHue + hueVariation) % 360;
+    
+    // Vary saturation and lightness for visual interest
+    const saturation = 65 + (i % 3) * 10; // 65-85%
+    const lightness = 70 + (i % 4) * 5;   // 70-85%
+    
+    colors.push(hslToHex(finalHue, saturation, lightness));
+  }
+  
+  return colors;
+}
+
+/**
+ * Generate hierarchical color mutations for nested content
+ */
+function generateHierarchicalColors(baseColor: string, depth: number): string[] {
+  const colors: string[] = [baseColor];
+  
+  for (let i = 1; i <= depth; i++) {
+    // Each level gets progressively more muted and shifted
+    const hueShift = i * 25; // Shift hue by 25° per level
+    const satReduction = 0.85 - (i * 0.1); // Reduce saturation
+    const lightIncrease = 1.1 + (i * 0.05); // Increase lightness slightly
+    
+    const mutatedColor = mutateColor(baseColor, hueShift, satReduction, lightIncrease);
+    colors.push(mutatedColor);
+  }
+  
+  return colors;
+}
+
+/**
+ * Import JSONL data to Canvas structure.
+ * Creates visual scaffolding for multiple JSON objects: each object → group, arranged in a grid.
+ * Objects/arrays → groups, primitives → text nodes within each object group.
+ */
+export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
+  const nodes: CanvasNode[] = [];
+  let idCounter = 0;
+  const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
+
+  interface LayoutContext {
+    x: number;
+    y: number;
+  }
+
+  // Grid layout configuration
+  const recordWidth = 700;  // Width of each record group (including padding)
+  const recordSpacing = 50; // Spacing between records
+  const totalRecordWidth = recordWidth + recordSpacing;
+  
+  // Calculate grid dimensions for monitor-friendly aspect ratio (16:9 to 16:10)
+  const targetAspectRatio = 16 / 9; // Start with 16:9, can adjust
+  const recordCount = jsonObjects.length;
+  
+  // Calculate optimal grid dimensions
+  let cols = Math.ceil(Math.sqrt(recordCount * targetAspectRatio));
+  let rows = Math.ceil(recordCount / cols);
+  
+  // Adjust to ensure we don't have too many empty spots
+  while (cols * rows - recordCount > cols && cols > 1) {
+    cols--;
+    rows = Math.ceil(recordCount / cols);
+  }
+
+  console.log(`Arranging ${recordCount} records in ${cols}x${rows} grid (aspect ratio: ${(cols/rows).toFixed(2)})`);
+
+  // Generate rainbow gradient colors for main records
+  const rainbowColors = generateRainbowGradient(recordCount);
+
+  // Layout each JSON object in grid position
+  for (let i = 0; i < jsonObjects.length; i++) {
+    const obj = jsonObjects[i];
+    const objectGroupId = generateId();
+    const baseColor = rainbowColors[i];
+    
+    // Generate hierarchical colors for this record's nested content
+    const hierarchicalColors = generateHierarchicalColors(baseColor, 5);
+    
+    // Calculate grid position
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const gridX = col * totalRecordWidth;
+    const gridY = row * 3500; // Vertical spacing between rows (enough for most records)
+    
+    const objectContext: LayoutContext = { x: gridX + 20, y: gridY + 80 };
+    
+    // Enhanced traverse function with hierarchical coloring
+    function traverseWithColors(value: unknown, key: string | null, context: LayoutContext, depth = 0): void {
+      const colorIndex = Math.min(depth, hierarchicalColors.length - 1);
+      const currentColor = hierarchicalColors[colorIndex];
+      
+      if (value === null || value === undefined) {
+        nodes.push({
+          id: generateId(),
+          type: 'text',
+          text: `**${key || 'null'}**: ${value}`,
+          x: context.x,
+          y: context.y,
+          width: 200,
+          height: 60,
+          color: currentColor,
+        });
+        context.y += 80;
+      } else if (typeof value === 'object' && !Array.isArray(value)) {
+        // Object → Group
+        const groupId = generateId();
+        const groupStartY = context.y;
+        context.y += 40; // Space for group header
+        
+        const entries = Object.entries(value as Record<string, unknown>);
+        entries.forEach(([k, v]) => {
+          traverseWithColors(v, k, context, depth + 1);
+        });
+        
+        const groupHeight = Math.max(context.y - groupStartY + 20, 100);
+        nodes.push({
+          id: groupId,
+          type: 'group',
+          label: key || 'Object',
+          x: context.x - 10,
+          y: groupStartY,
+          width: 300,
+          height: groupHeight,
+          color: currentColor,
+        });
+        
+        context.y += 20; // Space after group
+      } else if (Array.isArray(value)) {
+        // Array → Group
+        const groupId = generateId();
+        const groupStartY = context.y;
+        context.y += 40; // Space for group header
+        
+        value.forEach((item, index) => {
+          traverseWithColors(item, `[${index}]`, context, depth + 1);
+        });
+        
+        const groupHeight = Math.max(context.y - groupStartY + 20, 100);
+        nodes.push({
+          id: groupId,
+          type: 'group',
+          label: key ? `${key} [${value.length}]` : `Array [${value.length}]`,
+          x: context.x - 10,
+          y: groupStartY,
+          width: 300,
+          height: groupHeight,
+          color: currentColor,
+        });
+        
+        context.y += 20; // Space after group
+      } else {
+        // Primitive → Text node
+        const displayValue = typeof value === 'string' ? `"${value}"` : String(value);
+        nodes.push({
+          id: generateId(),
+          type: 'text',
+          text: key ? `**${key}**: ${displayValue}` : displayValue,
+          x: context.x,
+          y: context.y,
+          width: 250,
+          height: Math.max(60, Math.ceil(displayValue.length / 30) * 20 + 40),
+          color: currentColor,
+        });
+        context.y += Math.max(80, Math.ceil(displayValue.length / 30) * 20 + 60);
+      }
+    }
+    
+    // Traverse the object content with hierarchical coloring
+    traverseWithColors(obj, null, objectContext);
+    
+    // Create wrapper group for this JSONL object with rainbow color
+    const objectHeight = Math.max(objectContext.y - gridY + 20, 100);
+    nodes.push({
+      id: objectGroupId,
+      type: 'group',
+      label: `Record ${i + 1}`,
+      x: gridX,
+      y: gridY,
+      width: recordWidth,
+      height: objectHeight,
+      color: baseColor,
+    });
+  }
+
+  return { nodes, edges: [] };
+}
+
 function isContainedBy(node: CanvasNode, group: CanvasNode): boolean {
   const nx = isFiniteNumber(node?.x) ? node.x : 0;
   const ny = isFiniteNumber(node?.y) ? node.y : 0;

@@ -1,5 +1,5 @@
 import { Notice, Plugin, TFile } from 'obsidian';
-import { compileCanvasAll, stripCanvasMetadata, importJsonToCanvas } from './compile';
+import { compileCanvasAll, stripCanvasMetadata, importJsonToCanvas, importJsonlToCanvas } from './compile';
 import {
   DEFAULT_SETTINGS,
   SemanticJsonModernSettingTab,
@@ -30,6 +30,13 @@ export default class SemanticJsonModernPlugin extends Plugin {
       id: 'import-json-to-canvas',
       name: 'Import JSON to canvas',
       callback: () => void this.importJsonToCanvas(),
+    });
+
+    this.addCommand({
+      id: 'import-jsonl-to-canvas',
+      // eslint-disable-next-line obsidianmd/ui/sentence-case
+      name: 'Import JSONL to canvas',
+      callback: () => void this.importJsonlToCanvas(),
     });
 
     this.registerEvent(
@@ -138,6 +145,51 @@ export default class SemanticJsonModernPlugin extends Plugin {
       console.error(error);
       new Notice(
         `Import failed${error instanceof Error ? `: ${error.message}` : ''}`
+      );
+    }
+  }
+
+  async importJsonlToCanvas() {
+    const file = this.app.workspace.getActiveFile();
+    if (!file || file.extension !== 'jsonl') {
+      // eslint-disable-next-line obsidianmd/ui/sentence-case
+      new Notice('No active JSONL file');
+      return;
+    }
+
+    try {
+      const raw = await this.app.vault.read(file);
+      
+      // Parse JSONL: split by lines and parse each non-empty line as JSON
+      const lines = raw.split('\n').filter(line => line.trim());
+      const jsonObjects = lines.map((line, index) => {
+        try {
+          return JSON.parse(line);
+        } catch (error) {
+          throw new Error(`Invalid JSON on line ${index + 1}: ${error instanceof Error ? error.message : 'Parse error'}`);
+        }
+      });
+
+      // Import JSONL to Canvas structure
+      const canvas = importJsonlToCanvas(jsonObjects);
+      const serialized = JSON.stringify(canvas, null, 2) + '\n';
+
+      // Create .canvas filename
+      const canvasPath = file.path.replace(/\.jsonl$/, '.canvas');
+
+      // Check if file exists
+      const existingFile = this.app.vault.getAbstractFileByPath(canvasPath);
+      if (existingFile instanceof TFile) {
+        await this.app.vault.modify(existingFile, serialized);
+      } else {
+        await this.app.vault.create(canvasPath, serialized);
+      }
+
+      new Notice(`Imported ${jsonObjects.length} objects to ${canvasPath}`);
+    } catch (error) {
+      console.error(error);
+      new Notice(
+        `JSONL import failed${error instanceof Error ? `: ${error.message}` : ''}`
       );
     }
   }

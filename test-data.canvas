@@ -1,0 +1,269 @@
+{
+  "nodes": [
+    {
+      "id": "imported-0000000000000002",
+      "type": "text",
+      "text": "id: 1",
+      "x": 40,
+      "y": 160,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000003",
+      "type": "text",
+      "text": "name: Alice",
+      "x": 40,
+      "y": 240,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000004",
+      "type": "text",
+      "text": "age: 30",
+      "x": 40,
+      "y": 320,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000005",
+      "type": "text",
+      "text": "city: New York",
+      "x": 40,
+      "y": 400,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000007",
+      "type": "text",
+      "text": "0: reading",
+      "x": 60,
+      "y": 560,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000008",
+      "type": "text",
+      "text": "1: hiking",
+      "x": 60,
+      "y": 640,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000006",
+      "type": "group",
+      "label": "hobbies",
+      "x": 40,
+      "y": 480,
+      "width": 600,
+      "height": 260
+    },
+    {
+      "id": "imported-0000000000000001",
+      "type": "group",
+      "label": "object",
+      "x": 20,
+      "y": 80,
+      "width": 600,
+      "height": 660
+    },
+    {
+      "id": "imported-0000000000000000",
+      "type": "group",
+      "label": "Record 1",
+      "x": 0,
+      "y": 0,
+      "width": 700,
+      "height": 740,
+      "color": "#a8e6cf"
+    },
+    {
+      "id": "imported-000000000000000b",
+      "type": "text",
+      "text": "id: 2",
+      "x": 790,
+      "y": 160,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-000000000000000c",
+      "type": "text",
+      "text": "name: Bob",
+      "x": 790,
+      "y": 240,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-000000000000000d",
+      "type": "text",
+      "text": "age: 25",
+      "x": 790,
+      "y": 320,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-000000000000000e",
+      "type": "text",
+      "text": "city: San Francisco",
+      "x": 790,
+      "y": 400,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000010",
+      "type": "text",
+      "text": "0: coding",
+      "x": 810,
+      "y": 560,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000011",
+      "type": "text",
+      "text": "1: gaming",
+      "x": 810,
+      "y": 640,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-000000000000000f",
+      "type": "group",
+      "label": "hobbies",
+      "x": 790,
+      "y": 480,
+      "width": 600,
+      "height": 260
+    },
+    {
+      "id": "imported-0000000000000013",
+      "type": "text",
+      "text": "programming: advanced",
+      "x": 810,
+      "y": 800,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000014",
+      "type": "text",
+      "text": "design: beginner",
+      "x": 810,
+      "y": 880,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000012",
+      "type": "group",
+      "label": "skills",
+      "x": 790,
+      "y": 720,
+      "width": 600,
+      "height": 260
+    },
+    {
+      "id": "imported-000000000000000a",
+      "type": "group",
+      "label": "object",
+      "x": 770,
+      "y": 80,
+      "width": 600,
+      "height": 900
+    },
+    {
+      "id": "imported-0000000000000009",
+      "type": "group",
+      "label": "Record 2",
+      "x": 750,
+      "y": 0,
+      "width": 700,
+      "height": 980,
+      "color": "#dcedc1"
+    },
+    {
+      "id": "imported-0000000000000017",
+      "type": "text",
+      "text": "id: 3",
+      "x": 1540,
+      "y": 160,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000018",
+      "type": "text",
+      "text": "name: Charlie",
+      "x": 1540,
+      "y": 240,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000019",
+      "type": "text",
+      "text": "age: 35",
+      "x": 1540,
+      "y": 320,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-000000000000001a",
+      "type": "text",
+      "text": "city: Chicago",
+      "x": 1540,
+      "y": 400,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-000000000000001b",
+      "type": "text",
+      "text": "active: true",
+      "x": 1540,
+      "y": 480,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-000000000000001c",
+      "type": "text",
+      "text": "metadata: null",
+      "x": 1540,
+      "y": 560,
+      "width": 250,
+      "height": 60
+    },
+    {
+      "id": "imported-0000000000000016",
+      "type": "group",
+      "label": "object",
+      "x": 1520,
+      "y": 80,
+      "width": 600,
+      "height": 580
+    },
+    {
+      "id": "imported-0000000000000015",
+      "type": "group",
+      "label": "Record 3",
+      "x": 1500,
+      "y": 0,
+      "width": 700,
+      "height": 660,
+      "color": "#a8e6cf"
+    }
+  ],
+  "edges": []
+}

@@ -9,7 +9,11 @@
   "scripts": {
     "dev": "node esbuild.config.mjs",
     "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "lint": "eslint \"src/**/*.ts\""
+    "lint": "eslint \"src/**/*.ts\" \"cli/**/*.mjs\"",
+    "lint:fix": "eslint \"src/**/*.ts\" \"cli/**/*.mjs\" --fix",
+    "lint:check": "eslint \"src/**/*.ts\" \"cli/**/*.mjs\" --max-warnings 0",
+    "type-check": "tsc -noEmit -skipLibCheck",
+    "check": "npm run type-check && npm run lint:check"
   },
   "devDependencies": {
     "@types/node": "^16.11.6",
