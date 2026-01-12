@@ -62,6 +62,7 @@ This is the kind of output you'd share with an AI assistant or consume in a data
 
 This self-documenting examples pattern aligns with broader documentation architectures:
 
+- **[Semantic JSON](https://github.com/SyntaxAsSpiral/semantic-json)** - Parent project: Obsidian plugin for smart Canvas data recompiling
 - **[Context Engineering Skills](https://github.com/SyntaxAsSpiral/zk-context-vault/blob/master/skills/README.md)** - Dual-format documentation system using similar conformance testing patterns
 - **[ZK Context Vault](https://github.com/SyntaxAsSpiral/zk-context-vault)** - Comprehensive agent system documentation following self-documenting principles
 
