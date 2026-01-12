@@ -7,17 +7,11 @@
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Intuitive JSON**: Watch your clean data structure self-assemble in real-time IDE
 - **Enhanced imports ⇄ exports:** unified import with auto-detection, beautiful canvas imports, and clean pure JSON exports
+- **Automatic grid arrangement**: Data arranged in monitor-friendly aspect ratios (16:9)
+- **Intelligent file detection**: Works with `.json`, `.jsonl`, or auto-detects based on content structure
 - **Diff stability**: Git **only** tracks meaningful changes, LLMs output/consume coherent structure, humans see legible visual feedback
 - **CLI tool**: Included for batch processing or CI pipelines with unified `--import` command
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
-
-### 🌈 Enhanced Import Features
-
-- **Unified `--import` command**: Auto-detects JSON/JSONL format and creates optimized Canvas layouts
-- **Rainbow gradient coloring**: Records get beautiful gradient colors for visual separation ([see example](examples/large-jsonl-import.png))
-- **Hierarchical color mutations**: Nested structures use depth-based color variations for clear hierarchy
-- **Automatic grid arrangement**: Data arranged in monitor-friendly aspect ratios (16:9)
-- **Intelligent file detection**: Works with `.json`, `.jsonl`, or auto-detects based on content structure
 
 ## 🎯 Why this Plugin?
 
@@ -57,7 +51,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 
 - 💫 **["Compile active canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-compilation)**: Recompiles the `.canvas` file in-place preserving semantic structure
 - 🧠 **["Assign Semantic IDs"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-semantic-id-assignment)**: Uses LLM analysis to assign meaningful semantic IDs with optional taxonomy inference (requires LLM configuration)
-- 📥 **["Import to canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-unified-import-system)**: Auto-detects JSON/JSONL format and creates enhanced visual scaffolding with hierarchical coloring and rainbow gradients
+- 📥 **["Import to canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-unified-import-system)**: Auto-detects JSON/JSONL format and creates enhanced visual scaffolding with hierarchical coloring and rainbow gradients ([example](examples/large-jsonl-import.png))
 - 📤 **["Export as pure JSON"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-pure-json-export)**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
 ### Settings
