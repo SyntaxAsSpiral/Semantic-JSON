@@ -4,7 +4,7 @@
 
 ## ⚡Features
 
-- **Intuitive JSON**: Watch your clean data structure self-assemble in real-time IDE
+- **Intuitive JSON**: Watch your beautiful data structure self-assemble in real-time IDE
 - **Enhanced imports ⇄ exports:** unified import with auto-detection, beautiful canvas imports, and clean pure JSON exports
 - **Auto-compile on save**: Canvas files arrange their contents intelligently instead of scrambling
 - **Automatic grid arrangement**: Data arranged in monitor-friendly aspect ratios (16:9)
