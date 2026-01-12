@@ -1,6 +1,6 @@
 # 🧪 Examples Index
 
-This folder contains [self-documenting examples](https://github.com/SyntaxAsSpiral/Collectivist) demonstrating Semantic JSON's compilation and export features.
+This folder contains [self-documenting examples](https://github.com/SyntaxAsSpiral/Collectivist) demonstrating Semantic JSON's compilation, import, and export features.
 
 ## 📁 File Index
 
