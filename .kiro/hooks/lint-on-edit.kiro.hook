@@ -8,8 +8,8 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Run `eslint` on the edited file and fix any linting errors or warnings found. If there are no issues, confirm the file passes linting."
+    "prompt": "Run `eslint` on the edited file and fix any linting errors or warnings found. If there are no issues, confirm the file passes linting.  Be sure to avoid using emoji in ui elements. "
   },
   "workspaceFolderName": "semantic-json",
-  "shortName": "lint-on-prompt"
+  "shortName": "lint-on-edit"
 }
