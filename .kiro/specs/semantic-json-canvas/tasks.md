@@ -281,42 +281,42 @@ This implementation plan covers the existing TypeScript-based Obsidian plugin an
     - **Property 20: Content Format Auto-Detection**
     - **Validates: Requirements 11.4, 11.5**
 
-- [ ] 17. Emergent Type System Implementation
-  - [ ] 17.1 Implement type inference engine
-    - Create content pattern analysis for node classification
-    - Implement coherent taxonomy generation from canvas patterns
-    - Create type system with descriptive names and categories
-    - Handle edge cases for mixed content and malformed data
-    - _Requirements: 12.1, 12.4_
+- [x] 17. LLM-Based Semantic ID System Implementation
+  - [x] 17.1 Implement LLM configuration and settings
+    - Add LLM provider settings to plugin configuration interface
+    - Support multiple providers (LMStudio, Ollama, OpenRouter, OpenAI, Anthropic)
+    - Create provider-specific default configurations and validation
+    - Implement API key management for cloud providers
+    - _Requirements: 12.5_
 
-  - [ ] 17.2 Implement semantic ID generation and assignment
-    - Create deterministic semantic ID format (type::variant::hash)
-    - Implement content-based hash generation for stable IDs
-    - Handle ID collision resolution with numeric suffixes
-    - Ensure ID stability across multiple inference runs
-    - _Requirements: 12.2, 12.5_
+  - [x] 17.2 Implement LLM service integration
+    - Create LLM client with multi-provider support using Obsidian's requestUrl
+    - Implement request/response handling with proper error management
+    - Create structured prompt for canvas analysis with complete node content
+    - Handle LLM response parsing and validation
+    - _Requirements: 12.1, 12.2_
 
-  - [ ] 17.3 Implement canvas rewriting with reference updates
-    - Update all node IDs to semantic format
+  - [x] 17.3 Implement semantic ID assignment command
+    - Create "Assign Semantic IDs" command in plugin interface
+    - Extract all node content and send to LLM without token limits
+    - Process LLM response to extract taxonomy and ID mappings
+    - Implement fallback to generic kebab-case IDs when LLM fails or returns no taxonomy
+    - _Requirements: 12.1, 12.3_
+
+  - [x] 17.4 Implement canvas rewriting with reference updates
+    - Update all node IDs to semantic format from LLM response
     - Update all edge fromNode/toNode references to match new IDs
     - Preserve graph connectivity during ID transformation
-    - Maintain canvas structure integrity
-    - _Requirements: 12.3_
-
-  - [ ] 17.4 Implement type system export integration
-    - Include inferred type_system in export metadata
-    - Include typed node_ids mapping in export
-    - Support both canvas and pure JSON export formats
-    - Ensure self-describing canvas output
+    - Include optional taxonomy metadata in canvas output
     - _Requirements: 12.4_
 
-  - [ ]* 17.5 Write property test for emergent type system generation
-    - **Property 21: Emergent Type System Generation**
-    - **Validates: Requirements 12.1, 12.4**
+  - [x]* 17.5 Write property test for LLM-based semantic ID assignment
+    - **Property 21: LLM-Based Semantic ID Assignment**
+    - **Validates: Requirements 12.1, 12.2, 12.4**
 
-  - [ ]* 17.6 Write property test for semantic ID assignment
-    - **Property 22: Semantic ID Assignment and Reference Consistency**
-    - **Validates: Requirements 12.2, 12.3, 12.5**
+  - [ ]* 17.6 Write property test for reference consistency
+    - **Property 22: Reference Consistency After ID Assignment**
+    - **Validates: Requirements 12.3, 12.5**
 
 - [ ] 18. Final Integration and Testing
   - Ensure all tests pass, ask the user if questions arise.
@@ -324,14 +324,14 @@ This implementation plan covers the existing TypeScript-based Obsidian plugin an
 - [ ] 18. Final Integration and Testing
   - [ ] 18.1 Wire all components together
     - Integrate smart content parsing with compilation engine
-    - Integrate emergent type system with canvas rewriting
+    - Integrate LLM-based semantic ID system with canvas rewriting
     - Connect new features with plugin commands and CLI tools
     - Ensure proper error propagation and handling
     - _Requirements: All requirements integration_
 
   - [ ]* 18.2 Write integration tests
     - Test end-to-end workflows with smart content parsing
-    - Test emergent type system with various canvas types
+    - Test LLM-based semantic ID assignment with various canvas types
     - Test plugin command integration with new features
     - Test CLI tool functionality with enhanced capabilities
     - _Requirements: Integration testing_
@@ -349,4 +349,6 @@ This implementation plan covers the existing TypeScript-based Obsidian plugin an
 - The implementation is based on existing TypeScript codebase
 - Focus on maintaining backward compatibility while adding new features
 - Smart content parsing elevates semantic-json to "lingua franca" for structured data
-- Emergent type systems make each canvas self-describing with locally-appropriate taxonomies
+- LLM-based semantic ID system makes each canvas self-describing with flexible taxonomy
+- Fallback to generic kebab-case IDs ensures robustness when LLM analysis fails
+- Multi-provider LLM support enables both local and cloud-based analysis

@@ -5,6 +5,7 @@ import {
   SemanticJsonModernSettingTab,
   SemanticJsonModernSettings,
 } from './settings';
+import { LLMService, SemanticAnalysisRequest } from './llm-service';
 
 export default class SemanticJsonModernPlugin extends Plugin {
   settings: SemanticJsonModernSettings = { ...DEFAULT_SETTINGS };
@@ -42,6 +43,12 @@ export default class SemanticJsonModernPlugin extends Plugin {
       id: 'import-jsonl-to-canvas',
       name: 'Import data to canvas',
       callback: () => void this.importJsonlToCanvas(),
+    });
+
+    this.addCommand({
+      id: 'assign-semantic-ids',
+      name: 'Assign Semantic IDs',
+      callback: () => void this.assignSemanticIds(),
     });
 
     this.registerEvent(
@@ -229,6 +236,151 @@ export default class SemanticJsonModernPlugin extends Plugin {
       new Notice(
         `JSONL import failed${error instanceof Error ? `: ${error.message}` : ''}`
       );
+    }
+  }
+
+  async assignSemanticIds() {
+    const file = this.app.workspace.getActiveFile();
+    if (!file || file.extension !== 'canvas') {
+      new Notice('No active canvas file');
+      return;
+    }
+
+    if (!this.settings.llm.enabled) {
+      new Notice('LLM features are disabled. Enable them in settings first.');
+      return;
+    }
+
+    try {
+      new Notice('Analyzing canvas content...');
+      
+      const raw = await this.app.vault.read(file);
+      const parsed = JSON.parse(raw);
+
+      // Extract node and edge data for LLM analysis
+      const nodes = Array.isArray(parsed?.nodes) ? parsed.nodes : [];
+      const edges = Array.isArray(parsed?.edges) ? parsed.edges : [];
+
+      const analysisRequest: SemanticAnalysisRequest = {
+        nodes: nodes.map((node: any) => ({
+          id: node.id,
+          type: node.type,
+          text: node.text,
+          file: node.file,
+          url: node.url,
+          label: node.label,
+        })),
+        edges: edges.map((edge: any) => ({
+          id: edge.id,
+          fromNode: edge.fromNode,
+          toNode: edge.toNode,
+          label: edge.label,
+        })),
+      };
+
+      // Call LLM service
+      const llmService = new LLMService(this.settings.llm);
+      const analysisResponse = await llmService.analyzeCanvas(analysisRequest);
+
+      // Apply semantic IDs to canvas
+      const updatedCanvas = this.applySemanticIds(parsed, analysisResponse);
+      
+      // Add taxonomy metadata if provided
+      if (analysisResponse.taxonomy) {
+        updatedCanvas._taxonomy = analysisResponse.taxonomy;
+      }
+
+      const serialized = JSON.stringify(updatedCanvas, null, 2) + '\n';
+      await this.app.vault.modify(file, serialized);
+
+      const nodeCount = Object.keys(analysisResponse.node_ids).length;
+      const taxonomyInfo = analysisResponse.taxonomy 
+        ? ` with ${Object.keys(analysisResponse.taxonomy).length} taxonomy types`
+        : ' with generic IDs';
+      
+      new Notice(`Assigned semantic IDs to ${nodeCount} nodes${taxonomyInfo}`);
+    } catch (error) {
+      console.error('Semantic ID assignment failed:', error);
+      new Notice(
+        `Semantic ID assignment failed${error instanceof Error ? `: ${error.message}` : ''}`
+      );
+    }
+  }
+
+  private applySemanticIds(canvas: any, response: any): any {
+    const updatedCanvas = { ...canvas };
+    
+    // Create mapping for validation
+    const nodeIdMapping = new Map<string, string>();
+    for (const [originalId, semanticId] of Object.entries(response.node_ids)) {
+      nodeIdMapping.set(originalId as string, semanticId as string);
+    }
+
+    // Update node IDs
+    if (updatedCanvas.nodes && Array.isArray(updatedCanvas.nodes)) {
+      updatedCanvas.nodes = updatedCanvas.nodes.map((node: any) => {
+        const newId = response.node_ids[node.id];
+        if (newId) {
+          return { ...node, id: newId };
+        }
+        return node;
+      });
+    }
+
+    // Update edge IDs and references with validation
+    if (updatedCanvas.edges && Array.isArray(updatedCanvas.edges)) {
+      updatedCanvas.edges = updatedCanvas.edges.map((edge: any) => {
+        const updatedEdge = { ...edge };
+        
+        // Update edge ID if provided
+        if (response.edge_ids && response.edge_ids[edge.id]) {
+          updatedEdge.id = response.edge_ids[edge.id];
+        }
+        
+        // Update fromNode reference
+        const newFromNode = response.node_ids[edge.fromNode];
+        if (newFromNode) {
+          updatedEdge.fromNode = newFromNode;
+        } else if (!nodeIdMapping.has(edge.fromNode)) {
+          console.warn(`Edge ${edge.id} references unknown fromNode: ${edge.fromNode}`);
+        }
+        
+        // Update toNode reference
+        const newToNode = response.node_ids[edge.toNode];
+        if (newToNode) {
+          updatedEdge.toNode = newToNode;
+        } else if (!nodeIdMapping.has(edge.toNode)) {
+          console.warn(`Edge ${edge.id} references unknown toNode: ${edge.toNode}`);
+        }
+        
+        return updatedEdge;
+      });
+    }
+
+    // Validate graph connectivity after ID updates
+    this.validateGraphConnectivity(updatedCanvas);
+
+    return updatedCanvas;
+  }
+
+  private validateGraphConnectivity(canvas: any): void {
+    if (!canvas.nodes || !canvas.edges) return;
+
+    const nodeIds = new Set(canvas.nodes.map((node: any) => node.id));
+    const invalidEdges: string[] = [];
+
+    for (const edge of canvas.edges) {
+      if (!nodeIds.has(edge.fromNode)) {
+        invalidEdges.push(`${edge.id} -> invalid fromNode: ${edge.fromNode}`);
+      }
+      if (!nodeIds.has(edge.toNode)) {
+        invalidEdges.push(`${edge.id} -> invalid toNode: ${edge.toNode}`);
+      }
+    }
+
+    if (invalidEdges.length > 0) {
+      console.error('Graph connectivity validation failed:', invalidEdges);
+      throw new Error(`Graph connectivity broken: ${invalidEdges.length} invalid edge references`);
     }
   }
 

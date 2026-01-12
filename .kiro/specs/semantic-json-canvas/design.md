@@ -55,11 +55,11 @@ graph TD
 - Intelligent sort key generation with configurable priority
 - Graceful degradation to plain text fallback
 
-**Layer 3: Emergent Type Systems**
-- Canvas content pattern analysis and classification
-- Locally-appropriate type taxonomy generation
-- Deterministic semantic ID assignment with type encoding
-- Reference consistency maintenance during ID transformation
+**Layer 3: LLM-Based Semantic ID System**
+- Complete canvas content analysis via LLM integration
+- Structured taxonomy generation with fallback to generic IDs
+- Deterministic semantic ID assignment with reference consistency
+- Multi-provider LLM support (local and cloud endpoints)
 
 **Layer 4: Enhanced Import/Export**
 - Unified import system with auto-detection
@@ -167,38 +167,65 @@ function getSmartSortKey(node: CanvasNode, settings?: ContentParsingSettings): s
 - JSON: Extract id/name/title keys from parsed objects
 - Fallback: Plain text normalization (lowercase, trim, slice to 100 chars)
 
-### Emergent Type System Engine
+### LLM-Based Semantic ID System
 
-**Type Inference Interface**
+**LLM Integration Interface**
 ```typescript
-interface TypeSystem {
-  [typeName: string]: string;    // Type name -> description
+interface LLMConfig {
+  provider: 'lmstudio' | 'ollama' | 'openrouter' | 'openai' | 'anthropic';
+  baseUrl?: string;
+  apiKey?: string;
+  model?: string;
 }
 
-interface TypedNodeIds {
-  [nodeId: string]: string;      // Original ID -> semantic typed ID
+interface SemanticAnalysisRequest {
+  nodes: Array<{
+    id: string;
+    type: string;
+    text?: string;
+    file?: string;
+    url?: string;
+    label?: string;
+  }>;
+  edges: Array<{
+    id: string;
+    fromNode: string;
+    toNode: string;
+    label?: string;
+  }>;
 }
 
-interface EmergentAnalysis {
-  type_system: TypeSystem;
-  node_ids: TypedNodeIds;
+interface SemanticAnalysisResponse {
+  taxonomy?: Record<string, string>;  // Optional: type_name -> description
+  node_ids: Record<string, string>;   // original_id -> semantic_id
+  edge_ids?: Record<string, string>;  // original_id -> semantic_id (optional)
 }
 
-function inferCanvasTypology(canvas: CanvasData): EmergentAnalysis
+function assignSemanticIds(
+  canvas: CanvasData, 
+  llmConfig: LLMConfig
+): Promise<CanvasData>
 ```
 
-**Type Inference Process:**
-1. **Content Analysis**: Analyze all node content for patterns (JSON blocks, config snippets, reference material)
-2. **Pattern Recognition**: Identify coherent categories (palette, legend, config::format, group::semantic)
-3. **Taxonomy Generation**: Create locally-appropriate type system with descriptive names
-4. **ID Assignment**: Generate semantic IDs encoding type and content hash
-5. **Reference Updating**: Update all edge fromNode/toNode references to new semantic IDs
+**LLM Analysis Process:**
+1. **Content Extraction**: Extract all text content from nodes (complete text, no truncation)
+2. **LLM Request**: Send complete node data to configured LLM endpoint
+3. **Response Processing**: Parse structured JSON response with taxonomy and ID mappings
+4. **Fallback Handling**: Generate generic kebab-case IDs (node-001, node-002) when LLM fails or returns no taxonomy
+5. **Reference Updates**: Update all edge fromNode/toNode references to new semantic IDs
+6. **Canvas Rewriting**: Return updated canvas with semantic IDs and optional taxonomy metadata
 
-**Semantic ID Format:**
-- Pattern: `{type}::{variant}::{hash}`
-- Example: `palette::rose::045f`, `config::starship::a7b2`, `legend::reference::c8d9`
-- Deterministic: Same content produces same ID across runs
-- Collision Handling: Append numeric suffix for conflicts
+**LLM Prompt Structure:**
+- Send ALL node content without token limits
+- Request structured JSON response with taxonomy legend and ID assignments
+- Handle both successful taxonomy inference and fallback to generic kebab-case numbering
+- Preserve graph connectivity through consistent ID mapping
+
+**Configuration Integration:**
+- Obsidian settings UI for LLM provider configuration
+- Support for local (LMStudio, Ollama) and cloud (OpenAI, Anthropic) providers
+- Flexible endpoint and model configuration
+- API key management for cloud providers
 
 ### Export System Architecture
 
@@ -314,6 +341,54 @@ interface GridLayout {
 - **Rainbow Gradient**: Cyclic hue progression through 7 base colors
 - **HSL Manipulation**: Precise color mutations with saturation/lightness adjustments
 
+### LLM Configuration Model
+
+**LLM Provider Settings**
+```typescript
+interface LLMSettings {
+  provider: 'lmstudio' | 'ollama' | 'openrouter' | 'openai' | 'anthropic';
+  baseUrl: string;              // Custom endpoint URL
+  apiKey: string;               // API key for cloud providers
+  model: string;                // Specific model name
+  enabled: boolean;             // Enable/disable LLM features
+}
+
+const DEFAULT_LLM_SETTINGS: LLMSettings = {
+  provider: 'lmstudio',
+  baseUrl: 'http://localhost:1234',
+  apiKey: '',
+  model: 'openai/gpt-oss-20b',
+  enabled: false
+};
+```
+
+**Provider-Specific Defaults**
+- **LMStudio**: `http://localhost:1234`, no API key required
+- **Ollama**: `http://localhost:11434`, no API key required  
+- **OpenRouter**: `https://openrouter.ai/api/v1`, API key required
+- **OpenAI**: `https://api.openai.com/v1`, API key required
+- **Anthropic**: `https://api.anthropic.com`, API key required
+
+**LLM Request/Response Models**
+```typescript
+interface LLMRequest {
+  model: string;
+  messages: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+  }>;
+  temperature?: number;
+}
+
+interface LLMResponse {
+  choices: Array<{
+    message: {
+      content: string;
+    };
+  }>;
+}
+```
+
 ### Export Data Model
 
 **Pure JSON Structure**
@@ -426,13 +501,13 @@ interface PureNode {
 *For any* text node content, the system should correctly identify YAML frontmatter, Markdown headers, JSON objects, and code blocks, gracefully degrading to plain text when formats are unrecognized
 **Validates: Requirements 11.4, 11.5**
 
-### Property 21: Emergent Type System Generation
-*For any* canvas with diverse node content, the type inference engine should generate a coherent, locally-appropriate type taxonomy that captures the semantic patterns present in the canvas
-**Validates: Requirements 12.1, 12.4**
+### Property 21: LLM-Based Semantic ID Assignment
+*For any* canvas with node content, the LLM-based semantic ID system should analyze all node text content and generate appropriate semantic IDs with optional taxonomy, falling back to generic IDs when taxonomy inference fails
+**Validates: Requirements 12.1, 12.2, 12.4**
 
-### Property 22: Semantic ID Assignment and Reference Consistency
-*For any* canvas with inferred types, semantic IDs should encode the type and content hash deterministically, and all edge references should be updated to maintain graph connectivity
-**Validates: Requirements 12.2, 12.3, 12.5**
+### Property 22: Reference Consistency After ID Assignment
+*For any* canvas with reassigned semantic IDs, all edge references should be updated to maintain graph connectivity and preserve the original canvas structure
+**Validates: Requirements 12.3, 12.5**
 
 ## Error Handling
 

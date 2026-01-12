@@ -1,6 +1,14 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import SemanticJsonModernPlugin from './main';
 
+export interface LLMSettings {
+  provider: 'lmstudio' | 'ollama' | 'openrouter' | 'openai' | 'anthropic';
+  baseUrl: string;
+  apiKey: string;
+  model: string;
+  enabled: boolean;
+}
+
 export interface SemanticJsonModernSettings {
   autoCompile: boolean;
   colorSortNodes: boolean;
@@ -8,7 +16,16 @@ export interface SemanticJsonModernSettings {
   flowSortNodes: boolean;
   semanticSortOrphans: boolean;
   stripEdgesWhenFlowSorted: boolean;
+  llm: LLMSettings;
 }
+
+const DEFAULT_LLM_SETTINGS: LLMSettings = {
+  provider: 'lmstudio',
+  baseUrl: 'http://localhost:1234',
+  apiKey: '',
+  model: 'openai/gpt-oss-20b',
+  enabled: false,
+};
 
 export const DEFAULT_SETTINGS: SemanticJsonModernSettings = {
   autoCompile: true,
@@ -17,6 +34,7 @@ export const DEFAULT_SETTINGS: SemanticJsonModernSettings = {
   flowSortNodes: false,
   semanticSortOrphans: false,
   stripEdgesWhenFlowSorted: true,
+  llm: { ...DEFAULT_LLM_SETTINGS },
 };
 
 export class SemanticJsonModernSettingTab extends PluginSettingTab {
@@ -25,6 +43,41 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
   constructor(app: App, plugin: SemanticJsonModernPlugin) {
     super(app, plugin);
     this.plugin = plugin;
+  }
+
+  private getProviderDefaults(provider: string): { baseUrl: string; model: string } {
+    switch (provider) {
+      case 'lmstudio':
+        return {
+          baseUrl: 'http://localhost:1234',
+          model: 'openai/gpt-oss-20b'
+        };
+      case 'ollama':
+        return {
+          baseUrl: 'http://localhost:11434',
+          model: 'llama3.2'
+        };
+      case 'openrouter':
+        return {
+          baseUrl: 'https://openrouter.ai/api/v1',
+          model: 'meta-llama/llama-3.1-8b-instruct:free'
+        };
+      case 'openai':
+        return {
+          baseUrl: 'https://api.openai.com/v1',
+          model: 'gpt-4o-mini'
+        };
+      case 'anthropic':
+        return {
+          baseUrl: 'https://api.anthropic.com',
+          model: 'claude-3-haiku-20240307'
+        };
+      default:
+        return {
+          baseUrl: 'http://localhost:1234',
+          model: 'openai/gpt-oss-20b'
+        };
+    }
   }
 
   display(): void {
@@ -114,5 +167,93 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           })
       );
+
+    new Setting(containerEl)
+      .setName('LLM Integration')
+      .setHeading();
+
+    new Setting(containerEl)
+      .setName('Enable LLM features')
+      .setDesc('Enable LLM-based semantic ID assignment and content analysis.')
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.llm.enabled)
+          .onChange(async (value) => {
+            this.plugin.settings.llm.enabled = value;
+            await this.plugin.saveSettings();
+            this.display(); // Refresh to show/hide LLM settings
+          })
+      );
+
+    if (this.plugin.settings.llm.enabled) {
+      new Setting(containerEl)
+        .setName('LLM Provider')
+        .setDesc('Choose your LLM provider. Local providers (LMStudio, Ollama) don\'t require API keys.')
+        .addDropdown((dropdown) =>
+          dropdown
+            .addOption('lmstudio', 'LMStudio (Local)')
+            .addOption('ollama', 'Ollama (Local)')
+            .addOption('openrouter', 'OpenRouter (Cloud)')
+            .addOption('openai', 'OpenAI (Cloud)')
+            .addOption('anthropic', 'Anthropic (Cloud)')
+            .setValue(this.plugin.settings.llm.provider)
+            .onChange(async (value) => {
+              const provider = value as 'lmstudio' | 'ollama' | 'openrouter' | 'openai' | 'anthropic';
+              this.plugin.settings.llm.provider = provider;
+              
+              // Set provider-specific defaults
+              const providerDefaults = this.getProviderDefaults(provider);
+              this.plugin.settings.llm.baseUrl = providerDefaults.baseUrl;
+              this.plugin.settings.llm.model = providerDefaults.model;
+              
+              await this.plugin.saveSettings();
+              this.display(); // Refresh to update other fields
+            })
+        );
+
+      new Setting(containerEl)
+        .setName('Base URL')
+        .setDesc('API endpoint URL for your LLM provider.')
+        .addText((text) =>
+          text
+            .setPlaceholder('http://localhost:1234')
+            .setValue(this.plugin.settings.llm.baseUrl)
+            .onChange(async (value) => {
+              this.plugin.settings.llm.baseUrl = value;
+              await this.plugin.saveSettings();
+            })
+        );
+
+      new Setting(containerEl)
+        .setName('Model')
+        .setDesc('Specific model name to use for analysis.')
+        .addText((text) =>
+          text
+            .setPlaceholder('openai/gpt-oss-20b')
+            .setValue(this.plugin.settings.llm.model)
+            .onChange(async (value) => {
+              this.plugin.settings.llm.model = value;
+              await this.plugin.saveSettings();
+            })
+        );
+
+      const needsApiKey = ['openrouter', 'openai', 'anthropic'].includes(this.plugin.settings.llm.provider);
+      if (needsApiKey) {
+        new Setting(containerEl)
+          .setName('API Key')
+          .setDesc('API key for cloud provider authentication.')
+          .addText((text) => {
+            text
+              .setPlaceholder('Enter your API key...')
+              .setValue(this.plugin.settings.llm.apiKey)
+              .onChange(async (value) => {
+                this.plugin.settings.llm.apiKey = value;
+                await this.plugin.saveSettings();
+              });
+            text.inputEl.type = 'password';
+            return text;
+          });
+      }
+    }
   }
 }

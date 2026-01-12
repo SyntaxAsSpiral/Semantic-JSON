@@ -57,8 +57,9 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 ### Commands (via Command Palette)
 
 - 💫 **["Compile active canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-compilation)**: Recompiles the `.canvas` file in-place preserving semantic structure
+- 🧠 **"Assign Semantic IDs"**: Uses LLM analysis to assign meaningful semantic IDs with optional taxonomy inference (requires LLM configuration)
 - 📥 **["Import to canvas"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-unified-import-system)**: Auto-detects JSON/JSONL format and creates enhanced visual scaffolding with hierarchical coloring and rainbow gradients
-- � **["Export as pure JSON"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-pure-json-export)**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)o
+- 📤 **["Export as pure JSON"](https://github.com/SyntaxAsSpiral/semantic-json/blob/main/.kiro/specs/semantic-json-canvas/semantic-json-spec.md#-pure-json-export)**: Strips Canvas metadata, exports clean data artifact (`.pure.json`)
 
 ### Settings
 
@@ -67,6 +68,7 @@ Use BRAT (Beta Reviewer's Auto-update Tool) to install:
 - 📲 **Color sort edges** (default: enabled): Group edges by color within same topology
 - 🔗 **Flow sort nodes** (default: disabled): Group nodes by directional flow topology then sort spatially
 - 🏠 **Group orphan nodes** (default: disabled): Group orphan nodes together first before sorting spatially
+- 🧠 **LLM Integration** (default: disabled): Enable LLM-based semantic ID assignment with support for local (LMStudio, Ollama) and cloud providers (OpenAI, Anthropic, OpenRouter)
 
 ## Standalone CLI Tool
 

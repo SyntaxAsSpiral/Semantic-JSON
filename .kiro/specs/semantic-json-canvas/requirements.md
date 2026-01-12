@@ -157,17 +157,17 @@ The plugin includes both Obsidian integration and standalone CLI tools for batch
 4. WHEN smart content parsing is enabled, THE Semantic_JSON SHALL auto-detect content format and gracefully degrade to plain text
 5. THE Semantic_JSON SHALL provide configuration options for YAML key field priority and content parsing behavior
 
-### Requirement 12: Emergent Type System and Semantic Node IDs
+### Requirement 12: LLM-Based Semantic ID Assignment
 
-**User Story:** As a Canvas author, I want the system to infer a bespoke type taxonomy from my canvas content and assign semantic IDs, so that each canvas becomes self-describing with locally-appropriate types.
+**User Story:** As a Canvas author, I want to use an LLM to analyze my canvas content and assign semantic IDs with optional taxonomy, so that my canvas becomes self-describing with meaningful identifiers.
 
 #### Acceptance Criteria
 
-1. WHEN analyzing a canvas, THE Semantic_JSON SHALL infer a coherent type taxonomy from the full set of nodes
-2. WHEN assigning node IDs, THE Semantic_JSON SHALL encode the inferred type within the semantic ID
-3. WHEN rewriting the canvas, THE Semantic_JSON SHALL update all edge references to match the new semantic IDs
-4. WHEN exporting, THE Semantic_JSON SHALL include both the inferred type_system and the typed node instances
-5. THE Semantic_JSON SHALL ensure deterministic taxonomy generation and stable ID assignment across reruns
+1. WHEN the "Assign Semantic IDs" command is executed, THE Semantic_JSON SHALL send all node content to the configured LLM without token limits
+2. WHEN the LLM returns a structured response, THE Semantic_JSON SHALL apply the taxonomy and semantic ID mappings to the canvas
+3. WHEN the LLM fails or returns no taxonomy, THE Semantic_JSON SHALL assign generic sequential kebab-case IDs (node-001, node-002, etc.)
+4. WHEN semantic IDs are assigned, THE Semantic_JSON SHALL update all edge references to maintain graph connectivity
+5. THE Semantic_JSON SHALL provide LLM configuration options for multiple providers (local and cloud) through the Obsidian settings interface
 
 ### Requirement 13: Output Format Consistency and Determinism
 
