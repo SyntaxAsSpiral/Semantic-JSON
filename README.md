@@ -14,19 +14,6 @@
 - **CLI tool**: Included for batch processing or CI pipelines with unified `--import` command
 - **Spec-compliant**: Pure JSON Canvas extension—no custom properties, works with all Canvas tools
 
-### 🌈 Enhanced Import Features
-
-- **Unified `--import` command**: Auto-detects JSON/JSONL format and creates optimized Canvas layouts
-- **Beautiful visual treatment for all formats**:
-  - **Regular JSON**: Hierarchical color mutations with depth-based variations for clear nested structure
-  - **JSONL**: Rainbow gradient coloring with automatic grid arrangement ([see example](examples/large-jsonl-import.png))
-  - **Pure JSON exports**: Grid layout with rainbow gradients (treats Canvas node arrays like JSONL records)
-- **Intelligent layout optimization**: 
-  - JSON preserves semantic structure with left-to-right reading order
-  - JSONL arranges records in monitor-friendly aspect ratios (16:9)
-  - Pure JSON exports get grid treatment for easy comparison of Canvas nodes
-- **Automatic file detection**: Works with `.json`, `.jsonl`, or auto-detects based on content structure
-- **Enhanced coloring system**: All formats get beautiful color schemes that make structure immediately visible
 ## 🎯 Why this Plugin?
 
 Obsidian's default handling of the JSON array in Canvas files incidentally discards visually encoded meaning, forcing readers to reconstruct intent. This plugin recompiles the z-index, preserving its semantics as legible, deterministic JSON across four dimensions:
