@@ -928,6 +928,156 @@ export function importJsonlToCanvas(jsonObjects: unknown[]): CanvasData {
 }
 
 /**
+ * Import JSONL data to Canvas structure (original simple algorithm).
+ * Creates visual scaffolding for multiple JSON objects: each object → group, arranged in a grid.
+ * Objects/arrays → groups, primitives → text nodes within each object group.
+ */
+function importJsonlToCanvasSimple(jsonObjects: unknown[]): CanvasData {
+  const nodes: CanvasNode[] = [];
+  let idCounter = 0;
+  const generateId = () => `imported-${(idCounter++).toString(16).padStart(16, '0')}`;
+  
+  interface LayoutContext {
+    x: number;
+    y: number;
+  }
+
+  // Grid layout configuration
+  const recordWidth = 700;  // Width of each record group (including padding)
+  const recordSpacing = 50; // Spacing between records
+  const totalRecordWidth = recordWidth + recordSpacing;
+
+  // Calculate grid dimensions - max 4 columns for optimal document scanning
+  const maxCols = 4;
+  const recordCount = jsonObjects.length;
+  
+  let cols = Math.min(recordCount, maxCols);
+  let rows = Math.ceil(recordCount / cols);
+
+  console.log(`Arranging ${recordCount} records in ${cols}x${rows} grid (max ${maxCols} columns for document scanning)`);
+
+  // Generate rainbow gradient colors for main records
+  const rainbowColors = generateRainbowGradient(recordCount);
+
+  // Layout each JSON object in grid position
+  for (let i = 0; i < jsonObjects.length; i++) {
+    const obj = jsonObjects[i];
+    const objectGroupId = generateId();
+    const baseColor = rainbowColors[i];
+    
+    // Generate hierarchical colors for this record's nested content
+    const hierarchicalColors = generateHierarchicalColors(baseColor, 5);
+    
+    // Calculate grid position
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const gridX = col * totalRecordWidth;
+    const gridY = row * 3500; // Vertical spacing between rows (enough for most records)
+    
+    const objectContext: LayoutContext = { x: gridX + 20, y: gridY + 80 };
+    
+    // Enhanced traverse function with hierarchical coloring
+    function traverseWithColors(value: unknown, key: string | null, context: LayoutContext, depth = 0): void {
+      const colorIndex = Math.min(depth, hierarchicalColors.length - 1);
+      const currentColor = hierarchicalColors[colorIndex];
+      
+      if (value === null || value === undefined) {
+        nodes.push({
+          id: generateId(),
+          type: 'text',
+          text: `**${key || 'null'}**: ${value}`,
+          x: context.x,
+          y: context.y,
+          width: 200,
+          height: 60,
+          color: currentColor,
+        });
+        context.y += 80;
+      } else if (typeof value === 'object' && !Array.isArray(value)) {
+        // Object → Group
+        const groupId = generateId();
+        const groupStartY = context.y;
+        context.y += 40; // Space for group header
+        
+        const entries = Object.entries(value as Record<string, unknown>);
+        entries.forEach(([k, v]) => {
+          traverseWithColors(v, k, context, depth + 1);
+        });
+        
+        const groupHeight = Math.max(context.y - groupStartY + 20, 100);
+        nodes.push({
+          id: groupId,
+          type: 'group',
+          label: key || 'Object',
+          x: context.x - 10,
+          y: groupStartY,
+          width: 300,
+          height: groupHeight,
+          color: currentColor,
+        });
+        
+        context.y += 20; // Space after group
+      } else if (Array.isArray(value)) {
+        // Array → Group
+        const groupId = generateId();
+        const groupStartY = context.y;
+        context.y += 40; // Space for group header
+        
+        value.forEach((item, index) => {
+          traverseWithColors(item, `[${index}]`, context, depth + 1);
+        });
+        
+        const groupHeight = Math.max(context.y - groupStartY + 20, 100);
+        nodes.push({
+          id: groupId,
+          type: 'group',
+          label: key ? `${key} [${value.length}]` : `Array [${value.length}]`,
+          x: context.x - 10,
+          y: groupStartY,
+          width: 300,
+          height: groupHeight,
+          color: currentColor,
+        });
+        
+        context.y += 20; // Space after group
+      } else {
+        // Primitive → Text node
+        const displayValue = typeof value === 'string' ? `"${value}"` : String(value);
+        nodes.push({
+          id: generateId(),
+          type: 'text',
+          text: key ? `**${key}**: ${displayValue}` : displayValue,
+          x: context.x,
+          y: context.y,
+          width: 250,
+          height: Math.max(60, Math.ceil(displayValue.length / 30) * 20 + 40),
+          color: currentColor,
+        });
+        context.y += Math.max(80, Math.ceil(displayValue.length / 30) * 20 + 60);
+      }
+    }
+    
+    // Traverse the object content with hierarchical coloring
+    traverseWithColors(obj, null, objectContext);
+    
+    // Create wrapper group for this JSONL object with rainbow color
+    const objectHeight = Math.max(objectContext.y - gridY + 20, 100);
+    nodes.push({
+      id: objectGroupId,
+      type: 'group',
+      label: `Record ${i + 1}`,
+      x: gridX,
+      y: gridY,
+      width: recordWidth,
+      height: objectHeight,
+      color: baseColor,
+    });
+  }
+
+  return { nodes, edges: [] };
+}
+
+/**
  * Enhanced JSONL import with rainbow gradient coloring and grid layout.
  * Creates visual scaffolding for multiple JSON objects: each object to group, arranged in a grid.
  * Uses proper node-first placement with groups calculated from actual node positions.
