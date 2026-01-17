@@ -1,6 +1,6 @@
 # ◈ Semantic JSON
 
-![Before/After diff](examples/slice.png)
+![large-jsonl-import](examples/slice.png)
 
 ## ⚡Features
 
