@@ -1,34 +1,30 @@
 {
-  "name": "semantic-json",
-  "version": "0.3.0",
-  "description": "Normalize Canvas JSON with flow sort, hierarchical grouping, and deterministic ordering",
-  "author": "Zach Battin",
-  "license": "MIT",
-  "main": "main.js",
-  "type": "module",
-  "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "lint": "eslint \"src/**/*.ts\" \"cli/**/*.mjs\"",
-    "lint:fix": "eslint \"src/**/*.ts\" \"cli/**/*.mjs\" --fix",
-    "lint:check": "eslint \"src/**/*.ts\" \"cli/**/*.mjs\" --max-warnings 0",
-    "type-check": "tsc -noEmit -skipLibCheck",
-    "check": "npm run type-check && npm run lint:check"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.30.1",
-    "@types/node": "^16.11.6",
-    "esbuild": "^0.25.5",
-    "eslint-plugin-obsidianmd": "^0.1.9",
-    "globals": "^14.0.0",
-    "jiti": "^2.6.1",
-    "lucide": "^0.562.0",
-    "lucide-react": "^0.562.0",
-    "tslib": "^2.4.0",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.35.1"
-  },
-  "dependencies": {
-    "obsidian": "latest"
-  }
+	"name": "semantic-json",
+	"version": "0.3.0",
+	"description": "Normalize Canvas JSON with flow sort, hierarchical grouping, and deterministic ordering",
+	"author": "Zach Battin",
+	"main": "main.js",
+	"type": "module",
+	"scripts": {
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"version": "node version-bump.mjs && git add manifest.json versions.json",
+		"lint": "eslint ."
+	},
+	"keywords": [],
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "^16.11.6",
+		"esbuild": "0.25.5",
+		"eslint-plugin-obsidianmd": "0.1.9",
+		"globals": "14.0.0",
+		"tslib": "2.4.0",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "8.35.1",
+		"@eslint/js": "9.30.1",
+		"jiti": "2.6.1"
+	},
+	"dependencies": {
+		"obsidian": "latest"
+	}
 }

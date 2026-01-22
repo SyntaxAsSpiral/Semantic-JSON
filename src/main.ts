@@ -1,11 +1,13 @@
 import { Notice, Plugin, TFile } from 'obsidian';
-import { compileCanvasAll, stripCanvasMetadata, importJsonToCanvas, importJsonlToCanvas, importDataToCanvas } from './compile';
+import { compileCanvasAll, stripCanvasMetadata, importDataToCanvas } from './compile';
+import type { CanvasData, CanvasEdge, CanvasNode } from './compile';
 import {
   DEFAULT_SETTINGS,
   SemanticJsonModernSettingTab,
   SemanticJsonModernSettings,
 } from './settings';
 import { LLMService, SemanticAnalysisRequest } from './llm-service';
+import type { SemanticAnalysisResponse } from './llm-service';
 
 export default class SemanticJsonModernPlugin extends Plugin {
   settings: SemanticJsonModernSettings = { ...DEFAULT_SETTINGS };
@@ -47,7 +49,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
 
     this.addCommand({
       id: 'assign-semantic-ids',
-      name: 'Assign Semantic IDs',
+      name: 'Assign semantic ID values',
       callback: () => void this.assignSemanticIds(),
     });
 
@@ -61,7 +63,9 @@ export default class SemanticJsonModernPlugin extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const loaded = (await this.loadData()) as unknown;
+    const data = isRecord(loaded) ? (loaded as Partial<SemanticJsonModernSettings>) : {};
+    this.settings = { ...DEFAULT_SETTINGS, ...data };
   }
 
   async saveSettings() {
@@ -86,7 +90,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
 
     try {
       const raw = await this.app.vault.read(file);
-      const parsed = JSON.parse(raw);
+      const parsed = parseCanvasData(raw);
 
       // Compile first to get semantic ordering
       const compiled = compileCanvasAll({
@@ -101,7 +105,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
 
       // Strip Canvas metadata
       const stripped = stripCanvasMetadata(compiled, {
-        flowSortNodes: this.settings.flowSortNodes,
+        flowSort: this.settings.flowSortNodes,
         stripEdgesWhenFlowSorted: this.settings.stripEdgesWhenFlowSorted,
       });
       const serialized = JSON.stringify(stripped, null, 2) + '\n';
@@ -169,10 +173,9 @@ export default class SemanticJsonModernPlugin extends Plugin {
 
     try {
       const raw = await this.app.vault.read(file);
-      const parsed = JSON.parse(raw);
 
-      // Import JSON to Canvas structure
-      const canvas = importJsonToCanvas(parsed);
+      // Import JSON to Canvas structure (CLI parity)
+      const canvas = importDataToCanvas(file.path, raw);
       const serialized = JSON.stringify(canvas, null, 2) + '\n';
 
       // Create .canvas filename
@@ -204,19 +207,10 @@ export default class SemanticJsonModernPlugin extends Plugin {
 
     try {
       const raw = await this.app.vault.read(file);
-      
-      // Parse JSONL: split by lines and parse each non-empty line as JSON
-      const lines = raw.split('\n').filter(line => line.trim());
-      const jsonObjects = lines.map((line, index) => {
-        try {
-          return JSON.parse(line);
-        } catch (error) {
-          throw new Error(`Invalid JSON on line ${index + 1}: ${error instanceof Error ? error.message : 'Parse error'}`);
-        }
-      });
+      const recordCount = raw.trim().split('\n').filter((line) => line.trim()).length;
 
-      // Import JSONL to Canvas structure
-      const canvas = importJsonlToCanvas(jsonObjects);
+      // Import JSONL to Canvas structure (CLI parity)
+      const canvas = importDataToCanvas(file.path, raw);
       const serialized = JSON.stringify(canvas, null, 2) + '\n';
 
       // Create .canvas filename
@@ -230,7 +224,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
         await this.app.vault.create(canvasPath, serialized);
       }
 
-      new Notice(`Imported ${jsonObjects.length} objects to ${canvasPath}`);
+      new Notice(`Imported ${recordCount} records to ${canvasPath}`);
     } catch (error) {
       console.error(error);
       new Notice(
@@ -247,7 +241,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
     }
 
     if (!this.settings.llm.enabled) {
-      new Notice('LLM features are disabled. Enable them in settings first.');
+      new Notice('Llm features are disabled. Enable them in settings first.');
       return;
     }
 
@@ -255,26 +249,26 @@ export default class SemanticJsonModernPlugin extends Plugin {
       new Notice('Analyzing canvas content...');
       
       const raw = await this.app.vault.read(file);
-      const parsed = JSON.parse(raw);
+      const parsed = parseCanvasData(raw);
 
       // Extract node and edge data for LLM analysis
-      const nodes = Array.isArray(parsed?.nodes) ? parsed.nodes : [];
-      const edges = Array.isArray(parsed?.edges) ? parsed.edges : [];
+      const nodes = parsed.nodes ?? [];
+      const edges = parsed.edges ?? [];
 
       const analysisRequest: SemanticAnalysisRequest = {
-        nodes: nodes.map((node: any) => ({
+        nodes: nodes.map((node) => ({
           id: node.id,
           type: node.type,
-          text: node.text,
-          file: node.file,
-          url: node.url,
-          label: node.label,
+          text: typeof node.text === 'string' ? node.text : undefined,
+          file: typeof node.file === 'string' ? node.file : undefined,
+          url: typeof node.url === 'string' ? node.url : undefined,
+          label: typeof node.label === 'string' ? node.label : undefined,
         })),
-        edges: edges.map((edge: any) => ({
+        edges: edges.map((edge) => ({
           id: edge.id,
           fromNode: edge.fromNode,
           toNode: edge.toNode,
-          label: edge.label,
+          label: typeof edge.label === 'string' ? edge.label : undefined,
         })),
       };
 
@@ -307,21 +301,21 @@ export default class SemanticJsonModernPlugin extends Plugin {
     }
   }
 
-  private applySemanticIds(canvas: any, response: any): any {
-    const updatedCanvas = { ...canvas };
+  private applySemanticIds(canvas: CanvasData, response: SemanticAnalysisResponse): CanvasData {
+    const updatedCanvas: CanvasData = { ...canvas };
     
     // Create mapping for validation
     const nodeIdMapping = new Map<string, string>();
     for (const [originalId, assignment] of Object.entries(response.node_assignments)) {
-      nodeIdMapping.set(originalId as string, (assignment as any).id);
+      nodeIdMapping.set(originalId, assignment.id);
     }
 
     // Update node IDs and colors
     if (updatedCanvas.nodes && Array.isArray(updatedCanvas.nodes)) {
-      updatedCanvas.nodes = updatedCanvas.nodes.map((node: any) => {
+      updatedCanvas.nodes = updatedCanvas.nodes.map((node) => {
         const assignment = response.node_assignments[node.id];
         if (assignment) {
-          const updatedNode = { ...node, id: assignment.id };
+          const updatedNode: CanvasNode = { ...node, id: assignment.id };
           if (assignment.color) {
             updatedNode.color = assignment.color;
           }
@@ -333,12 +327,12 @@ export default class SemanticJsonModernPlugin extends Plugin {
 
     // Update edge IDs and references with validation
     if (updatedCanvas.edges && Array.isArray(updatedCanvas.edges)) {
-      updatedCanvas.edges = updatedCanvas.edges.map((edge: any) => {
+      updatedCanvas.edges = updatedCanvas.edges.map((edge) => {
         const updatedEdge = { ...edge };
         
         // Update edge ID if provided
-        if (response.edge_assignments && response.edge_assignments[edge.id]) {
-          const edgeAssignment = response.edge_assignments[edge.id];
+        const edgeAssignment = response.edge_assignments?.[edge.id];
+        if (edgeAssignment) {
           updatedEdge.id = edgeAssignment.id;
           if (edgeAssignment.color) {
             updatedEdge.color = edgeAssignment.color;
@@ -371,10 +365,10 @@ export default class SemanticJsonModernPlugin extends Plugin {
     return updatedCanvas;
   }
 
-  private validateGraphConnectivity(canvas: any): void {
+  private validateGraphConnectivity(canvas: CanvasData): void {
     if (!canvas.nodes || !canvas.edges) return;
 
-    const nodeIds = new Set(canvas.nodes.map((node: any) => node.id));
+    const nodeIds = new Set(canvas.nodes.map((node) => node.id));
     const invalidEdges: string[] = [];
 
     for (const edge of canvas.edges) {
@@ -398,7 +392,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
 
     try {
       const raw = await this.app.vault.read(file);
-      const parsed = JSON.parse(raw);
+      const parsed = parseCanvasData(raw);
       const output = compileCanvasAll({
         input: parsed,
         settings: {
@@ -433,4 +427,44 @@ export default class SemanticJsonModernPlugin extends Plugin {
       this.isCompiling = false;
     }
   }
+}
+
+function parseCanvasData(raw: string): CanvasData {
+  const parsed = JSON.parse(raw) as unknown;
+  if (!isRecord(parsed)) {
+    throw new Error('Invalid canvas JSON');
+  }
+
+  const nodesRaw = parsed.nodes;
+  const edgesRaw = parsed.edges;
+
+  const nodes = Array.isArray(nodesRaw) ? nodesRaw.map(toCanvasNode).filter(isNonNull) : [];
+  const edges = Array.isArray(edgesRaw) ? edgesRaw.map(toCanvasEdge).filter(isNonNull) : [];
+
+  return { ...parsed, nodes, edges };
+}
+
+function toCanvasNode(value: unknown): CanvasNode | null {
+  if (!isRecord(value)) return null;
+  const id = value.id;
+  const type = value.type;
+  if (typeof id !== 'string' || typeof type !== 'string') return null;
+  return value as CanvasNode;
+}
+
+function toCanvasEdge(value: unknown): CanvasEdge | null {
+  if (!isRecord(value)) return null;
+  const id = value.id;
+  const fromNode = value.fromNode;
+  const toNode = value.toNode;
+  if (typeof id !== 'string' || typeof fromNode !== 'string' || typeof toNode !== 'string') return null;
+  return value as CanvasEdge;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isNonNull<T>(value: T | null): value is T {
+  return value !== null;
 }

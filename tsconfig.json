@@ -1,18 +1,30 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "lib": ["ES2020", "DOM"],
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "outDir": ".",
-    "baseUrl": ".",
-    "paths": {
-      "obsidian": ["./node_modules/obsidian/obsidian.d.ts"]
-    }
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"baseUrl": "src",
+		"inlineSourceMap": true,
+		"inlineSources": true,
+		"module": "ESNext",
+		"target": "ES6",
+		"allowJs": true,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noImplicitReturns": true,
+		"moduleResolution": "node",
+		"importHelpers": true,
+		"noUncheckedIndexedAccess": true,
+		"isolatedModules": true,
+		"strictNullChecks": true,
+		"strictBindCallApply": true,
+		"allowSyntheticDefaultImports": true,
+		"useUnknownInCatchVariables": true,
+		"lib": [
+			"DOM",
+			"ES5",
+			"ES6",
+			"ES7"
+		]
+	},
+	"include": [
+		"src/**/*.ts"
+	]
 }

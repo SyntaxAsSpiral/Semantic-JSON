@@ -169,12 +169,12 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName('LLM Integration')
+      .setName('Language model integration')
       .setHeading();
 
     new Setting(containerEl)
-      .setName('Enable LLM features')
-      .setDesc('Enable LLM-based semantic ID assignment and content analysis.')
+      .setName('Enable language model features')
+      .setDesc('Enable language model semantic ID assignment and content analysis.')
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.llm.enabled)
@@ -187,15 +187,15 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
 
     if (this.plugin.settings.llm.enabled) {
       new Setting(containerEl)
-        .setName('LLM Provider')
-        .setDesc('Choose your LLM provider. Local providers (LMStudio, Ollama) don\'t require API keys.')
+        .setName('Language model provider')
+        .setDesc('Choose your language model provider. Local providers do not require API keys.')
         .addDropdown((dropdown) =>
           dropdown
-            .addOption('lmstudio', 'LMStudio (Local)')
-            .addOption('ollama', 'Ollama (Local)')
-            .addOption('openrouter', 'OpenRouter (Cloud)')
-            .addOption('openai', 'OpenAI (Cloud)')
-            .addOption('anthropic', 'Anthropic (Cloud)')
+            .addOption('lmstudio', 'Lmstudio (local)')
+            .addOption('ollama', 'Ollama (local)')
+            .addOption('openrouter', 'Openrouter (cloud)')
+            .addOption('openai', 'Openai (cloud)')
+            .addOption('anthropic', 'Anthropic (cloud)')
             .setValue(this.plugin.settings.llm.provider)
             .onChange(async (value) => {
               const provider = value as 'lmstudio' | 'ollama' | 'openrouter' | 'openai' | 'anthropic';
@@ -213,10 +213,10 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
 
       new Setting(containerEl)
         .setName('Base URL')
-        .setDesc('API endpoint URL for your LLM provider.')
+        .setDesc('API endpoint URL for your language model provider.')
         .addText((text) =>
           text
-            .setPlaceholder('http://localhost:1234')
+            .setPlaceholder('Example: HTTP://localhost:1234')
             .setValue(this.plugin.settings.llm.baseUrl)
             .onChange(async (value) => {
               this.plugin.settings.llm.baseUrl = value;
@@ -240,7 +240,7 @@ export class SemanticJsonModernSettingTab extends PluginSettingTab {
       const needsApiKey = ['openrouter', 'openai', 'anthropic'].includes(this.plugin.settings.llm.provider);
       if (needsApiKey) {
         new Setting(containerEl)
-          .setName('API Key')
+          .setName('API key')
           .setDesc('API key for cloud provider authentication.')
           .addText((text) => {
             text

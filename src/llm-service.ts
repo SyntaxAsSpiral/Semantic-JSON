@@ -11,14 +11,6 @@ export interface LLMRequest {
   max_tokens?: number;
 }
 
-export interface LLMResponse {
-  choices: Array<{
-    message: {
-      content: string;
-    };
-  }>;
-}
-
 export interface SemanticAnalysisRequest {
   nodes: Array<{
     id: string;
@@ -181,10 +173,11 @@ Respond with valid JSON only:`;
         headers,
         body: JSON.stringify(anthropicRequest),
       });
-      
-      const data = response.json;
-      if (data.content && data.content[0] && data.content[0].text) {
-        return data.content[0].text;
+
+      const data = response.json as unknown;
+      const content = extractAnthropicContent(data);
+      if (content) {
+        return content;
       }
       throw new Error('Invalid Anthropic response format');
     } else if (this.settings.provider === 'openrouter') {
@@ -205,13 +198,13 @@ Respond with valid JSON only:`;
       body: JSON.stringify(requestBody),
     });
 
-    const data: LLMResponse = response.json;
-    
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+    const data = response.json as unknown;
+    const content = extractOpenAiContent(data);
+    if (!content) {
       throw new Error('Invalid LLM response format');
     }
 
-    return data.choices[0].message.content;
+    return content;
   }
 
   private parseAnalysisResponse(llmResponse: string, request: SemanticAnalysisRequest): SemanticAnalysisResponse {
@@ -222,22 +215,14 @@ Respond with valid JSON only:`;
         throw new Error('No JSON found in LLM response');
       }
 
-      const parsed = JSON.parse(jsonMatch[0]);
+      const parsed = JSON.parse(jsonMatch[0]) as unknown;
+      if (!isRecord(parsed)) {
+        throw new Error('Invalid JSON object in LLM response');
+      }
       
       // Handle both new format (node_assignments) and legacy format (node_ids)
-      let nodeAssignments: Record<string, { id: string; color: string }> = {};
-      
-      if (parsed.node_assignments) {
-        nodeAssignments = parsed.node_assignments;
-      } else if (parsed.node_ids) {
-        // Convert legacy format to new format
-        for (const [originalId, semanticId] of Object.entries(parsed.node_ids)) {
-          nodeAssignments[originalId] = {
-            id: semanticId as string,
-            color: '1' // Default color for legacy responses
-          };
-        }
-      } else {
+      const nodeAssignments = parseNodeAssignments(parsed);
+      if (!nodeAssignments) {
         throw new Error('Invalid node assignments in LLM response');
       }
 
@@ -276,20 +261,10 @@ Respond with valid JSON only:`;
       }
 
       // Handle edge assignments
-      let edgeAssignments: Record<string, { id: string; color?: string }> = {};
-      if (parsed.edge_assignments) {
-        edgeAssignments = parsed.edge_assignments;
-      } else if (parsed.edge_ids) {
-        // Convert legacy format
-        for (const [originalId, semanticId] of Object.entries(parsed.edge_ids)) {
-          edgeAssignments[originalId] = {
-            id: semanticId as string
-          };
-        }
-      }
+      const edgeAssignments = parseEdgeAssignments(parsed);
 
       return {
-        taxonomy: parsed.taxonomy,
+        taxonomy: parseTaxonomy(parsed.taxonomy),
         node_assignments: nodeAssignments,
         edge_assignments: edgeAssignments
       };
@@ -342,4 +317,109 @@ Respond with valid JSON only:`;
     const semanticPattern = /^[a-z][a-z0-9-]*(::[a-z][a-z0-9-]*)*$/;
     return semanticPattern.test(id);
   }
+}
+
+function extractOpenAiContent(data: unknown): string | null {
+  if (!isRecord(data)) return null;
+  const choices = data.choices;
+  if (!Array.isArray(choices) || choices.length === 0) return null;
+  const list = choices as unknown[];
+  const firstChoice = list[0];
+  if (!isRecord(firstChoice)) return null;
+  const message = firstChoice.message;
+  if (!isRecord(message)) return null;
+  const content = message.content;
+  return typeof content === 'string' ? content : null;
+}
+
+function extractAnthropicContent(data: unknown): string | null {
+  if (!isRecord(data)) return null;
+  const content = data.content;
+  if (!Array.isArray(content) || content.length === 0) return null;
+  const list = content as unknown[];
+  const first = list[0];
+  if (!isRecord(first)) return null;
+  const text = first.text;
+  return typeof text === 'string' ? text : null;
+}
+
+function parseNodeAssignments(parsed: Record<string, unknown>): Record<string, { id: string; color: string }> | null {
+  const assignments: Record<string, { id: string; color: string }> = {};
+
+  const nodeAssignments = parsed.node_assignments;
+  if (isRecord(nodeAssignments)) {
+    for (const [originalId, assignmentValue] of Object.entries(nodeAssignments)) {
+      if (!isRecord(assignmentValue)) continue;
+      const id = getString(assignmentValue.id);
+      if (!id) continue;
+      const color = getString(assignmentValue.color) ?? '1';
+      assignments[originalId] = { id, color };
+    }
+    if (Object.keys(assignments).length > 0) {
+      return assignments;
+    }
+  }
+
+  const nodeIds = parsed.node_ids;
+  if (isRecord(nodeIds)) {
+    for (const [originalId, semanticId] of Object.entries(nodeIds)) {
+      const id = getString(semanticId);
+      if (!id) continue;
+      assignments[originalId] = { id, color: '1' };
+    }
+  }
+
+  return Object.keys(assignments).length > 0 ? assignments : null;
+}
+
+function parseEdgeAssignments(parsed: Record<string, unknown>): Record<string, { id: string; color?: string }> | undefined {
+  const assignments: Record<string, { id: string; color?: string }> = {};
+
+  const edgeAssignments = parsed.edge_assignments;
+  if (isRecord(edgeAssignments)) {
+    for (const [originalId, assignmentValue] of Object.entries(edgeAssignments)) {
+      if (!isRecord(assignmentValue)) continue;
+      const id = getString(assignmentValue.id);
+      if (!id) continue;
+      const color = getString(assignmentValue.color) ?? undefined;
+      assignments[originalId] = color ? { id, color } : { id };
+    }
+    if (Object.keys(assignments).length > 0) {
+      return assignments;
+    }
+  }
+
+  const edgeIds = parsed.edge_ids;
+  if (isRecord(edgeIds)) {
+    for (const [originalId, semanticId] of Object.entries(edgeIds)) {
+      const id = getString(semanticId);
+      if (!id) continue;
+      assignments[originalId] = { id };
+    }
+  }
+
+  return Object.keys(assignments).length > 0 ? assignments : undefined;
+}
+
+function parseTaxonomy(value: unknown): SemanticAnalysisResponse['taxonomy'] | undefined {
+  if (!isRecord(value)) return undefined;
+  const taxonomy: NonNullable<SemanticAnalysisResponse['taxonomy']> = {};
+
+  for (const [key, entry] of Object.entries(value)) {
+    if (!isRecord(entry)) continue;
+    const description = getString(entry.description);
+    const color = getString(entry.color);
+    if (!description || !color) continue;
+    taxonomy[key] = { description, color };
+  }
+
+  return Object.keys(taxonomy).length > 0 ? taxonomy : undefined;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function getString(value: unknown): string | null {
+  return typeof value === 'string' ? value : null;
 }
