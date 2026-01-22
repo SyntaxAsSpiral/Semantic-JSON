@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
@@ -10,10 +9,10 @@ function usage(message) {
   process.stderr.write(
     [
       'Usage:',
-      '  node cli/canvas-compile.mjs --in <path-to-.canvas> [--out <path-to-.json>] [options]',
-      '  node cli/canvas-compile.mjs --from-json <path-to-.json> [--out <path-to-.canvas>]',
-      '  node cli/canvas-compile.mjs --from-jsonl <path-to-.jsonl> [--out <path-to-.canvas>]',
-      '  node cli/canvas-compile.mjs --import <path-to-file> [--out <path-to-.canvas>]',
+      '  node cli/index.mjs --in <path-to-.canvas> [--out <path-to-.json>] [options]',
+      '  node cli/index.mjs --from-json <path-to-.json> [--out <path-to-.canvas>]',
+      '  node cli/index.mjs --from-jsonl <path-to-.jsonl> [--out <path-to-.canvas>]',
+      '  node cli/index.mjs --import <path-to-file> [--out <path-to-.canvas>]',
       '',
       'Options:',
       '  --import              Auto-detect and import JSON/JSONL to Canvas (unified command)',

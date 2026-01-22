@@ -70,18 +70,18 @@ Enables batch processing, CI/CD pipelines, and programmatic canvas compilation.
 
 ```bash
 # Unified import with auto-detection (recommended)
-node cli/canvas-compile.mjs --import data.json
-node cli/canvas-compile.mjs --import data.jsonl
+node cli/index.mjs --import data.json
+node cli/index.mjs --import data.jsonl
 
 # Legacy import commands (still supported)
-node cli/canvas-compile.mjs --from-json data.json
-node cli/canvas-compile.mjs --from-jsonl data.jsonl
+node cli/index.mjs --from-json data.json
+node cli/index.mjs --from-jsonl data.jsonl
 
 # Compile to semantic JSON Canvas
-node cli/canvas-compile.mjs --in <path-to-.canvas>
+node cli/index.mjs --in <path-to-.canvas>
 
 # Export pure data artifact (strip metadata)
-node cli/canvas-compile.mjs --in file.canvas --strip-metadata
+node cli/index.mjs --in file.canvas --strip-metadata
 
 # Options
 --import                          # Auto-detect and import JSON/JSONL to Canvas (unified command)

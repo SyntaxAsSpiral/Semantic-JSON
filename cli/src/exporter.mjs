@@ -4,6 +4,7 @@ import { normalizedId } from './shared.mjs';
  * Strip Canvas metadata from compiled structure to produce pure data artifact.
  * Removes spatial (x, y, width, height), visual (color), and rendering metadata.
  * Preserves semantic content: id, text, file, url, label for nodes; id, fromNode, toNode, label for edges.
+ * Preserves explicit hex colors (e.g. "#ff00aa") for nodes/edges when present.
  * Optionally strips edges when flow-sorted (topology compiled into sequence order).
  * Embeds labeled edges directly into connected nodes via "from" and "to" properties.
  */
@@ -23,12 +24,15 @@ export function stripCanvasMetadata(input, settings) {
     const stripped = { id: node.id, type: node.type };
 
     // Preserve content fields
-    if ('text' in node && node.text !== undefined) stripped.text = node.text;
-    if ('file' in node && node.file !== undefined) stripped.file = node.file;
-    if ('url' in node && node.url !== undefined) stripped.url = node.url;
+    if ('text' in node && node.text !== undefined) stripped.text = node.text;   
+    if ('file' in node && node.file !== undefined) stripped.file = node.file;   
+    if ('url' in node && node.url !== undefined) stripped.url = node.url;       
     if ('label' in node && node.label !== undefined) stripped.label = node.label;
-    
-    // Embed directional edges if any labeled edges connect to this node
+
+    // Preserve custom colors; drop default palette indices like "1", "2", etc.
+    if ('color' in node && isCustomColor(node.color)) stripped.color = node.color;
+
+    // Embed directional edges if any labeled edges connect to this node        
     const nodeId = normalizedId(node.id);
     if (nodeFromEdges.has(nodeId)) {
       stripped.from = nodeFromEdges.get(nodeId);
@@ -51,6 +55,8 @@ export function stripCanvasMetadata(input, settings) {
       toNode: edge.toNode,
     };
 
+    if ('color' in edge && isCustomColor(edge.color)) stripped.color = edge.color;
+
     return stripped;
   });
 
@@ -63,31 +69,43 @@ export function stripCanvasMetadata(input, settings) {
  */
 function processLabeledEdges(labeledEdges, direction) {
   const nodeEdgesMap = new Map();
-  
+
   for (const edge of labeledEdges) {
     const fromId = normalizedId(edge.fromNode);
     const toId = normalizedId(edge.toNode);
-    
+    const color = isCustomColor(edge.color) ? edge.color : undefined;
+
     if (direction === 'to') {
       // Outgoing edges: fromNode -> toNode
       if (!nodeEdgesMap.has(fromId)) {
         nodeEdgesMap.set(fromId, []);
       }
-      nodeEdgesMap.get(fromId).push({
+      const out = {
         node: toId,
-        label: edge.label
-      });
+        label: edge.label,
+      };
+      if (color) out.color = color;
+      nodeEdgesMap.get(fromId).push(out);
     } else if (direction === 'from') {
       // Incoming edges: fromNode <- toNode
       if (!nodeEdgesMap.has(toId)) {
         nodeEdgesMap.set(toId, []);
       }
-      nodeEdgesMap.get(toId).push({
+      const out = {
         node: fromId,
-        label: edge.label
-      });
+        label: edge.label,
+      };
+      if (color) out.color = color;
+      nodeEdgesMap.get(toId).push(out);
     }
   }
-  
+
   return nodeEdgesMap;
+}
+
+function isCustomColor(value) {
+  if (typeof value !== 'string') return false;
+  const v = value.trim();
+  if (!v) return false;
+  return !/^\d+$/.test(v);
 }
