@@ -36,18 +36,6 @@ export default class SemanticJsonModernPlugin extends Plugin {
     });
 
     this.addCommand({
-      id: 'import-json-to-canvas',
-      name: 'Import JSON to canvas',
-      callback: () => void this.importJsonToCanvas(),
-    });
-
-    this.addCommand({
-      id: 'import-jsonl-to-canvas',
-      name: 'Import data to canvas',
-      callback: () => void this.importJsonlToCanvas(),
-    });
-
-    this.addCommand({
       id: 'assign-semantic-ids',
       name: 'Assign semantic ID values',
       callback: () => void this.assignSemanticIds(),
@@ -164,75 +152,6 @@ export default class SemanticJsonModernPlugin extends Plugin {
     }
   }
 
-  async importJsonToCanvas() {
-    const file = this.app.workspace.getActiveFile();
-    if (!file || file.extension !== 'json') {
-      new Notice('No active JSON file');
-      return;
-    }
-
-    try {
-      const raw = await this.app.vault.read(file);
-
-      // Import JSON to Canvas structure (CLI parity)
-      const canvas = importDataToCanvas(file.path, raw);
-      const serialized = JSON.stringify(canvas, null, 2) + '\n';
-
-      // Create .canvas filename
-      const canvasPath = file.path.replace(/\.json$/, '.canvas');
-
-      // Check if file exists
-      const existingFile = this.app.vault.getAbstractFileByPath(canvasPath);
-      if (existingFile instanceof TFile) {
-        await this.app.vault.modify(existingFile, serialized);
-      } else {
-        await this.app.vault.create(canvasPath, serialized);
-      }
-
-      new Notice(`Imported to ${canvasPath}`);
-    } catch (error) {
-      console.error(error);
-      new Notice(
-        `Import failed${error instanceof Error ? `: ${error.message}` : ''}`
-      );
-    }
-  }
-
-  async importJsonlToCanvas() {
-    const file = this.app.workspace.getActiveFile();
-    if (!file || file.extension !== 'jsonl') {
-      new Notice('No active data file');
-      return;
-    }
-
-    try {
-      const raw = await this.app.vault.read(file);
-      const recordCount = raw.trim().split('\n').filter((line) => line.trim()).length;
-
-      // Import JSONL to Canvas structure (CLI parity)
-      const canvas = importDataToCanvas(file.path, raw);
-      const serialized = JSON.stringify(canvas, null, 2) + '\n';
-
-      // Create .canvas filename
-      const canvasPath = file.path.replace(/\.jsonl$/, '.canvas');
-
-      // Check if file exists
-      const existingFile = this.app.vault.getAbstractFileByPath(canvasPath);
-      if (existingFile instanceof TFile) {
-        await this.app.vault.modify(existingFile, serialized);
-      } else {
-        await this.app.vault.create(canvasPath, serialized);
-      }
-
-      new Notice(`Imported ${recordCount} records to ${canvasPath}`);
-    } catch (error) {
-      console.error(error);
-      new Notice(
-        `JSONL import failed${error instanceof Error ? `: ${error.message}` : ''}`
-      );
-    }
-  }
-
   async assignSemanticIds() {
     const file = this.app.workspace.getActiveFile();
     if (!file || file.extension !== 'canvas') {
@@ -241,7 +160,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
     }
 
     if (!this.settings.llm.enabled) {
-      new Notice('Llm features are disabled. Enable them in settings first.');
+      new Notice('Language model features are disabled. Enable them in settings first.');
       return;
     }
 
@@ -279,10 +198,7 @@ export default class SemanticJsonModernPlugin extends Plugin {
       // Apply semantic IDs to canvas
       const updatedCanvas = this.applySemanticIds(parsed, analysisResponse);
       
-      // Add taxonomy metadata if provided
-      if (analysisResponse.taxonomy) {
-        updatedCanvas._taxonomy = analysisResponse.taxonomy;
-      }
+      this.attachLegendNode(updatedCanvas, analysisResponse);
 
       const serialized = JSON.stringify(updatedCanvas, null, 2) + '\n';
       await this.app.vault.modify(file, serialized);
@@ -363,6 +279,81 @@ export default class SemanticJsonModernPlugin extends Plugin {
     this.validateGraphConnectivity(updatedCanvas);
 
     return updatedCanvas;
+  }
+
+  private attachLegendNode(canvas: CanvasData, response: SemanticAnalysisResponse): void {
+    if (!response.taxonomy) return;
+
+    const entries = Object.entries(response.taxonomy);
+    if (entries.length === 0) return;
+
+    const legendId = 'legend-taxonomy';
+    const legendText = this.buildLegendText(entries);
+    const legendSize = this.measureLegend(legendText);
+
+    const nodes = canvas.nodes ?? [];
+    const existingIndex = nodes.findIndex((node) => node.id === legendId);
+    const position = this.getLegendPosition(nodes, legendSize.width, legendSize.height);
+
+    const legendNode: CanvasNode = {
+      id: legendId,
+      type: 'text',
+      text: legendText,
+      x: position.x,
+      y: position.y,
+      width: legendSize.width,
+      height: legendSize.height,
+    };
+
+    if (existingIndex >= 0) {
+      nodes[existingIndex] = { ...nodes[existingIndex], ...legendNode };
+    } else {
+      nodes.push(legendNode);
+    }
+
+    canvas.nodes = nodes;
+  }
+
+  private buildLegendText(entries: Array<[string, { description: string; color: string }]>): string {
+    const lines = ['Legend'];
+    for (const [key, value] of entries) {
+      const color = value.color ? ` (${value.color})` : '';
+      const description = value.description ? `: ${value.description}` : '';
+      lines.push(`- ${key}${color}${description}`);
+    }
+    return lines.join('\n');
+  }
+
+  private measureLegend(text: string): { width: number; height: number } {
+    const lines = text.split('\n');
+    const maxLine = lines.reduce((max, line) => Math.max(max, line.length), 0);
+    const width = Math.max(260, Math.min(520, maxLine * 8 + 40));
+    const height = Math.max(140, lines.length * 24 + 40);
+    return { width, height };
+  }
+
+  private getLegendPosition(nodes: CanvasNode[], width: number, height: number): { x: number; y: number } {
+    if (!nodes.length) return { x: 40, y: 40 };
+
+    let minX = Number.POSITIVE_INFINITY;
+    let minY = Number.POSITIVE_INFINITY;
+
+    for (const node of nodes) {
+      if (typeof node.x === 'number' && Number.isFinite(node.x)) {
+        minX = Math.min(minX, node.x);
+      }
+      if (typeof node.y === 'number' && Number.isFinite(node.y)) {
+        minY = Math.min(minY, node.y);
+      }
+    }
+
+    const baseX = Number.isFinite(minX) ? minX : 40;
+    const baseY = Number.isFinite(minY) ? minY : 40;
+
+    return {
+      x: baseX - width - 40,
+      y: baseY,
+    };
   }
 
   private validateGraphConnectivity(canvas: CanvasData): void {

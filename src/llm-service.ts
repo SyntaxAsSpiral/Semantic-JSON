@@ -52,15 +52,8 @@ export class LLMService {
     }
 
     const prompt = this.buildAnalysisPrompt(request);
-    
-    try {
-      const llmResponse = await this.callLLM(prompt);
-      return this.parseAnalysisResponse(llmResponse, request);
-    } catch (error) {
-      console.error('LLM analysis failed:', error);
-      // Fallback to generic kebab-case IDs
-      return this.generateFallbackResponse(request);
-    }
+    const llmResponse = await this.callLLM(prompt);
+    return this.parseAnalysisResponse(llmResponse, request);
   }
 
   private buildAnalysisPrompt(request: SemanticAnalysisRequest): string {
@@ -90,41 +83,46 @@ EDGES:
 ${edgeDescriptions}
 
 TASK:
-1. Analyze the content and relationships to infer a coherent taxonomy
+1. Analyze the content and relationships to infer a coherent taxonomy that fits THIS canvas domain
 2. Assign semantic IDs in the format: type::variant::hash (e.g., "concept::machine-learning::a1b2", "process::data-analysis::c3d4")
 3. Assign colors to nodes based on their taxonomy type using Canvas color values (1, 2, 3, 4, 5, 6)
 4. Ensure all IDs are unique and follow kebab-case naming
 
+DOMAIN FIT REQUIREMENT:
+- The taxonomy must reflect the actual content and structure in this canvas.
+- Avoid defaulting to generic buckets like "concept/process/resource" unless they are clearly the best fit.
+- If the canvas is a website map (nodes are HTML pages, edges are links), your taxonomy should use types like "page", "section", "link", "nav", "hub", "external", etc.
+- If the canvas is a species catalog, your taxonomy should use types like "species", "overview", "habitat", "conservation", "reference", etc.
+
+COLOR PALETTE (Canvas color index -> meaning):
+6 - purple
+5 - cyan
+4 - green
+3 - yellow
+2 - orange
+1 - red
+
+Assign colors semantically based on the meanings above. Use a variety of colors when multiple taxonomy types exist, and avoid defaulting all nodes to a single color.
+Avoid assigning the same color to every taxonomy type; reserve red (1) for warnings/alerts or negative/critical concepts unless the canvas is explicitly about danger or errors.
+
 RESPONSE FORMAT (JSON only, no explanation):
 {
   "taxonomy": {
-    "concept": {
-      "description": "Core ideas and knowledge",
-      "color": "1"
-    },
-    "process": {
-      "description": "Actions and workflows", 
-      "color": "2"
-    },
-    "resource": {
-      "description": "Files and references",
-      "color": "3"
+    "{{type_name}}": {
+      "description": "{{type_description}}",
+      "color": "{{color_index}}"
     }
   },
   "node_assignments": {
-    "original-id-1": {
-      "id": "concept::machine-learning::a1b2",
-      "color": "1"
-    },
-    "original-id-2": {
-      "id": "process::data-analysis::c3d4", 
-      "color": "2"
+    "{{original_node_id}}": {
+      "id": "{{semantic_node_id}}",
+      "color": "{{color_index}}"
     }
   },
   "edge_assignments": {
-    "edge-id-1": {
-      "id": "relation::depends-on::e5f6",
-      "color": "4"
+    "{{original_edge_id}}": {
+      "id": "{{semantic_edge_id}}",
+      "color": "{{color_index}}"
     }
   }
 }
@@ -187,7 +185,8 @@ Respond with valid JSON only:`;
     }
 
     // Standard OpenAI-compatible request for most providers
-    const url = this.settings.provider === 'ollama' 
+    const isOpenAiCompatible = this.settings.provider === 'ollama' || this.settings.provider === 'lmstudio';
+    const url = isOpenAiCompatible
       ? `${this.settings.baseUrl}/v1/chat/completions`
       : `${this.settings.baseUrl}/chat/completions`;
 
@@ -208,108 +207,48 @@ Respond with valid JSON only:`;
   }
 
   private parseAnalysisResponse(llmResponse: string, request: SemanticAnalysisRequest): SemanticAnalysisResponse {
-    try {
-      // Extract JSON from response (in case there's extra text)
-      const jsonMatch = llmResponse.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) {
-        throw new Error('No JSON found in LLM response');
-      }
-
-      const parsed = JSON.parse(jsonMatch[0]) as unknown;
-      if (!isRecord(parsed)) {
-        throw new Error('Invalid JSON object in LLM response');
-      }
-      
-      // Handle both new format (node_assignments) and legacy format (node_ids)
-      const nodeAssignments = parseNodeAssignments(parsed);
-      if (!nodeAssignments) {
-        throw new Error('Invalid node assignments in LLM response');
-      }
-
-      // Ensure all original node IDs are mapped
-      const originalNodeIds = new Set(request.nodes.map(n => n.id));
-      const mappedNodeIds = new Set(Object.keys(nodeAssignments));
-      
-      for (const originalId of originalNodeIds) {
-        if (!mappedNodeIds.has(originalId)) {
-          // Generate fallback assignment for missing mappings
-          nodeAssignments[originalId] = {
-            id: this.generateFallbackId(originalId),
-            color: '1'
-          };
-        }
-      }
-
-      // Validate semantic ID format and uniqueness
-      const semanticIds = new Set<string>();
-      for (const [originalId, assignment] of Object.entries(nodeAssignments)) {
-        if (typeof assignment.id !== 'string' || !this.isValidSemanticId(assignment.id)) {
-          // Replace invalid IDs with fallback
-          nodeAssignments[originalId] = {
-            id: this.generateFallbackId(originalId),
-            color: assignment.color || '1'
-          };
-        } else if (semanticIds.has(assignment.id)) {
-          // Handle duplicate IDs
-          nodeAssignments[originalId] = {
-            id: this.generateFallbackId(originalId),
-            color: assignment.color || '1'
-          };
-        } else {
-          semanticIds.add(assignment.id);
-        }
-      }
-
-      // Handle edge assignments
-      const edgeAssignments = parseEdgeAssignments(parsed);
-
-      return {
-        taxonomy: parseTaxonomy(parsed.taxonomy),
-        node_assignments: nodeAssignments,
-        edge_assignments: edgeAssignments
-      };
-    } catch (error) {
-      console.error('Failed to parse LLM response:', error);
-      return this.generateFallbackResponse(request);
+    const jsonMatch = llmResponse.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('No JSON found in LLM response');
     }
-  }
 
-  private generateFallbackResponse(request: SemanticAnalysisRequest): SemanticAnalysisResponse {
-    const node_assignments: Record<string, { id: string; color: string }> = {};
+    const parsed = JSON.parse(jsonMatch[0]) as unknown;
+    if (!isRecord(parsed)) {
+      throw new Error('Invalid JSON object in LLM response');
+    }
     
-    // Generate sequential kebab-case IDs with default colors
-    request.nodes.forEach((node, index) => {
-      const paddedIndex = (index + 1).toString().padStart(3, '0');
-      node_assignments[node.id] = {
-        id: `node-${paddedIndex}`,
-        color: '1' // Default color
-      };
-    });
+    const nodeAssignments = parseNodeAssignments(parsed);
+    if (!nodeAssignments) {
+      throw new Error('Invalid node assignments in LLM response');
+    }
 
-    const edge_assignments: Record<string, { id: string; color?: string }> = {};
-    request.edges.forEach((edge, index) => {
-      const paddedIndex = (index + 1).toString().padStart(3, '0');
-      edge_assignments[edge.id] = {
-        id: `edge-${paddedIndex}`
-      };
-    });
+    const originalNodeIds = new Set(request.nodes.map((n) => n.id));
+    const mappedNodeIds = new Set(Object.keys(nodeAssignments));
+    
+    for (const originalId of originalNodeIds) {
+      if (!mappedNodeIds.has(originalId)) {
+        throw new Error(`Missing semantic ID assignment for node: ${originalId}`);
+      }
+    }
+
+    const semanticIds = new Set<string>();
+    for (const [originalId, assignment] of Object.entries(nodeAssignments)) {
+      if (typeof assignment.id !== 'string' || !this.isValidSemanticId(assignment.id)) {
+        throw new Error(`Invalid semantic ID for node: ${originalId}`);
+      }
+      if (semanticIds.has(assignment.id)) {
+        throw new Error(`Duplicate semantic ID detected: ${assignment.id}`);
+      }
+      semanticIds.add(assignment.id);
+    }
+
+    const edgeAssignments = parseEdgeAssignments(parsed);
 
     return {
-      node_assignments,
-      edge_assignments
+      taxonomy: parseTaxonomy(parsed.taxonomy),
+      node_assignments: nodeAssignments,
+      edge_assignments: edgeAssignments
     };
-  }
-
-  private generateFallbackId(originalId: string): string {
-    // Create a simple hash from the original ID
-    let hash = 0;
-    for (let i = 0; i < originalId.length; i++) {
-      const char = originalId.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32-bit integer
-    }
-    const hashStr = Math.abs(hash).toString(16).substring(0, 4);
-    return `node-${hashStr}`;
   }
 
   private isValidSemanticId(id: string): boolean {
@@ -415,6 +354,7 @@ function parseTaxonomy(value: unknown): SemanticAnalysisResponse['taxonomy'] | u
 
   return Object.keys(taxonomy).length > 0 ? taxonomy : undefined;
 }
+
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;

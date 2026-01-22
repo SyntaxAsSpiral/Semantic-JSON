@@ -10,7 +10,6 @@ This folder contains self-documenting examples demonstrating Semantic JSON's com
 | [`conformance-test-card.json`](./conformance-test-card.json) | Pure JSON | Exported version with spatial metadata stripped. Compare to `.canvas` to see what gets removed. |
 | [`conformance-test-card.png`](./conformance-test-card.png) | Screenshot | Visual reference showing how the test card renders in Obsidian. |
 | [`before-after.png`](./before-after.png) | Screenshot | Hero image comparing scrambled vs semantic JSON ordering. |
-| [`large-jsonl-import.png`](./large-jsonl-import.png) | Screenshot | Demonstrates JSONL import with rainbow gradient coloring and grid layout for large datasets. |
 | [`🩷Catppuccin.pure.json`](./%F0%9F%A9%B7Catppuccin.pure.json) | Pure JSON | Real-world example: Catppuccin color palettes exported for LLM consumption. |
 
 ## 🔬 How to Use These Examples

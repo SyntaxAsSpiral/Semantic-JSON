@@ -412,7 +412,7 @@ export function importFile({ inPath, outPath }) {
   };
 }
 
-// Keep legacy exports for backwards compatibility
+// Convenience exports used by tests/other modules
 export const importJsonToCanvasEnhanced = (data) => {
   const cards = parseStructuredJson(data);
   const rainbowColors = generateRainbowGradient(cards.length);
@@ -434,7 +434,3 @@ export const importPureCanvasDataCLI = (data) => {
   const rainbowColors = generateRainbowGradient(cards.length);
   return solitaireLayout(cards, rainbowColors);
 };
-
-// Legacy file-specific imports (delegate to main function)
-export const importJsonFile = importFile;
-export const importJsonlFile = importFile;

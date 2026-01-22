@@ -7,3 +7,9 @@ agents.md
 .vscode/
 test-files/
 obsidian-sample-plugin/
+.kiro/
+eslint.config.mts
+.editorconfig
+.npmrc
+package-lock.json
+version-bump.mjs

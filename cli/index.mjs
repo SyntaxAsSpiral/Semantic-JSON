@@ -2,7 +2,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
 import { compileCanvasFile } from './src/compiler.mjs';
-import { importFile, importJsonFile, importJsonlFile } from './src/importer.mjs';
+import { importFile } from './src/importer.mjs';
 
 function usage(message) {
   if (message) process.stderr.write(`${message}\n\n`);
@@ -10,14 +10,10 @@ function usage(message) {
     [
       'Usage:',
       '  node cli/index.mjs --in <path-to-.canvas> [--out <path-to-.json>] [options]',
-      '  node cli/index.mjs --from-json <path-to-.json> [--out <path-to-.canvas>]',
-      '  node cli/index.mjs --from-jsonl <path-to-.jsonl> [--out <path-to-.canvas>]',
       '  node cli/index.mjs --import <path-to-file> [--out <path-to-.canvas>]',
       '',
       'Options:',
       '  --import              Auto-detect and import JSON/JSONL to Canvas (unified command)',
-      '  --from-json           Import JSON to Canvas (create visual scaffolding)',
-      '  --from-jsonl          Import JSONL to Canvas (each line becomes a record group)',
       '  --color-nodes         Enable color-based node sorting (default: true)',
       '  --no-color-nodes      Disable color-based node sorting',
       '  --color-edges         Enable color-based edge sorting (default: true)',
@@ -33,8 +29,6 @@ function usage(message) {
       'Behavior:',
       '  - Reads a JSON Canvas 1.0 file (.canvas), JSON file (.json), or JSONL file (.jsonl)',
       '  - With --import: auto-detects file type and creates Canvas with enhanced coloring',
-      '  - With --from-json: creates Canvas scaffolding (objects/arrays → groups, primitives → text nodes)',
-      '  - With --from-jsonl: creates Canvas scaffolding with each JSONL record as a separate group',
       '  - Without import flags: compiles to semantic JSON via visuospatial encoding',
       '  - Encodes 4 visual dimensions: position, containment, color, directionality',
       '  - Outputs to specified path or <input-stem>.json/.canvas in same directory',
@@ -70,14 +64,6 @@ function parseArgs(argv) {
     const a = argv[i];
     if (a === '--in') {
       args.in = argv[++i];
-      continue;
-    }
-    if (a === '--from-json') {
-      args.fromJson = argv[++i];
-      continue;
-    }
-    if (a === '--from-jsonl') {
-      args.fromJsonl = argv[++i];
       continue;
     }
     if (a === '--import') {
@@ -174,48 +160,10 @@ async function main() {
     }
   }
 
-  // Import mode: --from-json
-  if (args.fromJson) {
-    const fromJsonPath = String(args.fromJson).trim();
-    if (!fromJsonPath) {
-      usage('missing value for --from-json');
-      process.exit(2);
-      return;
-    }
-    try {
-      const res = importJsonFile({ inPath: fromJsonPath, outPath: args.out });
-      process.stdout.write(JSON.stringify(res, null, 2) + '\n');
-      return;
-    } catch (error) {
-      process.stderr.write(`JSON import failed: ${error.message}\n`);
-      process.exit(1);
-      return;
-    }
-  }
-
-  // Import mode: --from-jsonl
-  if (args.fromJsonl) {
-    const fromJsonlPath = String(args.fromJsonl).trim();
-    if (!fromJsonlPath) {
-      usage('missing value for --from-jsonl');
-      process.exit(2);
-      return;
-    }
-    try {
-      const res = importJsonlFile({ inPath: fromJsonlPath, outPath: args.out });
-      process.stdout.write(JSON.stringify(res, null, 2) + '\n');
-      return;
-    } catch (error) {
-      process.stderr.write(`JSONL import failed: ${error.message}\n`);
-      process.exit(1);
-      return;
-    }
-  }
-
   // Compile mode: --in
   const inPath = String(args.in ?? '').trim();
   if (!inPath) {
-    usage('missing required --in, --from-json, --from-jsonl, or --import');
+    usage('missing required --in or --import');
     process.exit(2);
     return;
   }
